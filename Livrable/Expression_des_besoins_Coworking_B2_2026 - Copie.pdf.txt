@@ -1,0 +1,152 @@
+Projet Annuel B2 2026 - Coworking 
+Page 1 
+ 
+EXPRESSION DES BESOINS 
+ 
+Expression des besoins 
+Plateforme de gestion d'un espace de co-working 
+Version de cadrage fonctionnel et technique - projet annuel B2 2026 
+Projet Plateforme de gestion d'un espace de co-working 
+Année B2 - promotion 2026 
+Finalité Réservation, accès, services internes, facturation et administration 
+Usage Base pour le document Word, l'expression des besoins et le support PowerPoint 
+ 
+Le contenu peut être repris directement dans le cahier des charges fonctionnel puis enrichi pendant le projet. 
+  
+Projet Annuel B2 2026 - Coworking 
+Page 2 
+1. Contexte et finalité 
+L'espace de co-working souhaite disposer d'une plateforme unique pour gérer l'occupation des espaces, les services 
+associés et l'administration quotidienne. Aujourd'hui, les réservations, relances, accès et facturations peuvent être 
+dispersés entre plusieurs outils ou traités manuellement, ce qui génère des erreurs, des oublis et une faible 
+traçabilité. 
+Espaces 
+Postes & salles 
+Disponibilités 
+Agenda 
+QR / Réseau 
+Accès 
+Pilotage 
+Back-office 
+ 
+Objectif global 
+Concevoir une solution capable de couvrir le parcours complet de l'utilisateur : consulter les disponibilités, réserver, 
+être notifié, accéder à l'espace, utiliser certains services internes et recevoir une facturation cohérente. 
+Périmètre : le projet comprend obligatoirement un volet applicatif et un volet systèmes/réseaux. La mise en place 
+de l’hébergement, du réseau interne, du portail captif, de la sécurité et des sauvegardes fait partie des attendus. 
+Les fonctionnalités plus avancées, comme la connexion VPN entre sites, peuvent être traitées en option selon 
+l’avancement du groupe. 
+2. Parties prenantes et acteurs 
+Acteur Rôle dans le système Attentes principales 
+Client / visiteur Réserve ponctuellement une place ou une 
+salle. 
+Rapidité, lisibilité des disponibilités, confirmation 
+immédiate. 
+Membre abonné Utilise régulièrement l'espace avec formule 
+d'abonnement. Gestion simple de ses réservations et de ses droits. 
+Responsable d'accueil Supervise les arrivées, les accès et les 
+ajustements de réservation. Vision en temps réel et actions rapides. 
+Gestionnaire / manager Paramètre les espaces, tarifs, ressources et 
+règles. Pilotage, statistiques de base, administration. 
+Comptabilité Suit les commandes, paiements et factures. Données fiables, PDF propres, historique traçable. 
+Administrateur IT Gère l'authentification, le réseau, les 
+sauvegardes et la sécurité. Architecture propre, journalisation, restauration. 
+ 
+3. Parcours métier cible 
+# Étape Description 
+1 Consulter L'utilisateur visualise les espaces, les horaires, les capacités et les ressources disponibles. 
+2 Réserver Il choisit un créneau par demi-journée ou à l'heure, seul ou avec d'autres personnes. 
+3 Valider Le système calcule le tarif, alimente le panier et confirme la réservation. 
+4 Notifier Un e-mail de confirmation est envoyé, puis un rappel à H-1 selon les règles activées. 
+5 Accéder Le jour J, l'utilisateur peut présenter un QR code ou suivre le processus d'accueil prévu. 
+6 Consommer Il utilise l'espace et éventuellement des services annexes : salle, matériel, impression, Wi-Fi. 
+7 Facturer Une facture PDF est générée et envoyée par e-mail avec l'historique de la réservation. 
+8 Administrer Le gestionnaire suit l'occupation, les annulations, les incidents et les données de pilotage. 
+ 
+4. Besoins fonctionnels 
+Projet Annuel B2 2026 - Coworking 
+Page 3 
+Domaine Exigences détaillées 
+Gestion des comptes Créer des comptes, se connecter, gérer les profils, distinguer les rôles et les niveaux d'accès. 
+Réservation Réserver des postes ou salles par demi-journée ou à l'heure, afficher les disponibilités et empêcher 
+les doublons. 
+Agenda multi-personnes Associer plusieurs participants à une réservation et vérifier les conflits de ressources. 
+Panier & tarification Calculer le prix par créneau, proposer des abonnements et valider une commande. 
+Notifications Envoyer automatiquement confirmations, modifications, annulations et rappels H-1. 
+Facturation Générer des factures PDF, les transmettre par e-mail et conserver l'historique. 
+Plan & occupation Visualiser l'espace, identifier les places libres et distinguer les types d'espaces. 
+Services internes Réserver ou consommer certaines ressources : vidéoprojecteur, tableau, imprimante, code 
+d'impression. 
+Contrôle d'accès Émettre et vérifier un QR code d'entrée ou un code d'accès selon le scénario retenu. 
+Administration Gérer utilisateurs, espaces, ressources, tarifs, abonnements, règles d'annulation et journaux. 
+ 
+5. Règles de gestion proposées 
+• Une même place ne peut pas être réservée deux fois sur un créneau identique ou chevauchant. 
+• Les salles de conférence peuvent imposer une capacité maximale et des ressources obligatoires. 
+• L'annulation ou la modification reste possible jusqu'à un délai défini par l'administrateur. 
+• Le prix peut dépendre du type d'espace, de la durée et du mode de souscription (ponctuel / abonnement). 
+• Toute réservation validée déclenche au minimum un e-mail de confirmation. 
+• Toute réservation consommée ou confirmée peut produire une facture PDF selon la politique retenue. 
+• Le système doit conserver l'historique des actions critiques : création, modification, annulation, accès, émission 
+de facture. 
+ 
+6. User stories prioritaires 
+ 
+7. Exigences non fonctionnelles 
+Axe Attendus 
+Sécurité Authentification sécurisée, rôles, politique de mots de passe, journalisation, droits différenciés, protection des 
+données. 
+Performance Réponse fluide sur les écrans de réservation et sur les recherches de disponibilité. 
+Disponibilité Application accessible pendant les horaires d'exploitation ; gestion propre des erreurs. 
+Sauvegarde Sauvegarde régulière de l'application et de la base de données, avec procédure de restauration documentée. 
+Traçabilité Historique des réservations, annulations, accès et documents émis. 
+Maintenabilité Code structuré, documentation technique, déploiement reproductible. 
+ID En tant que... Je veux... Afin de... 
+US-01 visiteur consulter les disponibilités en temps réel choisir rapidement un espace adapté. 
+US-02 membre réserver une place par demi-journée organiser ma venue sans passer par l'accueil. 
+US-03 membre réserver une salle avec plusieurs participants préparer une réunion sans conflit d'agenda. 
+US-04 utilisateur recevoir un e-mail de confirmation puis un rappel ne pas oublier mon créneau. 
+US-05 gestionnaire voir le plan de l'espace et les places libres optimiser l'occupation. 
+US-06 comptabilité générer automatiquement une facture PDF fiabiliser la facturation. 
+US-07 administrateur définir les règles d'annulation et les tarifs faire évoluer l'offre sans modifier le code. 
+US-08 agent d'accueil vérifier un QR code d'entrée accélérer l'arrivée des utilisateurs. 
+Projet Annuel B2 2026 - Coworking 
+Page 4 
+Axe Attendus 
+Évolutivité Capacité à ajouter d'autres sites, offres d'abonnement ou services internes. 
+Conformité Prise en compte des données personnelles et minimisation des informations collectées. 
+ 
+8. Contraintes et hypothèses 
+Point Cadre retenu 
+Temps de projet Le projet doit rester démontrable dans le cadre d'un projet annuel B2. 
+Périmètre Les lots d'infrastructure avancée peuvent être traités en POC ou maquette si nécessaire. 
+Accès réseau Le portail captif Wi-Fi et le VPN entre sites peuvent être documentés + schématisés si non intégrés. 
+Paiement Le paiement en ligne n'est pas obligatoire si la facturation suffit pour la démonstration. 
+Mobile Les notifications mobiles peuvent être remplacées par une PWA ou par l'e-mail dans le MVP. 
+Matériel Le contrôle d'accès QR code peut être simulé sans matériel physique complet. 
+* POC = Proof of Concept = preuve de concept 
+Point d'attention : Pour sécuriser la note, chaque exigence avancée doit avoir une version démontrable ou au 
+minimum une preuve de conception solide : schéma, scénario, prototype ou maquette. 
+ 
+9. Proposition de priorisation 
+Must Should Could 
+Comptes, rôles, réservation, 
+disponibilités, panier, confirmation e-
+mail, annulation/modification, 
+facturation PDF, admin. 
+Plan visuel, rappels H-1, abonnements, 
+tableau de bord. 
+Impression avec code, push mobile natif, 
+portail captif complet, multi-sites temps 
+réel, QR code d'entrée. 
+ 
+10. Critères de réussite 
+• Un parcours utilisateur complet est démontrable de bout en bout. 
+• Les rôles et droits d'accès sont clairement séparés. 
+• Les réservations ne génèrent pas de conflit de ressources. 
+• Le moteur de notification et la facturation sont automatisés. 
+• L'architecture technique, réseau et sauvegarde est expliquée et documentée. 
+• Le dossier de projet reste cohérent entre besoin, conception, réalisation et démonstration. 
+ 
+Cette expression des besoins constitue une base exploitable pour lancer le cahier des charges fonctionnel, le 
+backlog, les personas, les cartes d'empathie et la présentation orale. 

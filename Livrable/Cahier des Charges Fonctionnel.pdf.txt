@@ -1,0 +1,403 @@
+Cahier des Charges Fonctionnel — Gestion Co-working — ESGI Lyon B2 2026 
+ 
+Version 1.0 – Avril 2026 Page 1 
+ 
+ 
+  
+
+Cahier des Charges Fonctionnel — Gestion Co-working — ESGI Lyon B2 2026 
+ 
+Version 1.0 – Avril 2026 Page 2 
+TABLE DES MATIERES 
+TABLE DES MATIERES.................................................................................................................................... 2 
+1. Présentation de l'équipe. ............................................................................................................................... 3 
+2. Descriptif du projet ......................................................................................................................................... 4 
+2.1 Formulation synthétique ........................................................................................................................... 4 
+3. Carte mentale – Analyse QQOQCP .............................................................................................................. 5 
+4. Objectifs SMART ........................................................................................................................................... 6 
+5. Les Personas ................................................................................................................................................. 7 
+6. Les User Stories ............................................................................................................................................ 8 
+6.1 Authentification & Comptes ...................................................................................................................... 8 
+6.2 Réservation d'espaces ............................................................................................................................. 8 
+6.3 Notifications & Confirmations ................................................................................................................... 8 
+6.4 Facturation ............................................................................................................................................... 9 
+6.5 Administration & Infrastructure ................................................................................................................. 9 
+7. Décomposition en tâches – WBS ................................................................................................................ 10 
+8. Diagramme de Gantt – Planning prévisionnel ............................................................................................. 11 
+  
+Cahier des Charges Fonctionnel — Gestion Co-working — ESGI Lyon B2 2026 
+ 
+Version 1.0 – Avril 2026 Page 3 
+ 
+1. Présentation de l'équipe. 
+Prénom & Nom Rôle principal Compétences clés 
+Irche BAMOKILA Chef de projet  Gestion de projet, Figma, coordination 
+équipe 
+Cornelio BENISSAN Développeur  React, Node.js, PostgreSQL, API 
+REST 
+Housnah ADOU OSSENI UI/UX Designer  Figma, Adobe XD 
+Hanad MOUSSA ADEN Administrateur Sys & Réseaux Serveurs Linux, VPN, portail captif, 
+sauvegardes 
+Salma AKLI Développeur React, Node.js, PostgreSQL, API 
+REST 
+ 
+  
+Cahier des Charges Fonctionnel — Gestion Co-working — ESGI Lyon B2 2026 
+ 
+Version 1.0 – Avril 2026 Page 4 
+2. Descriptif du projet 
+2.1 Formulation synthétique 
+Notre projet consiste à concevoir et développer une plateforme web de gestion d'espace de coworking pour 
+permettre aux utilisateurs (clients visiteurs, membres abonnés, administrateurs et comptables) de réserver 
+des espaces en temps réel, d'accéder aux services internes et de recevoir une facturation automatisée, 
+malgré les contraintes suivantes : 
+ 
+• La diversité des profils utilisateurs (visiteur, membre, admin, comptable, accueil) impliquant des 
+niveaux d'accès différenciés ; 
+• La prévention des conflits d'agenda lors de réservations simultanées sur des ressources partagées ;  
+• L'intégration d'une infrastructure réseau sécurisée (portail captif Wi-Fi, VPN inter-sites) dans un 
+environnement de production ; 
+• L'automatisation fiable des notifications (e-mails de confirmation, rappels H-1, annulations) et de la 
+génération de factures PDF ; 
+• Le respect d'un calendrier contraint avec quatre séances de travail encadrées avant une soutenance 
+le 10 juillet 2026. 
+ 
+  
+Cahier des Charges Fonctionnel — Gestion Co-working — ESGI Lyon B2 2026 
+ 
+Version 1.0 – Avril 2026 Page 5 
+3. Carte mentale – Analyse QQOQCP 
+Question Axe Réponse 
+QUI ? Parties prenantes 
+Visiteurs ponctuels, membres abonnés, agents d'accueil, 
+gestionnaires d'espace, comptables, administrateurs IT. 
+Maître d'ouvrage : ESGI Lyon. Équipe projet : 4 étudiants 
+B2. 
+QUOI ? Objet du projet 
+Une plateforme web responsive permettant la gestion 
+complète d'un espace de co-working : réservation, 
+notifications, accès QR code, facturation PDF, 
+administration et infrastructure réseau. 
+OÙ ? Périmètre 
+Application web front-office et back-office. Hébergement 
+sur VPS OVH (Ubuntu 22.04). Réseau interne de l'espace 
+de co-working segmenté en 3 VLANs avec portail captif 
+pfSense. 
+QUAND ? Planning 
+Séance 1 (27/03) : cadrage. Séance 2 (17/04) : conception. 
+Séance 3 (22/05) : développement + infra. Séance 4 
+(25/06) : finalisation. Soutenance : 10/07/2026. 
+COMMENT 
+? Moyens techniques 
+Stack : Laravel 12, React, MySQL 8, Tailwind CSS. Infra : 
+VPS OVH, Nginx (Reverse Proxy), pare-feu UFW, SSL 
+Let's Encrypt. Réseau : pfSense, sauvegardes 
+automatiques nocturnes. 
+POURQUOI 
+? Finalité 
+Centraliser les réservations pour éliminer les conflits 
+manuels, automatiser les confirmations et la facturation, 
+sécuriser les accès et fournir aux gestionnaires un tableau 
+de bord de pilotage. 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+
+Cahier des Charges Fonctionnel — Gestion Co-working — ESGI Lyon B2 2026 
+ 
+Version 1.0 – Avril 2026 Page 6 
+4. Objectifs SMART 
+ 
+ 
+  
+
+Cahier des Charges Fonctionnel — Gestion Co-working — ESGI Lyon B2 2026 
+ 
+Version 1.0 – Avril 2026 Page 7 
+5. Les Personas 
+Les personas représentent les profils types d'utilisateurs de la plateforme Cowork'In. Ils ont été identifiés à 
+partir de l'analyse des besoins et permettent de guider les décisions de conception.  
+ 
+Persona 1 — Camille  |  Cliente Visiteuse 
+Contexte Freelance ayant un besoin ponctuel d'un espace de travail calme pour une journée ou une 
+demi-journée. Elle ne souhaite pas s'engager sur la durée. 
+Objectifs • Voir les disponibilités en temps réel 
+• Réserver rapidement sans créer de compte complexe 
+• Recevoir une confirmation immédiate par e-mail 
+Frustrations • Processus de réservation trop long et fastidieux 
+• Incertitude sur la disponibilité réelle d'un poste au moment de la réservation 
+ 
+Persona 2 — Karim Benali  |  Administrateur de l'espace 
+Contexte Responsable des services chez Cowork'In. Il gère les plannings, tarifs, utilisateurs, factures, 
+infrastructure réseau et sécurité. Il doit assurer la continuité de service sans erreur manuelle. 
+Objectifs • Centraliser toutes les réservations, utilisateurs et factures dans un back-office unique 
+• Automatiser rappels, confirmations, génération de factures PDF et sauvegardes 
+• Éviter les conflits d'agenda grâce à un moteur de réservation fiable 
+• Disposer d'une restauration rapide en cas d'incident (BDD, application) 
+• Mettre en place un accès réseau sécurisé (Wi-Fi captif, VPN inter-sites) 
+Frustrations • Trop de manipulations manuelles pour résoudre les conflits de réservation 
+• Absence d'automatisation des notifications → clients mécontents 
+• Sauvegarde et restauration complexes, sans procédure claire 
+• Interface d'administration peu intuitive, difficile à déléguer à l'accueil 
+• Difficulté à justifier une indisponibilité réseau ou un double-booking 
+ 
+Persona 3 — Kevin VINCENT  |  Consultant – Nomade Digital 
+Contexte Consultant en marketing digital travaillant entièrement à distance. Il se déplace régulièrement 
+entre différentes villes et utilise les espaces de coworking comme solution principale de travail. 
+Objectifs • Trouver rapidement un espace de travail dans une nouvelle ville 
+• Disposer d'une connexion internet fiable pour travailler 
+• Bénéficier d'une flexibilité totale sans engagement long terme 
+Frustrations • Processus d'inscription trop long et décourageant 
+• Accès compliqué (badges physiques, horaires restrictifs) 
+• Connexion internet instable ou insuffisante pour son activité 
+ 
+Persona 4 — Valérie  |  Comptable de l'espace 
+Contexte Comptable interne de l'espace de coworking, à l'aise avec les outils de gestion. Elle a besoin 
+d'une interface claire pour que chaque réservation génère une facture exacte sans intervention 
+manuelle. 
+Objectifs • Générer une facturation propre, exacte et traçable 
+• Automatiser l'émission et l'envoi de factures PDF par e-mail 
+• Consulter rapidement les revenus via des statistiques de base 
+Frustrations • Erreurs manuelles lors du calcul des tarifs et remises 
+• Temps perdu à rédiger et envoyer les factures individuellement 
+• Manque de suivi précis sur les annulations et modifications de réservation 
+ 
+  
+Cahier des Charges Fonctionnel — Gestion Co-working — ESGI Lyon B2 2026 
+ 
+Version 1.0 – Avril 2026 Page 8 
+6. Les User Stories 
+Les user stories décrivent les fonctionnalités attendues du point de vue de chaque utilisateur, selon le format 
+: En tant que [rôle], je veux [action] afin de [bénéfice]. 
+ 
+6.1 Authentification & Comptes 
+ID Rôle Action Bénéfice Priorité 
+US-
+01 Visiteur Je veux créer un compte simplement 
+(email + mot de passe) 
+Accéder aux 
+fonctionnalités de 
+réservation rapidement 
+Must 
+US-
+02 Tous Je veux me connecter de manière 
+sécurisée 
+Accéder à mon espace 
+personnel protégé Must 
+US-
+03 Admin Je veux gérer les rôles des utilisateurs 
+(client, membre, accueil, comptable) 
+Contrôler les droits d'accès 
+au back-office Must 
+US-
+04 Tous Je veux réinitialiser mon mot de passe 
+par e-mail 
+Ne pas être bloqué en cas 
+d'oubli Should 
+ 
+6.2 Réservation d'espaces 
+ID Rôle Action Bénéfice Priorité 
+US-
+05 Client Je veux visualiser les disponibilités des 
+espaces en temps réel 
+Choisir un créneau 
+disponible sans risque de 
+conflit 
+Must 
+US-
+06 Client Je veux réserver une place nomade, un 
+bureau ou une salle de conférence 
+Trouver l'espace adapté à 
+mon besoin du moment Must 
+US-
+07 Client Je veux réserver par demi-journée ou à 
+l'heure 
+Adapter la réservation à la 
+durée exacte de mon 
+besoin 
+Must 
+US-
+08 Membre Je veux souscrire à un abonnement 
+mensuel 
+Bénéficier d'un accès 
+prioritaire à un tarif 
+préférentiel 
+Must 
+US-
+09 Client Je veux ajouter plusieurs espaces à un 
+panier avant de valider 
+Finaliser ma commande en 
+une seule transaction Must 
+US-
+10 Client Je veux modifier ou annuler ma 
+réservation 
+Adapter ma réservation en 
+cas d'imprévu Must 
+ 
+6.3 Notifications & Confirmations 
+ID Rôle Action Bénéfice Priorité 
+US-
+11 Client Je veux recevoir un e-mail de 
+confirmation dès la réservation validée 
+Avoir une preuve 
+immédiate de ma 
+réservation 
+Must 
+US-
+12 Client Je veux recevoir un rappel par e-mail 1 
+heure avant mon créneau 
+Ne pas manquer ma 
+réservation Should 
+US-
+13 Client Je veux être notifié en cas d'annulation 
+ou modification d'un créneau 
+Être informé de tout 
+changement concernant 
+ma réservation 
+Should 
+ 
+Cahier des Charges Fonctionnel — Gestion Co-working — ESGI Lyon B2 2026 
+ 
+Version 1.0 – Avril 2026 Page 9 
+6.4 Facturation 
+ID Rôle Action Bénéfice Priorité 
+US-
+14 Client Je veux recevoir une facture PDF par e-
+mail après paiement 
+Disposer d'un justificatif 
+comptable de ma dépense Must 
+US-
+15 Comptable Je veux consulter l'historique de toutes 
+les factures émises 
+Suivre les revenus et 
+effectuer les 
+rapprochements 
+comptables 
+Must 
+US-
+16 Comptable 
+Je veux accéder à des statistiques de 
+base sur les revenus et taux 
+d'occupation 
+Piloter l'activité et anticiper 
+les besoins Should 
+US-
+17 Admin 
+Je veux gérer les tarifs (horaire, demi-
+journée, abonnement) depuis le back-
+office 
+Adapter les prix sans 
+intervention technique Must 
+ 
+6.5 Administration & Infrastructure 
+ID Rôle Action Bénéfice Priorité 
+US-
+18 Admin Je veux gérer les ressources (espaces, 
+équipements) depuis le back-office 
+Maintenir le catalogue 
+d'espaces à jour en 
+autonomie 
+Must 
+US-
+19 Admin Je veux consulter les statistiques 
+d'occupation et de réservation 
+Optimiser la gestion des 
+espaces disponibles Should 
+US-
+20 Admin Sys Je veux mettre en place un portail captif 
+Wi-Fi pour les clients 
+Contrôler et sécuriser 
+l'accès réseau des visiteurs Must 
+US-
+21 Admin Sys Je veux disposer d'une procédure de 
+sauvegarde et restauration automatisée 
+Garantir la continuité de 
+service en cas d'incident Must 
+ 
+  
+Cahier des Charges Fonctionnel — Gestion Co-working — ESGI Lyon B2 2026 
+ 
+Version 1.0 – Avril 2026 Page 10 
+7. Décomposition en tâches – WBS 
+Le Work Breakdown Structure (WBS) ci-dessous présente la décomposition complète du projet en lots de 
+travaux. Ce découpage est retranscrit dans l'outil Trello de l'équipe avec assignation des responsables et 
+dates cibles. 
+ 
+Lot Domaine Tâches principales Responsable Séance cible 
+1 Cadrage & 
+Organisation 
+Constitution de l'équipe, répartition des 
+rôles, mise en place Trello, Git, Drive, 
+rédaction CCF, planning prévisionnel 
+Irche (Chef de 
+projet) S1 – 27/03 
+2 Conception & 
+Maquettage 
+Maquettes Figma (front + back-office), 
+charte graphique, MCD/MLD, schémas 
+d'architecture, cartes d'empathie, CCT 
+Housnah + 
+Irche S2 – 17/04 
+3 Développement Back-
+End 
+API REST Node.js/Express, modèles 
+PostgreSQL, authentification JWT, 
+gestion des réservations et des conflits, 
+génération PDF, envoi e-mails 
+Cornelio S3 – 22/05 
+4 Développement Front-
+End 
+Interface React (calendrier disponibilités, 
+panier, espace client, dashboard admin, 
+facturation), intégration API 
+Cornelio + Irche S3 – 22/05 
+5 Infrastructure 
+Sys/Réseaux 
+Déploiement VPS Linux, configuration 
+réseau interne, portail captif Wi-Fi 
+(pfSense), VPN WireGuard, sécurité 
+(pare-feu, HTTPS) 
+Hanad + 
+Housnah S3 – 22/05 
+6 Sauvegarde & 
+Monitoring 
+Scripts de sauvegarde automatique 
+BDD, procédure de restauration, 
+journalisation des actions, tests de 
+reprise 
+Hanad S4 – 25/06 
+7 Tests & Recette 
+Tests fonctionnels (parcours réservation 
+→ facturation), tests de charge, 
+correction des anomalies, mise en 
+production finale 
+Toute l'équipe S4 – 25/06 
+8 Documentation & 
+Soutenance 
+Rédaction documentation technique, 
+manuel utilisateur, support PowerPoint, 
+démonstration vidéo (Loom), répétition 
+soutenance 
+Irche + Toute 
+équipe Avant 10/07 
+ 
+Note : Le suivi des tâches est réalisé dans Trello (tableau Kanban : À faire / En cours / En révision / 
+Terminé. 
+ 
+  
+Cahier des Charges Fonctionnel — Gestion Co-working — ESGI Lyon B2 2026 
+ 
+Version 1.0 – Avril 2026 Page 11 
+8. Diagramme de Gantt – Planning prévisionnel 
+Le diagramme de Gantt ci-dessous présente la répartition temporelle des lots de travaux sur la durée du 
+projet (mars à juillet 2026).  
+ 
+ 
+ 
+ 

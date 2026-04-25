@@ -1,0 +1,107 @@
+Projet Annuel B2
+Application de gestion d’un espace de coworking
+– Contexte –
+Expression des Besoins
+• Un espace de coworking souhaite proposer une 
+solution numérique centralisée pour gérer ses 
+réservations et ses services internes.
+• Les utilisateurs doivent pouvoir :
+• Réserver une place nomade, un bureau, une salle de 
+conférence ;
+• Les réservations peuvent se faire par demi-journée, à 
+l’heure, ou via un abonnement ;
+• La solution doit faciliter la visualisation des 
+disponibilités, la gestion d’un panier, la validation d’une 
+réservation, la confirmation par mail, l’envoi de 
+notifications, la facturation.
+– Contexte –
+Expression des Besoins
+• Un espace de coworking souhaite proposer une 
+solution numérique centralisée pour gérer ses 
+réservations et ses services internes.
+• L’espace comprend également des besoins techniques 
+liés à :
+• l’hébergement de l’application, 
+• l’organisation du réseau interne, 
+• le portail captif Wi-Fi, 
+• la sécurité, 
+• les sauvegardes.
+• Problématique : concevoir une solution web 
+permettant de gérer efficacement un espace de 
+coworking, à la fois sur le plan applicatif et sur le plan 
+systèmes / réseaux …
+Ce qu’on attend de vous
+• Dans le cadre du module Projet Annuel :
+• Cartes d'empathie utilisateurs (craintes/souhaits/ etc.)
+• Outils de gestion de projet (type Trello, Git, Drive…)
+• Cahier des Charges Fonctionnel
+• Cahier des Charges Techniques
+• Architecture technique et fonctionnelle
+• Maquettage et Réalisation de l’application avec les différentes 
+fonctionnalités
+• Mise en place du volet systèmes / réseaux : l’hébergement de 
+l’application, réseau interne, portail captif, sécurité, 
+sauvegardes. 
+• Rédaction de la documentation technique
+• Rédaction d’un manuel utilisateur
+– Les livrables –
+• Une application fonctionnelle au jour de la soutenance
+• Un dossier remis via Teams comprenant:
+• Un lien vers le dépôt Git.
+• Le support de présentation pour la soutenance.
+• Une démonstration enregistrée (vous pouvez utiliser des 
+outils de capture vidéo tels que LOOM, qui est une référence 
+dans ce domaine)
+• Le cahier des Charges Fonctionnel
+• Le cahier des Charges Techniques
+• La documentation technique
+• Le manuel utilisateur
+• les maquettes, 
+• les schémas d’architecture réseau / hébergement
+Soutenance – 10/07
+• Jury composé un ou deux intervenants
+• Présentation orale : 20 min pour convaincre
+• 15 minutes de présentation par groupe 
+(ordre de passage à définir) 
+• 5 minutes de démonstration de l’application et de l’infra
+• 10 mn de questions / réponses
+• 5 mn de restitution
+– Evaluation du module –
+Projet Annuel
+• La note Projet Annuel se décompose de la manière 
+suivante :
+• Note de contrôle continu :
+• Suivi du projet : 50 %
+• Réalisation technique et documentaire : 50%
+• Soutenance :  
+• La note de chaque élève sera composée d’une note de 
+groupe et d’une note individuelle
+Evaluation de la soutenance
+• Les critères suivants notés sur /10 pour une note sur 20
+• Compréhension du besoin
+• Cohérence entre besoins, conception et réalisation
+• Qualité de l’architecture technique
+• Qualité du développement
+• Qualité du fonctionnement de l’application
+• Prise en compte de la sécurité
+• Qualité du déploiement / hébergement
+• Qualité de la documentation
+• Clarté de la démonstration
+• Qualité du planning et de l’organisation projet
+• Attitude individuelle à l’oral
+• Capacité à répondre aux questions
+• Attitude individuelle lors de la soutenance (participation, 
+réponse aux questions) notée sur 20
+Planning
+
+En résumé
+• Un projet complet
+• Un vrai travail d’équipe
+• Un double enjeu :
+• application métier,
+• infrastructure systèmes / réseaux
+• Une solution réaliste, démontrable et documentée
+• Une progression régulière attendue entre chaque 
+séance
+À vous de jouer : 
+concevez, organisez, réalisez !
