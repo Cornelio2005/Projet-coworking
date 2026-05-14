@@ -144,12 +144,13 @@ export default function Welcome({ canLogin, canRegister }) {
             {/* GALERIE */}
             <section id="espaces" style={{
                 padding: '64px 10%',
+                backgroundColor: '#f8f8f8ff',
             }}>
                 <h2 style={{
                     fontFamily: 'Montserrat, sans-serif',
                     fontWeight: '700',
                     fontSize: '32px',
-                    color: '#2D6A5A',
+                    color: '#e687c0ff',
                     marginBottom: '32px',
                 }}>
                     Nos espaces
@@ -281,8 +282,86 @@ export default function Welcome({ canLogin, canRegister }) {
                     ))}
                 </div>
             </section>
+            {/* CTA FINAL */}
+            <section style={{
+                backgroundColor: '#f392c9ff',
+                padding: '80px 10%',
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                textAlign: 'center',
+            }}>
+                <h2 style={{
+                    fontFamily: 'Montserrat, sans-serif',
+                    fontWeight: '800',
+                    fontSize: '36px',
+                    color: '#FFFFFF',
+                    marginBottom: '16px',
+                    maxWidth: '600px',
+                    lineHeight: '1.2',
+                }}>
+                    Prêt à rejoindre Cowork'In ?
+                </h2>
+
+                <p style={{
+                    fontFamily: 'Roboto, sans-serif',
+                    fontWeight: '300',
+                    fontSize: '17px',
+                    color: 'rgba(255,255,255,0.8)',
+                    marginBottom: '36px',
+                    maxWidth: '460px',
+                    lineHeight: '1.7',
+                }}>
+                    Créez votre compte gratuitement et réservez votre premier espace dès aujourd'hui.
+                </p>
+
+                <Link
+                    href="/register"
+                    style={{
+                        backgroundColor: '#FFFFFF',
+                        color: '#2D6A5A',
+                        fontFamily: 'Roboto, sans-serif',
+                        fontWeight: '700',
+                        fontSize: '16px',
+                        padding: '14px 36px',
+                        borderRadius: '10px',
+                        textDecoration: 'none',
+                    }}
+                >
+                    Créer mon compte
+                </Link>
+            </section>
+            {/* FOOTER */}
+            <footer style={{
+                backgroundColor: '#FFFFFF',
+                padding: '24px 10%',
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+                borderTop: '1px solid #E5E5E5',
+            }}>
+                <img
+                    src="/Cowork'In Circular Logo.png"
+                    alt="Cowork'In"
+                    style={{
+                        height: '36px',
+                        width: 'auto',
+                    }}
+                />
+
+                <p style={{
+                    fontFamily: 'Roboto, sans-serif',
+                    fontWeight: '300',
+                    fontSize: '13px',
+                    color: '#888888',
+                    margin: '0',
+                }}>
+                    © 2026 Groupe 6 Projet Annuel— Tous droits réservés
+                </p>
+            </footer>
 
         </div>
+
 
 
 
