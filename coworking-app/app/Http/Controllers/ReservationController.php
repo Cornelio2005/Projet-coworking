@@ -71,11 +71,11 @@ class ReservationController extends Controller
         // une erreur 404 automatiquement s'il n'existe pas.
 
         $totalPrice = match($validated['type']) {
-            'hourly'   => $space->price_per_hour,
+            'heure'   => $space->price_par_heure,
             // Pour une réservation horaire, le prix
             // est simplement le tarif à l'heure.
 
-            'half_day' => $space->price_per_half_day,
+            'demi-journee' => $space->price_par_demi_journee,
             // Pour une demi-journée, on utilise
             // le tarif demi-journée.
         };
@@ -83,8 +83,8 @@ class ReservationController extends Controller
         Reservation::create([
             'user_id'        => auth()->id(),
             'space_id'       => $validated['space_id'],
-            'start_datetime' => $start,
-            'end_datetime'   => $end,
+            'start_time'     => $start,
+            'end_time'       => $end,
             'type'           => $validated['type'],
             'status'         => 'pending',
             'total_price'    => $totalPrice,
