@@ -13,6 +13,12 @@ return new class extends Migration
     {
         Schema::create('spaces', function (Blueprint $table) {
             $table->id();
+            $table->string('name');
+            $table->string('type');
+            $table->integer('capacity');
+            $table->decimal('price_par_heure', 8, 2);
+            $table->text('description')->nullable();
+            $table->boolean('is_available')->default(true);
             $table->timestamps();
         });
     }

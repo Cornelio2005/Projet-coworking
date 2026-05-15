@@ -35,7 +35,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
     // une simple connexion.
 
     Route::get('/dashboard', function () {
-        return Inertia::render('Dashboard');
+        return Inertia::render('Dashboard',
+    [
+        'auth'=> ['user' => auth()->user()]
+    ]);
     })->name('dashboard');
 
     // --- PROFIL (routes Breeze — on les garde) ---
@@ -77,7 +80,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
 // Double protection : auth + admin middleware.
 // -----------------------------------------------
 
-Route::middleware(['auth', 'admin'])->group(function () {
+Route::middleware(['auth', 'role:admin,manager'])->group(function () {
     // Ces routes nécessitent d'être connecté ET
     // d'avoir le rôle admin.
 
