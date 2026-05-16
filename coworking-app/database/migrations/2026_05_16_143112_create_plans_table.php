@@ -11,15 +11,15 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('spaces', function (Blueprint $table) {
+        Schema::create('plans', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->string('type');
-            $table->integer('capacity');
-            $table->decimal('price_par_heure', 8, 2);
-            $table->decimal('price_par_demi_journee', 8, 2)->nullable();
             $table->text('description')->nullable();
-            $table->boolean('is_available')->default(true);
+            $table->decimal('prix_mensuel', 8, 2);
+            $table->integer('quota_heures')->nullable();
+            $table->boolean('acces_salles_reunion')->default(false);
+            $table->integer('tarif_reduit_pourcentage')->default(0);
+            $table->boolean('is_active')->default(true);
             $table->timestamps();
         });
     }
@@ -29,6 +29,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('spaces');
+        Schema::dropIfExists('plans');
     }
 };

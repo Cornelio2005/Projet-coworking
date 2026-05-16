@@ -1,4 +1,5 @@
 import { Head, Link, router } from '@inertiajs/react';
+import { CalendarDays, Building2, Euro, ClipboardList, Plus, Star, ArrowRight, LogOut } from 'lucide-react';
 
 const fontLink = document.createElement('link');
 fontLink.href = 'https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700;800&family=Roboto:wght@300;400;500&display=swap';
@@ -7,7 +8,7 @@ document.head.appendChild(fontLink);
 
 export default function Dashboard({ auth }) {
     const user = auth.user;
-    const role = user.role; // 'admin' | 'manager' | 'member' | 'client'
+    const role = user.role;
 
     const handleLogout = () => {
         router.post('/logout');
@@ -30,14 +31,8 @@ export default function Dashboard({ auth }) {
                 alignItems: 'center',
                 boxShadow: '0 2px 8px rgba(0,0,0,0.06)',
             }}>
-                {/* Logo */}
-                <img
-                    src="/logo.png"
-                    alt="Cowork'In"
-                    style={{ height: '42px', width: 'auto' }}
-                />
+                <img src="/logo.png" alt="Cowork'In" style={{ height: '42px', width: 'auto' }} />
 
-                {/* Infos utilisateur + déconnexion */}
                 <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
                     <span style={{
                         fontFamily: 'Roboto, sans-serif',
@@ -47,7 +42,6 @@ export default function Dashboard({ auth }) {
                         {user.name}
                     </span>
 
-                    {/* Badge rôle */}
                     <span style={{
                         backgroundColor: '#E0F2FE',
                         color: '#2D6A5A',
@@ -72,8 +66,12 @@ export default function Dashboard({ auth }) {
                             padding: '6px 16px',
                             borderRadius: '8px',
                             cursor: 'pointer',
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '6px',
                         }}
                     >
+                        <LogOut size={14} />
                         Déconnexion
                     </button>
                 </div>
@@ -81,7 +79,6 @@ export default function Dashboard({ auth }) {
 
             {/* CONTENU PRINCIPAL */}
             <main style={{ padding: '48px 10%' }}>
-                {/* Message de bienvenue */}
                 <h1 style={{
                     fontFamily: 'Montserrat, sans-serif',
                     fontWeight: '800',
@@ -89,7 +86,7 @@ export default function Dashboard({ auth }) {
                     color: '#2D6A5A',
                     marginBottom: '8px',
                 }}>
-                    Bonjour, {user.name}
+                    Bonjour, {user.name} 👋
                 </h1>
                 <p style={{
                     fontFamily: 'Roboto, sans-serif',
@@ -103,10 +100,10 @@ export default function Dashboard({ auth }) {
                     {role === 'member' && 'Tableau de bord membre'}
                     {role === 'client' && 'Tableau de bord client'}
                 </p>
+
                 {/* VUE ADMIN */}
                 {role === 'admin' && (
                     <div>
-                        {/* Stats globales */}
                         <div style={{
                             display: 'grid',
                             gridTemplateColumns: 'repeat(3, 1fr)',
@@ -114,16 +111,16 @@ export default function Dashboard({ auth }) {
                             marginBottom: '40px',
                         }}>
                             {[
-                                { label: 'Réservations aujourd\'hui', value: '—', icon: '📅', color: '#E0F2FE' },
-                                { label: 'Espaces disponibles', value: '—', icon: '🏢', color: '#FCE7F3' },
-                                { label: 'Revenus du mois', value: '—', icon: '💶', color: '#E0F2FE' },
+                                { label: 'Réservations aujourd\'hui', value: '—', icon: <CalendarDays size={28} color="#2D6A5A" />, color: '#E0F2FE' },
+                                { label: 'Espaces disponibles', value: '—', icon: <Building2 size={28} color="#2D6A5A" />, color: '#FCE7F3' },
+                                { label: 'Revenus du mois', value: '—', icon: <Euro size={28} color="#2D6A5A" />, color: '#E0F2FE' },
                             ].map((stat, i) => (
                                 <div key={i} style={{
                                     backgroundColor: stat.color,
                                     borderRadius: '16px',
                                     padding: '28px 24px',
                                 }}>
-                                    <div style={{ fontSize: '32px', marginBottom: '12px' }}>{stat.icon}</div>
+                                    <div style={{ marginBottom: '12px' }}>{stat.icon}</div>
                                     <div style={{
                                         fontFamily: 'Montserrat, sans-serif',
                                         fontWeight: '800',
@@ -145,7 +142,6 @@ export default function Dashboard({ auth }) {
                             ))}
                         </div>
 
-                        {/* Raccourcis admin */}
                         <h2 style={{
                             fontFamily: 'Montserrat, sans-serif',
                             fontWeight: '700',
@@ -162,9 +158,9 @@ export default function Dashboard({ auth }) {
                             gap: '16px',
                         }}>
                             {[
-                                { label: 'Gérer les espaces', href: '/spaces', icon: '🏢' },
-                                { label: 'Toutes les réservations', href: '/reservations', icon: '📋' },
-                                { label: 'Créer un espace', href: '/spaces/create', icon: '➕' },
+                                { label: 'Gérer les espaces', href: '/spaces', icon: <Building2 size={24} color="#2D6A5A" /> },
+                                { label: 'Toutes les réservations', href: '/reservations', icon: <ClipboardList size={24} color="#2D6A5A" /> },
+                                { label: 'Créer un espace', href: '/spaces/create', icon: <Plus size={24} color="#2D6A5A" /> },
                             ].map((action, i) => (
                                 <Link key={i} href={action.href} style={{
                                     backgroundColor: '#FFFFFF',
@@ -176,7 +172,7 @@ export default function Dashboard({ auth }) {
                                     textDecoration: 'none',
                                     boxShadow: '0 2px 8px rgba(0,0,0,0.05)',
                                 }}>
-                                    <span style={{ fontSize: '28px' }}>{action.icon}</span>
+                                    {action.icon}
                                     <span style={{
                                         fontFamily: 'Roboto, sans-serif',
                                         fontWeight: '500',
@@ -190,10 +186,10 @@ export default function Dashboard({ auth }) {
                         </div>
                     </div>
                 )}
+
                 {/* VUE MANAGER */}
                 {role === 'manager' && (
                     <div>
-                        {/* Stats */}
                         <div style={{
                             display: 'grid',
                             gridTemplateColumns: 'repeat(2, 1fr)',
@@ -201,15 +197,15 @@ export default function Dashboard({ auth }) {
                             marginBottom: '40px',
                         }}>
                             {[
-                                { label: 'Réservations aujourd\'hui', value: '—', icon: '📅', color: '#E0F2FE' },
-                                { label: 'Espaces disponibles', value: '—', icon: '🏢', color: '#FCE7F3' },
+                                { label: 'Réservations aujourd\'hui', value: '—', icon: <CalendarDays size={28} color="#2D6A5A" />, color: '#E0F2FE' },
+                                { label: 'Espaces disponibles', value: '—', icon: <Building2 size={28} color="#2D6A5A" />, color: '#FCE7F3' },
                             ].map((stat, i) => (
                                 <div key={i} style={{
                                     backgroundColor: stat.color,
                                     borderRadius: '16px',
                                     padding: '28px 24px',
                                 }}>
-                                    <div style={{ fontSize: '32px', marginBottom: '12px' }}>{stat.icon}</div>
+                                    <div style={{ marginBottom: '12px' }}>{stat.icon}</div>
                                     <div style={{
                                         fontFamily: 'Montserrat, sans-serif',
                                         fontWeight: '800',
@@ -231,7 +227,6 @@ export default function Dashboard({ auth }) {
                             ))}
                         </div>
 
-                        {/* Raccourcis manager */}
                         <h2 style={{
                             fontFamily: 'Montserrat, sans-serif',
                             fontWeight: '700',
@@ -248,8 +243,8 @@ export default function Dashboard({ auth }) {
                             gap: '16px',
                         }}>
                             {[
-                                { label: 'Gérer les espaces', href: '/spaces', icon: '🏢' },
-                                { label: 'Voir les réservations', href: '/reservations', icon: '📋' },
+                                { label: 'Gérer les espaces', href: '/spaces', icon: <Building2 size={24} color="#2D6A5A" /> },
+                                { label: 'Voir les réservations', href: '/reservations', icon: <ClipboardList size={24} color="#2D6A5A" /> },
                             ].map((action, i) => (
                                 <Link key={i} href={action.href} style={{
                                     backgroundColor: '#FFFFFF',
@@ -261,7 +256,7 @@ export default function Dashboard({ auth }) {
                                     textDecoration: 'none',
                                     boxShadow: '0 2px 8px rgba(0,0,0,0.05)',
                                 }}>
-                                    <span style={{ fontSize: '28px' }}>{action.icon}</span>
+                                    {action.icon}
                                     <span style={{
                                         fontFamily: 'Roboto, sans-serif',
                                         fontWeight: '500',
@@ -279,7 +274,6 @@ export default function Dashboard({ auth }) {
                 {/* VUE MEMBER */}
                 {role === 'member' && (
                     <div>
-                        {/* Statut abonnement */}
                         <div style={{
                             backgroundColor: '#E0F2FE',
                             borderRadius: '16px',
@@ -289,7 +283,7 @@ export default function Dashboard({ auth }) {
                             alignItems: 'center',
                             gap: '20px',
                         }}>
-                            <span style={{ fontSize: '40px' }}>⭐</span>
+                            <Star size={40} color="#2D6A5A" />
                             <div>
                                 <div style={{
                                     fontFamily: 'Montserrat, sans-serif',
@@ -311,7 +305,6 @@ export default function Dashboard({ auth }) {
                             </div>
                         </div>
 
-                        {/* Raccourcis member */}
                         <h2 style={{
                             fontFamily: 'Montserrat, sans-serif',
                             fontWeight: '700',
@@ -328,8 +321,8 @@ export default function Dashboard({ auth }) {
                             gap: '16px',
                         }}>
                             {[
-                                { label: 'Réserver un espace', href: '/reservations/create', icon: '📅' },
-                                { label: 'Mes réservations', href: '/reservations', icon: '📋' },
+                                { label: 'Réserver un espace', href: '/reservations/create', icon: <CalendarDays size={24} color="#2D6A5A" /> },
+                                { label: 'Mes réservations', href: '/reservations', icon: <ClipboardList size={24} color="#2D6A5A" /> },
                             ].map((action, i) => (
                                 <Link key={i} href={action.href} style={{
                                     backgroundColor: '#FFFFFF',
@@ -341,7 +334,7 @@ export default function Dashboard({ auth }) {
                                     textDecoration: 'none',
                                     boxShadow: '0 2px 8px rgba(0,0,0,0.05)',
                                 }}>
-                                    <span style={{ fontSize: '28px' }}>{action.icon}</span>
+                                    {action.icon}
                                     <span style={{
                                         fontFamily: 'Roboto, sans-serif',
                                         fontWeight: '500',
@@ -359,7 +352,6 @@ export default function Dashboard({ auth }) {
                 {/* VUE CLIENT */}
                 {role === 'client' && (
                     <div>
-                        {/* Bannière CTA */}
                         <div style={{
                             backgroundColor: '#2D6A5A',
                             borderRadius: '16px',
@@ -398,12 +390,15 @@ export default function Dashboard({ auth }) {
                                 borderRadius: '10px',
                                 textDecoration: 'none',
                                 whiteSpace: 'nowrap',
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: '8px',
                             }}>
                                 Réserver maintenant
+                                <ArrowRight size={16} />
                             </Link>
                         </div>
 
-                        {/* Raccourcis client */}
                         <h2 style={{
                             fontFamily: 'Montserrat, sans-serif',
                             fontWeight: '700',
@@ -420,8 +415,8 @@ export default function Dashboard({ auth }) {
                             gap: '16px',
                         }}>
                             {[
-                                { label: 'Mes réservations', href: '/reservations', icon: '📋' },
-                                { label: 'Consulter les espaces', href: '/spaces', icon: '🏢' },
+                                { label: 'Mes réservations', href: '/reservations', icon: <ClipboardList size={24} color="#2D6A5A" /> },
+                                { label: 'Consulter les espaces', href: '/spaces', icon: <Building2 size={24} color="#2D6A5A" /> },
                             ].map((action, i) => (
                                 <Link key={i} href={action.href} style={{
                                     backgroundColor: '#FFFFFF',
@@ -433,7 +428,7 @@ export default function Dashboard({ auth }) {
                                     textDecoration: 'none',
                                     boxShadow: '0 2px 8px rgba(0,0,0,0.05)',
                                 }}>
-                                    <span style={{ fontSize: '28px' }}>{action.icon}</span>
+                                    {action.icon}
                                     <span style={{
                                         fontFamily: 'Roboto, sans-serif',
                                         fontWeight: '500',
@@ -447,10 +442,6 @@ export default function Dashboard({ auth }) {
                         </div>
                     </div>
                 )}
-
-
-
-
             </main>
         </div>
     );

@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
+use App\Models\Space;
 
 class SpaceController extends Controller
 {
@@ -20,20 +22,27 @@ class SpaceController extends Controller
     }
 
     public function store(Request $request)
-    {
-        $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'type' => 'required|string',
-            'capacity' => 'required|integer|min:1',
-            'price_par_heure' => 'required|numeric|min:0',
-            'description' => 'nullable|string',
-            'is_available' => 'boolean',
-        ]);
+{
+    $validated = $request->validate([
+        'name'                   => 'required|string|max:255',
+        'description'            => 'required|string',
+        'type'                   => 'required|in:bureau_individuel,bureau_partage,salle_reunion,espace_detente',
+        'capacity'               => 'required|integer|min:1',
+        'price_par_heure'        => 'required|numeric|min:0',
+        'price_par_demi_journee' => 'required|numeric|min:0',
+        'is_available'           => 'boolean',
+        'image'                  => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
+    ]);
 
-        \App\Models\Space::create($validated);
-
-        return redirect()->route('spaces.index')->with('success', 'Espace créé avec succès.');
+    if ($request->hasFile('image')) {
+        $validated['image'] = $request->file('image')->store('spaces', 'public');
     }
+
+    Space::create($validated);
+
+    return redirect()->route('spaces.index')
+        ->with('success', 'Espace créé avec succès !');
+}
 
     public function edit(\App\Models\Space $space)
     {

@@ -72,13 +72,13 @@ class ReservationController extends Controller
 
         $totalPrice = match($validated['type']) {
             'heure'   => $space->price_par_heure,
-            // Pour une réservation horaire, le prix
-            // est simplement le tarif à l'heure.
-
-            'demi-journee' => $space->price_par_demi_journee,
-            // Pour une demi-journée, on utilise
-            // le tarif demi-journée.
+            'demi-journee' => $space->price_par_demi_journee ?? ($space->price_par_heure * 4),
         };
+
+        $reduction = auth()->user()->getReductionTarif();
+        if ($reduction > 0) {
+            $totalPrice = $totalPrice * (1 - ($reduction / 100));
+        }
 
         Reservation::create([
             'user_id'        => auth()->id(),

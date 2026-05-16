@@ -11,6 +11,7 @@ class Space extends Model
         'type',
         'capacity',
         'price_par_heure',
+        'price_par_demi_journee',
         'description',
         'is_available',
     ];

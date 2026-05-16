@@ -110,3 +110,12 @@ Route::middleware(['auth', 'role:admin,manager'])->group(function () {
 // Routes d'authentification générées par Breeze :
 // /login, /register, /logout, /forgot-password...
 require __DIR__.'/auth.php';
+
+Route::post('/test-upload', function (\Illuminate\Http\Request $request) {
+    file_put_contents(storage_path('logs/test-upload.log'), json_encode([
+        'all' => $request->all(),
+        'files' => $request->allFiles(),
+        'has_image' => $request->hasFile('image')
+    ]));
+    return response()->json(['success' => true]);
+})->withoutMiddleware([\Illuminate\Foundation\Http\Middleware\VerifyCsrfToken::class]);

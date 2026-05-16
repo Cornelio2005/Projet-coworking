@@ -1,4 +1,5 @@
 import { Link } from '@inertiajs/react';
+import { CalendarDays, Building2, Euro, ClipboardList, Plus, Star, ArrowRight, LogOut, CheckCircle } from 'lucide-react';
 
 const fontLink = document.createElement('link');
 fontLink.href = 'https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700;800&family=Roboto:wght@300;400;500&display=swap';
@@ -231,19 +232,19 @@ export default function Welcome({ canLogin, canRegister }) {
                 }}>
                     {[
                         {
-                            icon: '📅',
+                            icon: <CalendarDays size={24} color="#2D6A5A" />,
                             title: 'Réservation simple',
                             desc: 'Réservez un poste ou une salle en quelques clics, par heure ou demi-journée.',
                             color: '#E0F2FE',
                         },
                         {
-                            icon: '✅',
+                            icon: <CheckCircle size={24} color="#2D6A5A" />,
                             title: 'Disponibilités en temps réel',
                             desc: 'Consultez instantanément les créneaux libres et évitez les doublons.',
                             color: '#FCE7F3',
                         },
                         {
-                            icon: '🧾',
+                            icon: <Euro size={24} color="#2D6A5A" />,
                             title: 'Facturation automatique',
                             desc: 'Recevez votre facture PDF par e-mail dès que votre réservation est confirmée.',
                             color: '#E0F2FE',

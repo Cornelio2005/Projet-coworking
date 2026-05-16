@@ -67,4 +67,28 @@ class User extends Authenticatable
     {
         return $this->role === 'client';
     }
+
+    public function abonnements()
+    {
+        return $this->hasMany(Abonnement::class);
+    }
+
+    public function abonnementActif()
+    {
+        return $this->hasOne(Abonnement::class)->where('statut', 'actif')->latest('date_debut');
+    }
+
+    public function hasAbonnementActif()
+    {
+        return $this->abonnementActif()->exists();
+    }
+
+    public function getReductionTarif()
+    {
+        $abonnement = $this->abonnementActif;
+        if ($abonnement && $abonnement->plan) {
+            return $abonnement->plan->tarif_reduit_pourcentage;
+        }
+        return 0;
+    }
 }
