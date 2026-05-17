@@ -27,15 +27,15 @@ class ReservationController extends Controller
         ]);
     }
 
-    public function create()
-    {
-        $spaces = Space::where('is_available', true)
-        ->get();
+    public function create(Request $request)
+{
+    $space = Space::findOrFail($request->query('space_id'));
 
-        return Inertia::render('Reservations/Create', [
-            'spaces' => $spaces,
-        ]);
-    }
+    return Inertia::render('Reservations/Create', [
+        'space' => $space,
+        'auth'  => ['user' => auth()->user()->load('abonnementActif.plan')],
+    ]);
+}
 
     public function store(Request $request)
     {

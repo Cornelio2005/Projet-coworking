@@ -6,6 +6,7 @@ use App\Http\Controllers\ReservationController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
+
 // On importe tous les controllers nécessaires.
 // ProfileController vient de Breeze — on le garde.
 
@@ -52,6 +53,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     // --- ESPACES (lecture seule pour les clients) ---
     Route::get('/spaces', [SpaceController::class, 'index'])
         ->name('spaces.index');
+
     // Un client peut consulter les espaces
     // disponibles pour faire une réservation.
 
@@ -79,14 +81,15 @@ Route::middleware(['auth', 'verified'])->group(function () {
 // ROUTES ADMIN UNIQUEMENT
 // Double protection : auth + admin middleware.
 // -----------------------------------------------
-
-Route::middleware(['auth', 'role:admin,manager'])->group(function () {
+Route::middleware(['auth','verified', 'role:admin,manager'])->group(function () {
     // Ces routes nécessitent d'être connecté ET
     // d'avoir le rôle admin.
 
     // --- GESTION DES ESPACES (CRUD admin) ---
     Route::get('/spaces/create', [SpaceController::class, 'create'])
         ->name('spaces.create');
+    Route::get('/spaces/{space}', [SpaceController::class, 'show'])
+    ->name('spaces.show');
 
     Route::post('/spaces', [SpaceController::class, 'store'])
         ->name('spaces.store');

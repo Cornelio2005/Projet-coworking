@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use App\Models\Space;
+use Inertia\Inertia;
 
 class SpaceController extends Controller
 {
@@ -72,4 +73,17 @@ class SpaceController extends Controller
         $space->delete();
         return redirect()->route('spaces.index')->with('success', 'Espace supprimé.');
     }
+    public function show(Space $space)
+{
+    $reservations = $space->reservations()
+        ->with('user')
+        ->whereIn('status', ['pending', 'confirmed'])
+        ->orderBy('start_time', 'asc')
+        ->get();
+
+    return Inertia::render('Spaces/Show', [
+        'space' => $space,
+        'reservations' => $reservations,
+    ]);
+}
 }

@@ -45,7 +45,6 @@ export default function Index({ spaces }) {
                 <Link href="/dashboard">
                     <img src="/logo.png" alt="Cowork'In" style={{ height: '42px', width: 'auto' }} />
                 </Link>
-
                 <Link href="/dashboard" style={{
                     display: 'flex',
                     alignItems: 'center',
@@ -62,8 +61,6 @@ export default function Index({ spaces }) {
 
             {/* CONTENU */}
             <main style={{ padding: '48px 10%' }}>
-
-                {/* En-tête */}
                 <div style={{
                     display: 'flex',
                     justifyContent: 'space-between',
@@ -110,7 +107,6 @@ export default function Index({ spaces }) {
                     )}
                 </div>
 
-                {/* Grille des espaces */}
                 {spaces.length === 0 ? (
                     <div style={{
                         backgroundColor: '#FFFFFF',
@@ -118,7 +114,6 @@ export default function Index({ spaces }) {
                         padding: '48px',
                         textAlign: 'center',
                         color: '#888888',
-                        fontFamily: 'Roboto, sans-serif',
                     }}>
                         Aucun espace disponible pour le moment.
                     </div>
@@ -152,6 +147,7 @@ export default function Index({ spaces }) {
                                         {typeLabels[space.type] || space.type}
                                     </span>
                                 </div>
+
                                 {/* Image */}
                                 {space.image ? (
                                     <img
@@ -188,7 +184,6 @@ export default function Index({ spaces }) {
                                     }}>
                                         {space.name}
                                     </h3>
-
                                     <p style={{
                                         fontFamily: 'Roboto, sans-serif',
                                         fontWeight: '300',
@@ -201,7 +196,6 @@ export default function Index({ spaces }) {
                                         {space.description}
                                     </p>
 
-                                    {/* Capacité + Prix */}
                                     <div style={{
                                         display: 'flex',
                                         justifyContent: 'space-between',
@@ -219,7 +213,6 @@ export default function Index({ spaces }) {
                                         </span>
                                     </div>
 
-                                    {/* Disponibilité */}
                                     <div style={{
                                         display: 'inline-flex',
                                         alignItems: 'center',
@@ -240,23 +233,45 @@ export default function Index({ spaces }) {
 
                                     {/* Actions */}
                                     <div style={{ display: 'flex', gap: '8px' }}>
-                                        <Link
-                                            href={`/reservations/create?space_id=${space.id}`}
-                                            style={{
-                                                flex: 1,
-                                                backgroundColor: '#2D6A5A',
-                                                color: '#FFFFFF',
-                                                fontFamily: 'Roboto, sans-serif',
-                                                fontWeight: '500',
-                                                fontSize: '13px',
-                                                padding: '10px',
-                                                borderRadius: '8px',
-                                                textDecoration: 'none',
-                                                textAlign: 'center',
-                                            }}
-                                        >
-                                            Réserver
-                                        </Link>
+                                        {!canManage && space.is_available && (
+                                            <Link
+                                                href={`/reservations/create?space_id=${space.id}`}
+                                                style={{
+                                                    flex: 1,
+                                                    backgroundColor: '#2D6A5A',
+                                                    color: '#FFFFFF',
+                                                    fontFamily: 'Roboto, sans-serif',
+                                                    fontWeight: '500',
+                                                    fontSize: '13px',
+                                                    padding: '10px',
+                                                    borderRadius: '8px',
+                                                    textDecoration: 'none',
+                                                    textAlign: 'center',
+                                                }}
+                                            >
+                                                Réserver
+                                            </Link>
+                                        )}
+
+                                        {canManage && (
+                                            <Link
+                                                href={`/spaces/${space.id}`}
+                                                style={{
+                                                    flex: 1,
+                                                    backgroundColor: '#E0F2FE',
+                                                    color: '#2D6A5A',
+                                                    fontFamily: 'Roboto, sans-serif',
+                                                    fontWeight: '500',
+                                                    fontSize: '13px',
+                                                    padding: '10px',
+                                                    borderRadius: '8px',
+                                                    textDecoration: 'none',
+                                                    textAlign: 'center',
+                                                }}
+                                            >
+                                                Voir les réservations
+                                            </Link>
+                                        )}
 
                                         {canManage && (
                                             <Link

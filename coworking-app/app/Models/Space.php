@@ -14,5 +14,10 @@ class Space extends Model
         'price_par_demi_journee',
         'description',
         'is_available',
+        'image',
     ];
+    public function reservations()
+{
+    return $this->hasMany(Reservation::class);
+}
 }
