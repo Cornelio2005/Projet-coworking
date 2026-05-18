@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Str;
 
 class Reservation extends Model
 {
@@ -17,13 +18,28 @@ class Reservation extends Model
         'type',
         'status',
         'total_price',
+        'qr_token',
+        // On ajoute qr_token en fillable pour
+        // qu'il puisse être enregistré en base.
     ];
 
     protected $casts = [
-        'start_time' => 'datetime',
-        'end_time' => 'datetime',
+        'start_time'  => 'datetime',
+        'end_time'    => 'datetime',
         'total_price' => 'decimal:2',
     ];
+
+    protected static function boot(): void
+    {
+        parent::boot();
+
+        static::creating(function ($reservation) {
+            // creating() se déclenche automatiquement
+            // juste avant chaque INSERT en base.
+            // On génère un UUID unique comme token QR.
+            $reservation->qr_token = Str::uuid();
+        });
+    }
 
     public function user()
     {
@@ -34,29 +50,20 @@ class Reservation extends Model
     {
         return $this->belongsTo(Space::class);
     }
+
     public static function hasConflict($spaceId, $startTime, $endTime, $excludeId = null): bool
     {
-
         return self::where('space_id', $spaceId)
-
             ->where('status', '!=', 'cancelled')
-
             ->when($excludeId, fn($q) => $q->where('id', '!=', $excludeId))
-
             ->where(function ($query) use ($startTime, $endTime) {
                 $query->whereBetween('start_time', [$startTime, $endTime])
-                ->orWhereBetween('end_time', [$startTime, $endTime])
-
-                ->orWhere(function ($q) use ($startTime, $endTime) {
-                    $q->where('start_time', '<=', $startTime)
-                      ->where('end_time', '>=', $endTime);
-
-                });
+                    ->orWhereBetween('end_time', [$startTime, $endTime])
+                    ->orWhere(function ($q) use ($startTime, $endTime) {
+                        $q->where('start_time', '<=', $startTime)
+                          ->where('end_time', '>=', $endTime);
+                    });
             })
             ->exists();
     }
-
-    
-
-    
 }

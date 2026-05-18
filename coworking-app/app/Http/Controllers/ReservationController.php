@@ -11,21 +11,23 @@ use Inertia\Inertia;
 class ReservationController extends Controller
 {
     public function index()
-    {
-
-        $reservations = auth()->user()->isAdmin()
-            ? Reservation::with(['user', 'space'])->latest()->get()
-            
-            : Reservation::with('space')
-
+{
+    $reservations = (auth()->user()->isAdmin() || auth()->user()->isManager())
+        // Admin ET manager voient toutes les réservations
+        ? Reservation::with(['user', 'space'])->latest()->get()
+        // Client et member ne voient que les leurs
+        : Reservation::with('space')
             ->where('user_id', auth()->id())
             ->latest()
             ->get();
 
-        return Inertia::render('Reservations/Index',[
-            'reservations' => $reservations,
-        ]);
-    }
+    return Inertia::render('Reservations/Index', [
+        'reservations' => $reservations,
+        'auth'         => ['user' => auth()->user()],
+        // On passe auth pour adapter l'affichage
+        // selon le rôle dans le composant React.
+    ]);
+}
 
     public function create(Request $request)
 {
