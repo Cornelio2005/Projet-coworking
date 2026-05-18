@@ -37,62 +37,65 @@ class ReservationController extends Controller
     ]);
 }
 
-    public function store(Request $request)
-    {
-        $validated = $request->validate([
-            'space_id' => 'required|exists:spaces,id',
-            'start_datetime' => 'required|date|after:now',
-            'type' => 'required|in:heure,demi-journee',
+   public function store(Request $request)
+{
+    $validated = $request->validate([
+        'space_id'       => 'required|exists:spaces,id',
+        'start_datetime' => 'required|date|after:now',
+        'end_datetime'   => 'required_if:type,heure|nullable|date|after:start_datetime',
+        // required_if:type,heure → obligatoire seulement en mode heure
+        // after:start_datetime → l'heure de fin doit être après le début
+        'type'           => 'required|in:heure,demi-journee',
+    ]);
+
+    $start = Carbon::parse($validated['start_datetime']);
+    // Carbon::parse() convertit la string de date
+    // en objet Carbon manipulable.
+
+    // En mode heure : on utilise end_datetime envoyé par le client
+    // En mode demi-journee : le serveur calcule (matin 8h→12h, après-midi 14h→18h)
+    $end = $validated['type'] === 'heure'
+        ? Carbon::parse($validated['end_datetime'])
+        : $start->copy()->addHours(4);
+    // copy() évite de modifier l'objet $start original.
+
+    if (Reservation::hasConflict($validated['space_id'], $start, $end)) {
+        return back()->withErrors([
+            'start_datetime' => 'Ce créneau est déjà réservé pour cet espace.',
+            // back() redirige vers le formulaire.
+            // withErrors() renvoie l'erreur au composant
+            // React qui peut l'afficher sous le champ.
         ]);
-        
-        $start = Carbon::parse($validated['start_datetime']);
-        // Carbon::parse() convertit la string de date
-        // en objet Carbon manipulable.
-
-        $end = match($validated['type']) {
-            'heure'   => $start->copy()->addHour(),
-            // addHour() ajoute 1 heure à la date de début
-            // copy() évite de modifier l'objet $start original.
-
-            'demi-journee' => $start->copy()->addHours(4),
-            // Une demi-journée = 4 heures.
-        };
-              if (Reservation::hasConflict($validated['space_id'], $start, $end)) {
-            return back()->withErrors([
-                'start_datetime' => 'Ce créneau est déjà réservé pour cet espace.',
-                // back() redirige vers le formulaire.
-                // withErrors() renvoie l'erreur au composant
-                // React qui peut l'afficher sous le champ.
-            ]);
-        }
-
-              $space = Space::findOrFail($validated['space_id']);
-        // findOrFail() récupère l'espace ou retourne
-        // une erreur 404 automatiquement s'il n'existe pas.
-
-        $totalPrice = match($validated['type']) {
-            'heure'   => $space->price_par_heure,
-            'demi-journee' => $space->price_par_demi_journee ?? ($space->price_par_heure * 4),
-        };
-
-        $reduction = auth()->user()->getReductionTarif();
-        if ($reduction > 0) {
-            $totalPrice = $totalPrice * (1 - ($reduction / 100));
-        }
-
-        Reservation::create([
-            'user_id'        => auth()->id(),
-            'space_id'       => $validated['space_id'],
-            'start_time'     => $start,
-            'end_time'       => $end,
-            'type'           => $validated['type'],
-            'status'         => 'pending',
-            'total_price'    => $totalPrice,
-        ]);
-
-        return redirect()->route('reservations.index')
-            ->with('success', 'Réservation effectuée avec succès !');
     }
+
+    $space = Space::findOrFail($validated['space_id']);
+    // findOrFail() récupère l'espace ou retourne
+    // une erreur 404 automatiquement s'il n'existe pas.
+
+    $totalPrice = match($validated['type']) {
+        'heure'        => $space->price_par_heure * $start->diffInHours($end),
+        // On multiplie le tarif horaire par la durée réelle
+        'demi-journee' => $space->price_par_demi_journee ?? ($space->price_par_heure * 4),
+    };
+
+    $reduction = auth()->user()->getReductionTarif();
+    if ($reduction > 0) {
+        $totalPrice = $totalPrice * (1 - ($reduction / 100));
+    }
+
+    Reservation::create([
+        'user_id'     => auth()->id(),
+        'space_id'    => $validated['space_id'],
+        'start_time'  => $start,
+        'end_time'    => $end,
+        'type'        => $validated['type'],
+        'status'      => 'pending',
+        'total_price' => $totalPrice,
+    ]);
+
+    return redirect()->route('reservations.index')
+        ->with('success', 'Réservation effectuée avec succès !');
+}
 
     public function cancel(Reservation $reservation)
     {

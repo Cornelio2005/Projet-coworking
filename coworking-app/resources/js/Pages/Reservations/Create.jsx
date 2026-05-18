@@ -13,12 +13,17 @@ export default function Create({ space, auth }) {
 
     const [type, setType] = useState('heure');
 
+
     const { data, setData, post, processing, errors } = useForm({
         space_id: space.id,
         start_datetime: '',
         end_datetime: '',
         type: 'heure',
     });
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        post(route('reservations.store'));
+    };
 
     return (
         <>
@@ -361,16 +366,53 @@ export default function Create({ space, auth }) {
                                     color: '#2D6A5A',
                                 }}>
                                     {(() => {
-                                        const base = type === 'heure'
-                                            ? parseFloat(space.price_par_heure)
-                                            : parseFloat(space.price_par_demi_journee);
+                                        let base = 0;
+
+                                        if (type === 'heure') {
+                                            const start = data.start_datetime.split('T')[1];
+                                            const end = data.end_datetime.split('T')[1];
+
+                                            // Si les deux heures sont renseignées, on calcule la durée
+                                            if (start && end) {
+                                                const [sh, sm] = start.split(':').map(Number);
+                                                const [eh, em] = end.split(':').map(Number);
+                                                const dureeHeures = (eh * 60 + em - (sh * 60 + sm)) / 60;
+
+                                                // Durée négative ou nulle = créneau invalide, on affiche 0
+                                                base = dureeHeures > 0 ? dureeHeures * parseFloat(space.price_par_heure) : 0;
+                                            }
+                                        } else {
+                                            base = parseFloat(space.price_par_demi_journee);
+                                        }
+
                                         const reduction = auth.user.abonnement_actif
                                             ? auth.user.abonnement_actif.plan.tarif_reduit_pourcentage
                                             : 0;
+
                                         return (base * (1 - reduction / 100)).toFixed(2);
                                     })()}€
                                 </span>
                             </div>
+                            <button
+                                type="button"
+                                onClick={handleSubmit}
+                                disabled={processing}
+                                style={{
+                                    width: '100%',
+                                    padding: '14px',
+                                    backgroundColor: processing ? '#aaa' : '#2D6A5A',
+                                    color: '#FFFFFF',
+                                    border: 'none',
+                                    borderRadius: '10px',
+                                    fontSize: '16px',
+                                    fontFamily: 'Montserrat, sans-serif',
+                                    fontWeight: '700',
+                                    cursor: processing ? 'not-allowed' : 'pointer',
+                                    transition: 'background-color 0.2s',
+                                }}
+                            >
+                                {processing ? 'Envoi en cours...' : 'Confirmer la réservation'}
+                            </button>
                         </div>
                     </div>
 

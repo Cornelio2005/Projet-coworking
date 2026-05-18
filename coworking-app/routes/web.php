@@ -31,15 +31,11 @@ Route::get('/', function () {
 // -----------------------------------------------
 
 Route::middleware(['auth', 'verified'])->group(function () {
-    // 'verified' vérifie que l'email est confirmé.
-    // On regroupe ici toutes les routes nécessitant
-    // une simple connexion.
 
     Route::get('/dashboard', function () {
-        return Inertia::render('Dashboard',
-    [
-        'auth'=> ['user' => auth()->user()]
-    ]);
+        return Inertia::render('Dashboard', [
+            'auth' => ['user' => auth()->user()]
+        ]);
     })->name('dashboard');
 
     // --- PROFIL (routes Breeze — on les garde) ---
@@ -50,46 +46,48 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])
         ->name('profile.destroy');
 
-    // --- ESPACES (lecture seule pour les clients) ---
+    // --- ESPACES (lecture seule pour tous) ---
     Route::get('/spaces', [SpaceController::class, 'index'])
         ->name('spaces.index');
-
     // Un client peut consulter les espaces
     // disponibles pour faire une réservation.
 
-    // --- RÉSERVATIONS (clients et admins) ---
+    // --- RÉSERVATIONS (tous les rôles connectés) ---
     Route::get('/reservations', [ReservationController::class, 'index'])
         ->name('reservations.index');
     // Le controller filtre automatiquement selon
     // le rôle : admin voit tout, client voit le sien.
 
-    Route::get('/reservations/create', [ReservationController::class, 'create'])
-        ->name('reservations.create');
-    // Formulaire de nouvelle réservation.
-
-    Route::post('/reservations', [ReservationController::class, 'store'])
-        ->name('reservations.store');
-    // POST car on envoie des données au serveur.
-
     Route::patch('/reservations/{reservation}/cancel', [ReservationController::class, 'cancel'])
         ->name('reservations.cancel');
     // PATCH car on modifie partiellement la
     // réservation (uniquement le statut).
+
+    // --- RÉSERVATIONS (clients et membres uniquement) ---
+    Route::middleware(['role:client,member'])->group(function () {
+        Route::get('/reservations/create', [ReservationController::class, 'create'])
+            ->name('reservations.create');
+        // Formulaire de nouvelle réservation.
+
+        Route::post('/reservations', [ReservationController::class, 'store'])
+            ->name('reservations.store');
+        // On protège aussi le store — un admin ne doit
+        // pas pouvoir poster une réservation non plus.
+    });
 });
 
 // -----------------------------------------------
-// ROUTES ADMIN UNIQUEMENT
-// Double protection : auth + admin middleware.
+// ROUTES ADMIN / MANAGER UNIQUEMENT
+// Double protection : auth + role middleware.
 // -----------------------------------------------
-Route::middleware(['auth','verified', 'role:admin,manager'])->group(function () {
-    // Ces routes nécessitent d'être connecté ET
-    // d'avoir le rôle admin.
+Route::middleware(['auth', 'verified', 'role:admin,manager'])->group(function () {
 
     // --- GESTION DES ESPACES (CRUD admin) ---
     Route::get('/spaces/create', [SpaceController::class, 'create'])
         ->name('spaces.create');
+
     Route::get('/spaces/{space}', [SpaceController::class, 'show'])
-    ->name('spaces.show');
+        ->name('spaces.show');
 
     Route::post('/spaces', [SpaceController::class, 'store'])
         ->name('spaces.store');
@@ -104,10 +102,10 @@ Route::middleware(['auth','verified', 'role:admin,manager'])->group(function () 
     Route::delete('/spaces/{space}', [SpaceController::class, 'destroy'])
         ->name('spaces.destroy');
 
-    // --- CONFIRMATION RÉSERVATION (admin) ---
+    // --- CONFIRMATION RÉSERVATION (admin/manager) ---
     Route::patch('/reservations/{reservation}/confirm', [ReservationController::class, 'confirm'])
         ->name('reservations.confirm');
-    // Seul l'admin peut confirmer une réservation.
+    // Seul l'admin/manager peut confirmer une réservation.
 });
 
 // Routes d'authentification générées par Breeze :
@@ -116,8 +114,8 @@ require __DIR__.'/auth.php';
 
 Route::post('/test-upload', function (\Illuminate\Http\Request $request) {
     file_put_contents(storage_path('logs/test-upload.log'), json_encode([
-        'all' => $request->all(),
-        'files' => $request->allFiles(),
+        'all'       => $request->all(),
+        'files'     => $request->allFiles(),
         'has_image' => $request->hasFile('image')
     ]));
     return response()->json(['success' => true]);
