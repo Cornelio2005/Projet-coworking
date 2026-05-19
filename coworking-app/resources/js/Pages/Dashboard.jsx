@@ -86,7 +86,7 @@ export default function Dashboard({ auth }) {
                     color: '#2D6A5A',
                     marginBottom: '8px',
                 }}>
-                    Bonjour, {user.name} 👋
+                    Bonjour, {user.name}
                 </h1>
                 <p style={{
                     fontFamily: 'Roboto, sans-serif',
@@ -101,7 +101,9 @@ export default function Dashboard({ auth }) {
                     {role === 'client' && 'Tableau de bord client'}
                 </p>
 
-                {/* VUE ADMIN */}
+                {/* ─────────────────────────────────────────
+                    VUE ADMIN
+                ───────────────────────────────────────── */}
                 {role === 'admin' && (
                     <div>
                         <div style={{
@@ -111,7 +113,7 @@ export default function Dashboard({ auth }) {
                             marginBottom: '40px',
                         }}>
                             {[
-                                { label: 'Réservations aujourd\'hui', value: '—', icon: <CalendarDays size={28} color="#2D6A5A" />, color: '#E0F2FE' },
+                                { label: "Réservations aujourd'hui", value: '—', icon: <CalendarDays size={28} color="#2D6A5A" />, color: '#E0F2FE' },
                                 { label: 'Espaces disponibles', value: '—', icon: <Building2 size={28} color="#2D6A5A" />, color: '#FCE7F3' },
                                 { label: 'Revenus du mois', value: '—', icon: <Euro size={28} color="#2D6A5A" />, color: '#E0F2FE' },
                             ].map((stat, i) => (
@@ -187,7 +189,9 @@ export default function Dashboard({ auth }) {
                     </div>
                 )}
 
-                {/* VUE MANAGER */}
+                {/* ─────────────────────────────────────────
+                    VUE MANAGER
+                ───────────────────────────────────────── */}
                 {role === 'manager' && (
                     <div>
                         <div style={{
@@ -197,7 +201,7 @@ export default function Dashboard({ auth }) {
                             marginBottom: '40px',
                         }}>
                             {[
-                                { label: 'Réservations aujourd\'hui', value: '—', icon: <CalendarDays size={28} color="#2D6A5A" />, color: '#E0F2FE' },
+                                { label: "Réservations aujourd'hui", value: '—', icon: <CalendarDays size={28} color="#2D6A5A" />, color: '#E0F2FE' },
                                 { label: 'Espaces disponibles', value: '—', icon: <Building2 size={28} color="#2D6A5A" />, color: '#FCE7F3' },
                             ].map((stat, i) => (
                                 <div key={i} style={{
@@ -271,7 +275,9 @@ export default function Dashboard({ auth }) {
                     </div>
                 )}
 
-                {/* VUE MEMBER */}
+                {/* ─────────────────────────────────────────
+                    VUE MEMBER
+                ───────────────────────────────────────── */}
                 {role === 'member' && (
                     <div>
                         <div style={{
@@ -300,7 +306,7 @@ export default function Dashboard({ auth }) {
                                     fontSize: '14px',
                                     color: '#555555',
                                 }}>
-                                    Vous bénéficiez d'un accès prioritaire à tous les espaces.
+                                    Vous bénéficiez de réductions exclusives sur toutes vos réservations.
                                 </div>
                             </div>
                         </div>
@@ -317,12 +323,13 @@ export default function Dashboard({ auth }) {
 
                         <div style={{
                             display: 'grid',
-                            gridTemplateColumns: 'repeat(2, 1fr)',
+                            gridTemplateColumns: 'repeat(3, 1fr)',
                             gap: '16px',
                         }}>
                             {[
                                 { label: 'Réserver un espace', href: '/reservations/create', icon: <CalendarDays size={24} color="#2D6A5A" /> },
                                 { label: 'Mes réservations', href: '/reservations', icon: <ClipboardList size={24} color="#2D6A5A" /> },
+                                { label: 'Mon abonnement', href: '/abonnements', icon: <Star size={24} color="#2D6A5A" /> },
                             ].map((action, i) => (
                                 <Link key={i} href={action.href} style={{
                                     backgroundColor: '#FFFFFF',
@@ -349,54 +356,115 @@ export default function Dashboard({ auth }) {
                     </div>
                 )}
 
-                {/* VUE CLIENT */}
+                {/* ─────────────────────────────────────────
+                    VUE CLIENT
+                ───────────────────────────────────────── */}
                 {role === 'client' && (
                     <div>
+                        {/* DEUX CARTES CÔTE À CÔTE */}
                         <div style={{
-                            backgroundColor: '#2D6A5A',
-                            borderRadius: '16px',
-                            padding: '32px 28px',
+                            display: 'grid',
+                            gridTemplateColumns: 'repeat(2, 1fr)',
+                            gap: '20px',
                             marginBottom: '40px',
-                            display: 'flex',
-                            justifyContent: 'space-between',
-                            alignItems: 'center',
                         }}>
-                            <div>
-                                <div style={{
-                                    fontFamily: 'Montserrat, sans-serif',
-                                    fontWeight: '700',
-                                    fontSize: '20px',
-                                    color: '#FFFFFF',
-                                    marginBottom: '6px',
-                                }}>
-                                    Besoin d'un espace ?
-                                </div>
-                                <div style={{
-                                    fontFamily: 'Roboto, sans-serif',
-                                    fontWeight: '300',
-                                    fontSize: '14px',
-                                    color: 'rgba(255,255,255,0.8)',
-                                }}>
-                                    Réservez un poste, un bureau ou une salle en quelques clics.
-                                </div>
-                            </div>
-                            <Link href="/reservations/create" style={{
-                                backgroundColor: '#FFFFFF',
-                                color: '#2D6A5A',
-                                fontFamily: 'Roboto, sans-serif',
-                                fontWeight: '700',
-                                fontSize: '14px',
-                                padding: '12px 24px',
-                                borderRadius: '10px',
-                                textDecoration: 'none',
-                                whiteSpace: 'nowrap',
+                            {/* CARTE RÉSERVATION */}
+                            <div style={{
+                                backgroundColor: '#2D6A5A',
+                                borderRadius: '16px',
+                                padding: '32px 28px',
                                 display: 'flex',
-                                alignItems: 'center',
-                                gap: '8px',
+                                flexDirection: 'column',
+                                justifyContent: 'space-between',
+                                gap: '20px',
                             }}>
-                                Réserver maintenant
-                                <ArrowRight size={16} />
-                            </Link>
+                                <div>
+                                    <div style={{
+                                        fontFamily: 'Montserrat, sans-serif',
+                                        fontWeight: '700',
+                                        fontSize: '20px',
+                                        color: '#FFFFFF',
+                                        marginBottom: '6px',
+                                    }}>
+                                        Besoin d'un espace ?
+                                    </div>
+                                    <div style={{
+                                        fontFamily: 'Roboto, sans-serif',
+                                        fontWeight: '300',
+                                        fontSize: '14px',
+                                        color: 'rgba(255,255,255,0.8)',
+                                    }}>
+                                        Réservez un poste, un bureau ou une salle en quelques clics.
+                                    </div>
+                                </div>
+                                <Link href="/reservations/create" style={{
+                                    backgroundColor: '#FFFFFF',
+                                    color: '#2D6A5A',
+                                    fontFamily: 'Roboto, sans-serif',
+                                    fontWeight: '700',
+                                    fontSize: '14px',
+                                    padding: '12px 24px',
+                                    borderRadius: '10px',
+                                    textDecoration: 'none',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    gap: '8px',
+                                    alignSelf: 'flex-start',
+                                }}>
+                                    Réserver maintenant
+                                    <ArrowRight size={16} />
+                                </Link>
+                            </div>
+
+                            {/* CARTE ABONNEMENT */}
+                            <div style={{
+                                backgroundColor: '#FCE7F3',
+                                borderRadius: '16px',
+                                padding: '32px 28px',
+                                display: 'flex',
+                                flexDirection: 'column',
+                                justifyContent: 'space-between',
+                                gap: '20px',
+                                border: '1px solid #FBCFE8',
+                            }}>
+                                <div>
+                                    <div style={{
+                                        fontFamily: 'Montserrat, sans-serif',
+                                        fontWeight: '700',
+                                        fontSize: '20px',
+                                        color: '#9D174D',
+                                        marginBottom: '6px',
+                                    }}>
+                                        Passez membre
+                                    </div>
+                                    <div style={{
+                                        fontFamily: 'Roboto, sans-serif',
+                                        fontWeight: '400',
+                                        fontSize: '14px',
+                                        color: '#831843',
+                                        lineHeight: '1.5',
+                                    }}>
+                                        Économisez jusqu'à -30% sur vos réservations grâce à nos abonnements.
+                                    </div>
+                                </div>
+                                <Link href="/abonnements" style={{
+                                    backgroundColor: '#9D174D',
+                                    color: '#FFFFFF',
+                                    fontFamily: 'Roboto, sans-serif',
+                                    fontWeight: '700',
+                                    fontSize: '14px',
+                                    padding: '12px 24px',
+                                    borderRadius: '10px',
+                                    textDecoration: 'none',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    gap: '8px',
+                                    alignSelf: 'flex-start',
+                                }}>
+                                    Voir les abonnements
+                                    <Star size={14} />
+                                </Link>
+                            </div>
                         </div>
 
                         <h2 style={{

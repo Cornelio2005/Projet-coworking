@@ -9,13 +9,38 @@ use Inertia\Inertia;
 
 class SpaceController extends Controller
 {
-    public function index()
-    {
-        $spaces = \App\Models\Space::all();
-        return \Inertia\Inertia::render('Spaces/Index', [
-            'spaces' => $spaces,
-        ]);
+    public function index(Request $request)
+{
+    $query = \App\Models\Space::query();
+
+    // Filtre par type d'espace
+    if ($request->filled('type')) {
+        $query->where('type', $request->type);
     }
+
+    // Filtre par capacité minimale
+    if ($request->filled('capacite_min')) {
+        $query->where('capacity', '>=', (int) $request->capacite_min);
+    }
+
+    // Filtre par date — on exclut les espaces qui ont
+    // déjà une réservation pending ou confirmed ce jour-là
+    if ($request->filled('date')) {
+        $query->whereDoesntHave('reservations', function ($q) use ($request) {
+            $q->whereDate('start_time', $request->date)
+              ->whereIn('status', ['pending', 'confirmed']);
+        });
+    }
+
+    $spaces = $query->get();
+
+    return \Inertia\Inertia::render('Spaces/Index', [
+        'spaces'  => $spaces,
+        'filters' => $request->only(['type', 'capacite_min', 'date']),
+        // On renvoie les filtres actifs pour pré-remplir
+        // les champs du formulaire côté React.
+    ]);
+}
 
     public function create()
     {

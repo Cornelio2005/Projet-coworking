@@ -5,6 +5,7 @@ use App\Http\Controllers\SpaceController;
 use App\Http\Controllers\ReservationController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\AbonnementController;
 use Inertia\Inertia;
 
 // On importe tous les controllers nécessaires.
@@ -73,6 +74,11 @@ Route::middleware(['auth', 'verified'])->group(function () {
             ->name('reservations.store');
         // On protège aussi le store — un admin ne doit
         // pas pouvoir poster une réservation non plus.
+         // Abonnements
+    Route::get('/abonnements', [AbonnementController::class, 'index'])
+        ->name('abonnements.index');
+    Route::post('/abonnements', [AbonnementController::class, 'store'])
+        ->name('abonnements.store');
     });
 });
 
