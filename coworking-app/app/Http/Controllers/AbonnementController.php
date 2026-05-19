@@ -11,21 +11,18 @@ use Carbon\Carbon;
 class AbonnementController extends Controller
 {
     public function index()
-    {
-        $plans = Plan::where('is_active', true)->get();
-        // On récupère uniquement les plans actifs
-        // pour ne pas afficher des plans désactivés.
+{
+    $plans = Plan::where('is_active', true)->get();
 
-        $abonnementActif = auth()->user()->abonnementActif();
-        // On récupère l'abonnement actif de l'utilisateur
-        // pour savoir s'il est déjà abonné et à quel plan.
+    $abonnementActif = auth()->user()->abonnementActif()->with('plan')->first();
 
-        return Inertia::render('Abonnements/Index', [
-            'plans'           => $plans,
-            'abonnementActif' => $abonnementActif,
-            'auth'            => ['user' => auth()->user()],
-        ]);
-    }
+    return Inertia::render('Abonnements/Index', [
+        'plans'           => $plans,
+        'abonnementActif' => $abonnementActif,
+        'auth'            => ['user' => auth()->user()],
+    ]);
+}
+
 
     public function store(Request $request)
     {

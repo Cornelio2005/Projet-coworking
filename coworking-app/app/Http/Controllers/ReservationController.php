@@ -29,8 +29,13 @@ class ReservationController extends Controller
     ]);
 }
 
-    public function create(Request $request)
+public function create(Request $request)
 {
+    // Si space_id absent ou invalide → redirige vers la liste des espaces
+    if (!$request->query('space_id')) {
+        return redirect()->route('spaces.index');
+    }
+
     $space = Space::findOrFail($request->query('space_id'));
 
     return Inertia::render('Reservations/Create', [
