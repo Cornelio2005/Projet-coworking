@@ -80,13 +80,24 @@ class SpaceController extends Controller
     public function update(Request $request, \App\Models\Space $space)
     {
         $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'type' => 'required|string',
-            'capacity' => 'required|integer|min:1',
-            'price_par_heure' => 'required|numeric|min:0',
-            'description' => 'nullable|string',
-            'is_available' => 'boolean',
+            'name'                   => 'required|string|max:255',
+            'description'            => 'required|string',
+            'type'                   => 'required|in:bureau_individuel,bureau_partage,salle_reunion,espace_detente',
+            'capacity'               => 'required|integer|min:1',
+            'price_par_heure'        => 'required|numeric|min:0',
+            'price_par_demi_journee' => 'required|numeric|min:0',
+            'is_available'           => 'boolean',
+            'image'                  => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
         ]);
+
+        if ($request->hasFile('image')) {
+            if ($space->image) {
+                Storage::disk('public')->delete($space->image);
+            }
+            $validated['image'] = $request->file('image')->store('spaces', 'public');
+        } else {
+            unset($validated['image']);
+        }
 
         $space->update($validated);
 
@@ -95,6 +106,10 @@ class SpaceController extends Controller
 
     public function destroy(\App\Models\Space $space)
     {
+        if ($space->image) {
+            Storage::disk('public')->delete($space->image);
+        }
+        
         $space->delete();
         return redirect()->route('spaces.index')->with('success', 'Espace supprimé.');
     }
