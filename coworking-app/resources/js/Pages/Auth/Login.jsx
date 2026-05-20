@@ -1,12 +1,12 @@
+import { useState } from 'react';
 import InputError from '@/Components/InputError';
 import { Head, Link, useForm } from '@inertiajs/react';
-
-const fontLink = document.createElement('link');
-fontLink.href = 'https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700;800&family=Roboto:wght@300;400;500&display=swap';
-fontLink.rel = 'stylesheet';
-document.head.appendChild(fontLink);
+import { LogIn } from 'lucide-react';
 
 export default function Login({ status, canResetPassword }) {
+
+    const [hoverBtn, setHoverBtn] = useState(false);
+
     const { data, setData, post, processing, errors, reset } = useForm({
         email: '',
         password: '',
@@ -21,201 +21,238 @@ export default function Login({ status, canResetPassword }) {
     };
 
     return (
-        <div style={{
-            minHeight: '100vh',
-            backgroundColor: '#F5F0EA',
-            fontFamily: 'Roboto, sans-serif',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-        }}>
+        <>
             <Head title="Connexion — Cowork'In" />
-
             <div style={{
-                backgroundColor: '#FFFFFF',
-                borderRadius: '16px',
-                padding: '48px 40px',
-                width: '100%',
-                maxWidth: '440px',
-                boxShadow: '0 4px 24px rgba(0,0,0,0.07)',
+                minHeight: '100vh',
+                backgroundColor: '#F5F0EA',
+                fontFamily: 'Roboto, sans-serif',
+                display: 'flex',
             }}>
-                {/* Logo */}
-                <div style={{ textAlign: 'center', marginBottom: '32px' }}>
+                {/* GAUCHE — Branding */}
+                <div style={{
+                    width: '420px',
+                    flexShrink: 0,
+                    backgroundColor: '#2D6A5A',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    padding: '48px',
+                    gap: '24px',
+                }}>
                     <img
-                        src="/Cowork'In Circular Logo.png"
+                        src="/logo.png"
                         alt="Cowork'In"
-                        style={{ height: '56px', width: 'auto', margin: '0 auto' }}
+                        style={{ height: '56px', filter: 'brightness(0) invert(1)' }}
                     />
+                    <h2 style={{
+                        fontFamily: 'Montserrat, sans-serif',
+                        fontWeight: '800',
+                        fontSize: '26px',
+                        color: '#FFFFFF',
+                        textAlign: 'center',
+                        lineHeight: '1.3',
+                        margin: 0,
+                    }}>
+                        Bon retour<br />parmi nous
+                    </h2>
+                    <p style={{
+                        fontSize: '14px',
+                        color: 'rgba(255,255,255,0.7)',
+                        textAlign: 'center',
+                        lineHeight: '1.6',
+                        margin: 0,
+                    }}>
+                        Connectez-vous pour accéder à vos réservations et à votre espace personnel.
+                    </p>
                 </div>
 
-                {/* Titre */}
-                <h1 style={{
-                    fontFamily: 'Montserrat, sans-serif',
-                    fontWeight: '800',
-                    fontSize: '24px',
-                    color: '#2D6A5A',
-                    marginBottom: '8px',
-                    textAlign: 'center',
+                {/* DROITE — Formulaire */}
+                <div style={{
+                    flex: 1,
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    padding: '48px',
                 }}>
-                    Connectez-vous
-                </h1>
-
-                {/* Message de statut (ex: mot de passe réinitialisé) */}
-                {status && (
-                    <div style={{
-                        backgroundColor: '#E0F2FE',
-                        color: '#2D6A5A',
-                        borderRadius: '8px',
-                        padding: '10px 16px',
-                        fontSize: '13px',
-                        marginBottom: '20px',
-                    }}>
-                        {status}
-                    </div>
-                )}
-
-                <form onSubmit={submit}>
-                    {/* Email */}
-                    <div style={{ marginBottom: '20px' }}>
-                        <label style={{
-                            display: 'block',
-                            fontFamily: 'Roboto, sans-serif',
-                            fontWeight: '500',
+                    <div style={{ width: '100%', maxWidth: '460px' }}>
+                        <h1 style={{
+                            fontFamily: 'Montserrat, sans-serif',
+                            fontWeight: '800',
+                            fontSize: '24px',
+                            color: '#2D6A5A',
+                            marginBottom: '8px',
+                        }}>
+                            Se connecter
+                        </h1>
+                        <p style={{
                             fontSize: '14px',
-                            color: '#333333',
-                            marginBottom: '6px',
+                            color: '#888',
+                            marginBottom: '32px',
                         }}>
-                            Adresse e-mail
-                        </label>
-                        <input
-                            type="email"
-                            value={data.email}
-                            onChange={(e) => setData('email', e.target.value)}
-                            autoComplete="username"
-                            autoFocus
-                            style={{
-                                width: '100%',
-                                padding: '10px 14px',
-                                borderRadius: '8px',
-                                border: '1.5px solid #E5E5E5',
-                                fontFamily: 'Roboto, sans-serif',
-                                fontSize: '14px',
-                                outline: 'none',
-                                boxSizing: 'border-box',
-                                color: '#333333',
-                            }}
-                        />
-                        <InputError message={errors.email} className="mt-2" />
-                    </div>
-
-                    {/* Mot de passe */}
-                    <div style={{ marginBottom: '16px' }}>
-                        <label style={{
-                            display: 'block',
-                            fontFamily: 'Roboto, sans-serif',
-                            fontWeight: '500',
-                            fontSize: '14px',
-                            color: '#333333',
-                            marginBottom: '6px',
-                        }}>
-                            Mot de passe
-                        </label>
-                        <input
-                            type="password"
-                            value={data.password}
-                            onChange={(e) => setData('password', e.target.value)}
-                            autoComplete="current-password"
-                            style={{
-                                width: '100%',
-                                padding: '10px 14px',
-                                borderRadius: '8px',
-                                border: '1.5px solid #E5E5E5',
-                                fontFamily: 'Roboto, sans-serif',
-                                fontSize: '14px',
-                                outline: 'none',
-                                boxSizing: 'border-box',
-                                color: '#333333',
-                            }}
-                        />
-                        <InputError message={errors.password} className="mt-2" />
-                    </div>
-
-                    {/* Se souvenir + Mot de passe oublié */}
-                    <div style={{
-                        display: 'flex',
-                        justifyContent: 'space-between',
-                        alignItems: 'center',
-                        marginBottom: '28px',
-                    }}>
-                        <label style={{
-                            display: 'flex',
-                            alignItems: 'center',
-                            gap: '8px',
-                            fontSize: '13px',
-                            color: '#666666',
-                            cursor: 'pointer',
-                        }}>
-                            <input
-                                type="checkbox"
-                                checked={data.remember}
-                                onChange={(e) => setData('remember', e.target.checked)}
-                            />
-                            Se souvenir de moi
-                        </label>
-
-                        {canResetPassword && (
+                            Pas encore de compte ?{' '}
                             <Link
-                                href={route('password.request')}
-                                style={{
-                                    fontSize: '13px',
+                                href={route('register')}
+                                style={{ color: '#2D6A5A', fontWeight: '500', textDecoration: 'none' }}
+                            >
+                                S'inscrire
+                            </Link>
+                        </p>
+
+                        {/* Message statut */}
+                        {status && (
+                            <div style={{
+                                backgroundColor: '#E0F2FE',
+                                color: '#2D6A5A',
+                                borderRadius: '8px',
+                                padding: '10px 16px',
+                                fontSize: '13px',
+                                marginBottom: '20px',
+                            }}>
+                                {status}
+                            </div>
+                        )}
+
+                        <form onSubmit={submit}>
+
+                            {/* EMAIL */}
+                            <div style={{ marginBottom: '20px' }}>
+                                <label style={{
+                                    display: 'block',
+                                    fontSize: '14px',
+                                    fontWeight: '500',
                                     color: '#2D6A5A',
-                                    textDecoration: 'underline',
-                                    fontFamily: 'Roboto, sans-serif',
+                                    marginBottom: '8px',
+                                }}>
+                                    Adresse e-mail
+                                </label>
+                                <input
+                                    type="email"
+                                    value={data.email}
+                                    onChange={e => setData('email', e.target.value)}
+                                    autoComplete="username"
+                                    autoFocus
+                                    required
+                                    placeholder="jean@exemple.fr"
+                                    style={{
+                                        width: '100%',
+                                        padding: '10px 14px',
+                                        borderRadius: '8px',
+                                        border: errors.email ? '1px solid #EF4444' : '1px solid #ddd',
+                                        fontSize: '14px',
+                                        fontFamily: 'Roboto, sans-serif',
+                                        boxSizing: 'border-box',
+                                        backgroundColor: '#FFFFFF',
+                                        outline: 'none',
+                                    }}
+                                />
+                                <InputError message={errors.email} />
+                            </div>
+
+                            {/* MOT DE PASSE */}
+                            <div style={{ marginBottom: '16px' }}>
+                                <label style={{
+                                    display: 'block',
+                                    fontSize: '14px',
+                                    fontWeight: '500',
+                                    color: '#2D6A5A',
+                                    marginBottom: '8px',
+                                }}>
+                                    Mot de passe
+                                </label>
+                                <input
+                                    type="password"
+                                    value={data.password}
+                                    onChange={e => setData('password', e.target.value)}
+                                    autoComplete="current-password"
+                                    required
+                                    placeholder="••••••••"
+                                    style={{
+                                        width: '100%',
+                                        padding: '10px 14px',
+                                        borderRadius: '8px',
+                                        border: errors.password ? '1px solid #EF4444' : '1px solid #ddd',
+                                        fontSize: '14px',
+                                        fontFamily: 'Roboto, sans-serif',
+                                        boxSizing: 'border-box',
+                                        backgroundColor: '#FFFFFF',
+                                        outline: 'none',
+                                    }}
+                                />
+                                <InputError message={errors.password} />
+                            </div>
+
+                            {/* SE SOUVENIR + MOT DE PASSE OUBLIÉ */}
+                            <div style={{
+                                display: 'flex',
+                                justifyContent: 'space-between',
+                                alignItems: 'center',
+                                marginBottom: '32px',
+                            }}>
+                                <label style={{
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    gap: '8px',
+                                    fontSize: '13px',
+                                    color: '#666',
+                                    cursor: 'pointer',
+                                }}>
+                                    <input
+                                        type="checkbox"
+                                        checked={data.remember}
+                                        onChange={e => setData('remember', e.target.checked)}
+                                    />
+                                    Se souvenir de moi
+                                </label>
+
+                                {canResetPassword && (
+                                    <Link
+                                        href={route('password.request')}
+                                        style={{
+                                            fontSize: '13px',
+                                            color: '#2D6A5A',
+                                            textDecoration: 'none',
+                                            fontWeight: '500',
+                                        }}
+                                    >
+                                        Mot de passe oublié ?
+                                    </Link>
+                                )}
+                            </div>
+
+                            {/* BOUTON */}
+                            <button
+                                type="submit"
+                                disabled={processing}
+                                onMouseEnter={() => setHoverBtn(true)}
+                                onMouseLeave={() => setHoverBtn(false)}
+                                style={{
+                                    width: '100%',
+                                    padding: '14px',
+                                    backgroundColor: processing ? '#aaa' : hoverBtn ? '#245a4c' : '#2D6A5A',
+                                    color: '#FFFFFF',
+                                    border: 'none',
+                                    borderRadius: '10px',
+                                    fontSize: '16px',
+                                    fontFamily: 'Montserrat, sans-serif',
+                                    fontWeight: '700',
+                                    cursor: processing ? 'not-allowed' : 'pointer',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    gap: '8px',
+                                    transition: 'background-color 0.2s',
+                                    boxShadow: hoverBtn && !processing ? '0 4px 16px rgba(45,106,90,0.3)' : 'none',
                                 }}
                             >
-                                Mot de passe oublié ?
-                            </Link>
-                        )}
+                                <LogIn size={18} />
+                                {processing ? 'Connexion...' : 'Se connecter'}
+                            </button>
+                        </form>
                     </div>
-
-                    {/* Bouton connexion */}
-                    <button
-                        type="submit"
-                        disabled={processing}
-                        style={{
-                            width: '100%',
-                            backgroundColor: processing ? '#88B8AF' : '#2D6A5A',
-                            color: '#FFFFFF',
-                            fontFamily: 'Roboto, sans-serif',
-                            fontWeight: '500',
-                            fontSize: '15px',
-                            padding: '12px',
-                            borderRadius: '10px',
-                            border: 'none',
-                            cursor: processing ? 'not-allowed' : 'pointer',
-                            marginBottom: '20px',
-                        }}
-                    >
-                        {processing ? 'Connexion...' : 'Se connecter'}
-                    </button>
-
-                    {/* Lien inscription */}
-                    <p style={{
-                        textAlign: 'center',
-                        fontSize: '13px',
-                        color: '#888888',
-                        fontFamily: 'Roboto, sans-serif',
-                    }}>
-                        Pas encore de compte ?{' '}
-                        <Link
-                            href={route('register')}
-                            style={{ color: '#2D6A5A', fontWeight: '500', textDecoration: 'underline' }}
-                        >
-                            S'inscrire
-                        </Link>
-                    </p>
-                </form>
+                </div>
             </div>
-        </div>
+        </>
     );
 }
