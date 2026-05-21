@@ -319,21 +319,8 @@ function ReservationCard({ reservation, isAdminOrManager, onShowQr }) {
                         {/* BOUTON CONFIRMER — admin/manager, statut pending uniquement */}
                         {isAdminOrManager && reservation.status === 'pending' && (
                             <button
-                                onClick={handleConfirm}
-                                style={{
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                    gap: '6px',
-                                    padding: '8px 16px',
-                                    backgroundColor: '#2D6A5A',
-                                    color: '#FFFFFF',
-                                    border: 'none',
-                                    borderRadius: '8px',
-                                    fontSize: '13px',
-                                    fontFamily: 'Roboto, sans-serif',
-                                    fontWeight: '500',
-                                    cursor: 'pointer',
-                                }}
+                                onClick={handleConfirm} className="display-flex align-items-center gap-6px padding-8px 16px background-color-2D6A5A color-FFFFFF border-none border-radius-8px font-size-13px font-family-Roboto, sans-serif font-weight-500 cursor-pointer"
+
                             >
                                 <CheckCircle size={15} />
                                 Confirmer
