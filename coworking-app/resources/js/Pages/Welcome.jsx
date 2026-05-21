@@ -1,8 +1,15 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Link } from '@inertiajs/react';
 import { CalendarDays, CheckCircle, Euro, QrCode, Star, ArrowRight, Zap, Briefcase, Building2 } from 'lucide-react';
 
 export default function Welcome({ canLogin, canRegister }) {
+
+    useEffect(() => {
+        const link = document.createElement('link');
+        link.href = 'https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700;800&family=Roboto:wght@300;400;500&display=swap';
+        link.rel = 'stylesheet';
+        document.head.appendChild(link);
+    }, []);
 
     // États hover pour les micro-interactions sur les boutons
     const [hoverCta1, setHoverCta1] = useState(false);
@@ -12,68 +19,33 @@ export default function Welcome({ canLogin, canRegister }) {
     const [hoverFinal, setHoverFinal] = useState(false);
 
     return (
-        <div style={{
-            minHeight: '100vh',
-            backgroundColor: '#F5F0EA',
-            fontFamily: 'Roboto, sans-serif',
-        }}>
+        <div className="min-h-screen bg-[#F5F0EA] font-['Roboto',sans-serif]">
 
             {/* ─────────────────────────────────────────
                 NAVBAR
             ───────────────────────────────────────── */}
-            <nav style={{
-                backgroundColor: '#FFFFFF',
-                padding: '16px 48px',
-                display: 'flex',
-                justifyContent: 'space-between',
-                alignItems: 'center',
-                boxShadow: '0 2px 8px rgba(0,0,0,0.06)',
-                position: 'sticky',
-                top: 0,
-                zIndex: 100,
-            }}>
+            <nav className="bg-white px-12 py-4 flex justify-between items-center shadow-[0_2px_8px_rgba(0,0,0,0.06)] sticky top-0 z-[100]">
                 <img
                     src="/logo.png"
                     alt="Cowork'In"
-                    style={{ height: '42px', width: 'auto' }}
+                    className="h-[42px] w-auto"
                 />
 
-                <div style={{ display: 'flex', alignItems: 'center', gap: '24px' }}>
-                    <a href="#espaces" style={{
-                        fontSize: '14px',
-                        color: '#555',
-                        textDecoration: 'none',
-                        fontWeight: '500',
-                    }}>
+                <div className="flex items-center gap-6">
+                    <a href="#espaces" className="text-sm text-[#555] no-underline font-medium">
                         Nos espaces
                     </a>
-                    <a href="#formules" style={{
-                        fontSize: '14px',
-                        color: '#555',
-                        textDecoration: 'none',
-                        fontWeight: '500',
-                    }}>
+                    <a href="#formules" className="text-sm text-[#555] no-underline font-medium">
                         Formules
                     </a>
 
                     {canLogin && (
-                        <div style={{ display: 'flex', gap: '10px' }}>
+                        <div className="flex gap-2.5">
                             <Link
                                 href="/login"
                                 onMouseEnter={() => setHoverLogin(true)}
                                 onMouseLeave={() => setHoverLogin(false)}
-                                style={{
-                                    padding: '8px 20px',
-                                    border: '2px solid #2D6A5A',
-                                    borderRadius: '8px',
-                                    color: '#2D6A5A',
-                                    fontWeight: '500',
-                                    textDecoration: 'none',
-                                    fontSize: '14px',
-                                    transition: 'all 0.2s ease',
-                                    backgroundColor: hoverLogin ? '#2D6A5A' : 'transparent',
-                                    ...(hoverLogin && { color: '#FFFFFF' }),
-                                }}
+                                className={`px-5 py-2 border-2 border-[#0080FF] rounded-lg font-medium no-underline text-sm transition-all duration-200 ${hoverLogin ? 'bg-[#0080FF] text-white' : 'bg-transparent text-[#0080FF]'}`}
                             >
                                 Se connecter
                             </Link>
@@ -83,17 +55,7 @@ export default function Welcome({ canLogin, canRegister }) {
                                     href="/register"
                                     onMouseEnter={() => setHoverRegister(true)}
                                     onMouseLeave={() => setHoverRegister(false)}
-                                    style={{
-                                        padding: '8px 20px',
-                                        backgroundColor: hoverRegister ? '#245a4c' : '#2D6A5A',
-                                        borderRadius: '8px',
-                                        color: '#FFFFFF',
-                                        fontWeight: '500',
-                                        textDecoration: 'none',
-                                        fontSize: '14px',
-                                        transition: 'all 0.2s ease',
-                                        boxShadow: hoverRegister ? '0 4px 16px rgba(45,106,90,0.35)' : 'none',
-                                    }}
+                                    className={`px-5 py-2 rounded-lg text-white font-medium no-underline text-sm transition-all duration-200 ${hoverRegister ? 'bg-[#245a4c] shadow-[0_4px_16px_rgba(45,106,90,0.35)]' : 'bg-[#2D6A5A] shadow-none'}`}
                                 >
                                     S'inscrire
                                 </Link>
@@ -106,123 +68,54 @@ export default function Welcome({ canLogin, canRegister }) {
             {/* ─────────────────────────────────────────
                 HERO
             ───────────────────────────────────────── */}
-            <section style={{
-                padding: '96px 10% 80px',
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'flex-start',
-            }}>
+            <section className="pt-24 px-[10%] pb-20 flex flex-col items-start">
                 {/* Badge */}
-                <div style={{
-                    backgroundColor: '#E0F2FE',
-                    color: '#2D6A5A',
-                    fontSize: '13px',
-                    fontWeight: '600',
-                    padding: '6px 16px',
-                    borderRadius: '999px',
-                    marginBottom: '24px',
-                    display: 'inline-flex',
-                    alignItems: 'center',
-                    gap: '6px',
-                }}>
+                <div className="bg-[#E0F2FE] text-[#2D6A5A] text-[13px] font-semibold px-4 py-1.5 rounded-full mb-6 inline-flex items-center gap-1.5">
                     <CheckCircle size={13} />
                     Espaces disponibles dès maintenant
                 </div>
 
-                <h1 style={{
-                    fontFamily: 'Montserrat, sans-serif',
-                    fontWeight: '800',
-                    fontSize: '56px',
-                    color: '#1a1a1a',
-                    lineHeight: '1.1',
-                    maxWidth: '680px',
-                    marginBottom: '24px',
-                }}>
+                <h1 className="font-['Montserrat',sans-serif] font-extrabold text-[56px] text-[#1a1a1a] leading-[1.1] max-w-[680px] mb-6">
                     Votre espace de travail,{' '}
-                    <span style={{ color: '#2D6A5A' }}>quand vous voulez.</span>
+                    <span className="text-[#2D6A5A]">quand vous voulez.</span>
                 </h1>
 
-                <p style={{
-                    fontWeight: '300',
-                    fontSize: '18px',
-                    color: '#555555',
-                    maxWidth: '500px',
-                    lineHeight: '1.7',
-                    marginBottom: '40px',
-                }}>
+                <p className="font-light text-[18px] text-[#555555] max-w-[500px] leading-[1.7] mb-10">
                     Réservez un poste, un bureau ou une salle en quelques clics. Accédez facilement et profitez de tous nos services.
                 </p>
 
-                <div style={{ display: 'flex', gap: '16px', flexWrap: 'wrap' }}>
+                <div className="flex gap-4 flex-wrap">
                     <Link
                         href="/register"
                         onMouseEnter={() => setHoverCta1(true)}
                         onMouseLeave={() => setHoverCta1(false)}
-                        style={{
-                            backgroundColor: hoverCta1 ? '#245a4c' : '#2D6A5A',
-                            color: '#FFFFFF',
-                            fontWeight: '600',
-                            fontSize: '15px',
-                            padding: '14px 32px',
-                            borderRadius: '10px',
-                            textDecoration: 'none',
-                            display: 'flex',
-                            alignItems: 'center',
-                            gap: '8px',
-                            transition: 'all 0.2s ease',
-                            boxShadow: hoverCta1 ? '0 6px 20px rgba(45,106,90,0.35)' : 'none',
-                        }}
+                        className={`bg-[#ff9d73] text-white font-semibold text-[15px] px-8 py-3.5 rounded-[10px] no-underline flex items-center gap-2 transition-all duration-200 ${hoverCta1 ? 'shadow-[0_6px_20px_rgba(45,106,90,0.35)]' : 'shadow-none'}`}
                     >
                         Réserver un espace
                         <ArrowRight size={16} />
                     </Link>
 
-
                     <a href="#espaces"
                         onMouseEnter={() => setHoverCta2(true)}
                         onMouseLeave={() => setHoverCta2(false)}
-                        style={{
-                            backgroundColor: hoverCta2 ? '#EAE5DF' : '#FFFFFF',
-                            color: '#2D6A5A',
-                            fontWeight: '600',
-                            fontSize: '15px',
-                            padding: '14px 32px',
-                            borderRadius: '10px',
-                            textDecoration: 'none',
-                            border: '2px solid #2D6A5A',
-                            transition: 'all 0.2s ease',
-                        }}
+                        className={`font-semibold text-[15px] px-8 py-3.5 rounded-[10px] no-underline border-2 border-[#2D6A5A] transition-all duration-200 ${hoverCta2 ? 'bg-[#EAE5DF] text-[#2D6A5A]' : 'bg-white text-[#2D6A5A]'}`}
                     >
                         Découvrir nos espaces
                     </a>
                 </div>
 
                 {/* Chiffres clés */}
-                <div style={{
-                    display: 'flex',
-                    gap: '48px',
-                    marginTop: '64px',
-                    flexWrap: 'wrap',
-                }}>
+                <div className="flex gap-12 mt-16 flex-wrap">
                     {[
                         { value: '4', label: 'Types d\'espaces' },
                         { value: '3', label: 'Formules d\'abonnement' },
                         { value: '100%', label: 'En ligne, 24h/24' },
                     ].map((stat, i) => (
                         <div key={i}>
-                            <div style={{
-                                fontFamily: 'Montserrat, sans-serif',
-                                fontWeight: '800',
-                                fontSize: '32px',
-                                color: '#2D6A5A',
-                            }}>
+                            <div className="font-['Montserrat',sans-serif] font-extrabold text-[32px] text-[#2D6A5A]">
                                 {stat.value}
                             </div>
-                            <div style={{
-                                fontSize: '13px',
-                                color: '#888',
-                                fontWeight: '400',
-                            }}>
+                            <div className="text-[13px] text-[#888] font-normal">
                                 {stat.label}
                             </div>
                         </div>
@@ -233,69 +126,32 @@ export default function Welcome({ canLogin, canRegister }) {
             {/* ─────────────────────────────────────────
                 GALERIE DES ESPACES
             ───────────────────────────────────────── */}
-            <section id="espaces" style={{
-                padding: '80px 10%',
-                backgroundColor: '#FFFFFF',
-            }}>
-                <div style={{ marginBottom: '40px' }}>
-                    <h2 style={{
-                        fontFamily: 'Montserrat, sans-serif',
-                        fontWeight: '800',
-                        fontSize: '34px',
-                        color: '#1a1a1a',
-                        marginBottom: '8px',
-                    }}>
+            <section id="espaces" className="py-20 px-[10%] bg-white">
+                <div className="mb-10">
+                    <h2 className="font-['Montserrat',sans-serif] font-extrabold text-[34px] text-[#1a1a1a] mb-2">
                         Nos espaces
                     </h2>
-                    <p style={{ fontSize: '15px', color: '#888', fontWeight: '300' }}>
+                    <p className="text-[15px] text-[#888] font-light">
                         Des environnements pensés pour votre productivité.
                     </p>
                 </div>
 
-                <div style={{
-                    display: 'grid',
-                    gridTemplateColumns: 'repeat(2, 1fr)',
-                    gap: '16px',
-                }}>
+                <div className="grid grid-cols-2 gap-4">
                     {[
                         { url: 'https://images.unsplash.com/photo-1497366216548-37526070297c?w=800&q=80', label: 'Open space' },
                         { url: 'https://images.unsplash.com/photo-1497366811353-6870744d04b2?w=800&q=80', label: 'Bureau privé' },
                         { url: 'https://images.unsplash.com/photo-1517502884422-41eaead166d4?w=800&q=80', label: 'Salle de conférence' },
                         { url: 'https://images.unsplash.com/photo-1527192491265-7e15c55b1ed2?w=800&q=80', label: 'Espace détente' },
                     ].map((photo, index) => (
-                        <div key={index} style={{
-                            position: 'relative',
-                            borderRadius: '14px',
-                            overflow: 'hidden',
-                        }}>
+                        <div key={index} className="relative rounded-[14px] overflow-hidden">
                             <img
                                 src={photo.url}
                                 alt={photo.label}
-                                style={{
-                                    width: '100%',
-                                    height: '260px',
-                                    objectFit: 'cover',
-                                    display: 'block',
-                                }}
+                                className="w-full h-[260px] object-cover block"
                             />
                             {/* Dégradé bas */}
-                            <div style={{
-                                position: 'absolute',
-                                bottom: 0,
-                                left: 0,
-                                right: 0,
-                                height: '80px',
-                                background: 'linear-gradient(transparent, rgba(0,0,0,0.45))',
-                            }} />
-                            <span style={{
-                                position: 'absolute',
-                                bottom: '16px',
-                                left: '16px',
-                                color: '#FFFFFF',
-                                fontFamily: 'Montserrat, sans-serif',
-                                fontWeight: '700',
-                                fontSize: '15px',
-                            }}>
+                            <div className="absolute bottom-0 left-0 right-0 h-[80px] bg-gradient-to-t from-[rgba(0,0,0,0.45)] to-transparent" />
+                            <span className="absolute bottom-4 left-4 text-white font-['Montserrat',sans-serif] font-bold text-[15px]">
                                 {photo.label}
                             </span>
                         </div>
@@ -306,161 +162,75 @@ export default function Welcome({ canLogin, canRegister }) {
             {/* ─────────────────────────────────────────
                 FORMULES & ABONNEMENTS
             ───────────────────────────────────────── */}
-            <section id="formules" style={{
-                padding: '80px 10%',
-                backgroundColor: '#F5F0EA',
-            }}>
-                <div style={{ marginBottom: '48px', textAlign: 'center' }}>
-                    <h2 style={{
-                        fontFamily: 'Montserrat, sans-serif',
-                        fontWeight: '800',
-                        fontSize: '34px',
-                        color: '#1a1a1a',
-                        marginBottom: '8px',
-                    }}>
+            <section id="formules" className="py-20 px-[10%] bg-[#F5F0EA]">
+                <div className="mb-12 text-center">
+                    <h2 className="font-['Montserrat',sans-serif] font-extrabold text-[34px] text-[#1a1a1a] mb-2">
                         Nos formules
                     </h2>
-                    <p style={{ fontSize: '15px', color: '#888', fontWeight: '300' }}>
+                    <p className="text-[15px] text-[#888] font-light">
                         Une offre adaptée à chaque usage, de l'occasionnel au résidentiel.
                     </p>
                 </div>
 
-                <div style={{
-                    display: 'grid',
-                    gridTemplateColumns: 'repeat(3, 1fr)',
-                    gap: '24px',
-                    alignItems: 'stretch',
-                }}>
+                <div className="grid grid-cols-3 gap-6 items-stretch">
                     {/* CARTE 1 — À la carte */}
-                    <div style={{
-                        backgroundColor: '#FFFFFF',
-                        borderRadius: '16px',
-                        padding: '36px 28px',
-                        display: 'flex',
-                        flexDirection: 'column',
-                        gap: '16px',
-                        boxShadow: '0 2px 12px rgba(0,0,0,0.06)',
-                    }}>
+                    <div className="bg-white rounded-2xl py-9 px-7 flex flex-col gap-4 shadow-[0_2px_12px_rgba(0,0,0,0.06)]">
                         <Zap size={28} color="#2D6A5A" />
                         <div>
-                            <h3 style={{
-                                fontFamily: 'Montserrat, sans-serif',
-                                fontWeight: '800',
-                                fontSize: '20px',
-                                color: '#1a1a1a',
-                                marginBottom: '4px',
-                            }}>
+                            <h3 className="font-['Montserrat',sans-serif] font-extrabold text-xl text-[#1a1a1a] mb-1">
                                 À la carte
                             </h3>
-                            <p style={{ fontSize: '13px', color: '#888', fontWeight: '300' }}>
+                            <p className="text-[13px] text-[#888] font-light">
                                 Pour un usage occasionnel
                             </p>
                         </div>
                         <div>
-                            <span style={{
-                                fontFamily: 'Montserrat, sans-serif',
-                                fontWeight: '800',
-                                fontSize: '32px',
-                                color: '#2D6A5A',
-                            }}>
+                            <span className="font-['Montserrat',sans-serif] font-extrabold text-[32px] text-[#2D6A5A]">
                                 dès 5€
                             </span>
-                            <span style={{ fontSize: '14px', color: '#888' }}> / heure</span>
+                            <span className="text-sm text-[#888]"> / heure</span>
                         </div>
-                        <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                        <ul className="list-none p-0 m-0 flex flex-col gap-2.5">
                             {[
                                 'Accès open space à l\'heure',
                                 'Réservation en ligne 24h/24',
                                 'Annulation flexible',
                                 'Badge QR Code à l\'entrée',
                             ].map((item, i) => (
-                                <li key={i} style={{
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                    gap: '8px',
-                                    fontSize: '14px',
-                                    color: '#444',
-                                }}>
+                                <li key={i} className="flex items-center gap-2 text-sm text-[#444]">
                                     <CheckCircle size={14} color="#2D6A5A" />
                                     {item}
                                 </li>
                             ))}
                         </ul>
-                        <Link href="/register" style={{
-                            marginTop: 'auto',
-                            padding: '12px',
-                            backgroundColor: '#F5F0EA',
-                            color: '#2D6A5A',
-                            border: 'none',
-                            borderRadius: '10px',
-                            fontSize: '14px',
-                            fontFamily: 'Montserrat, sans-serif',
-                            fontWeight: '700',
-                            cursor: 'pointer',
-                            textDecoration: 'none',
-                            textAlign: 'center',
-                            transition: 'all 0.2s ease',
-                        }}>
+                        <Link href="/register" className="mt-auto p-3 bg-[#F5F0EA] text-[#2D6A5A] border-none rounded-[10px] text-sm font-['Montserrat',sans-serif] font-bold cursor-pointer no-underline text-center transition-all duration-200">
                             Commencer
                         </Link>
                     </div>
 
                     {/* CARTE 2 — Abonnement (mise en avant) */}
-                    <div style={{
-                        backgroundColor: '#2D6A5A',
-                        borderRadius: '16px',
-                        padding: '36px 28px',
-                        display: 'flex',
-                        flexDirection: 'column',
-                        gap: '16px',
-                        boxShadow: '0 8px 32px rgba(45,106,90,0.3)',
-                        position: 'relative',
-                    }}>
+                    <div className="bg-[#2D6A5A] rounded-2xl py-9 px-7 flex flex-col gap-4 shadow-[0_8px_32px_rgba(45,106,90,0.3)] relative">
                         {/* Badge populaire */}
-                        <div style={{
-                            position: 'absolute',
-                            top: '-12px',
-                            left: '50%',
-                            transform: 'translateX(-50%)',
-                            backgroundColor: '#C4714B',
-                            color: '#FFFFFF',
-                            fontSize: '11px',
-                            fontWeight: '700',
-                            fontFamily: 'Montserrat, sans-serif',
-                            padding: '4px 14px',
-                            borderRadius: '999px',
-                            whiteSpace: 'nowrap',
-                        }}>
+                        <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-[#C4714B] text-white text-[11px] font-bold font-['Montserrat',sans-serif] px-3.5 py-1 rounded-full whitespace-nowrap">
                             Le plus populaire
                         </div>
 
                         <Star size={28} color="#FFFFFF" />
                         <div>
-                            <h3 style={{
-                                fontFamily: 'Montserrat, sans-serif',
-                                fontWeight: '800',
-                                fontSize: '20px',
-                                color: '#FFFFFF',
-                                marginBottom: '4px',
-                            }}>
+                            <h3 className="font-['Montserrat',sans-serif] font-extrabold text-xl text-white mb-1">
                                 Membre
                             </h3>
-                            <p style={{ fontSize: '13px', color: 'rgba(255,255,255,0.7)', fontWeight: '300' }}>
+                            <p className="text-[13px] text-white/70 font-light">
                                 Pour un usage régulier
                             </p>
                         </div>
                         <div>
-                            <span style={{
-                                fontFamily: 'Montserrat, sans-serif',
-                                fontWeight: '800',
-                                fontSize: '32px',
-                                color: '#FFFFFF',
-                            }}>
+                            <span className="font-['Montserrat',sans-serif] font-extrabold text-[32px] text-white">
                                 dès 150€
                             </span>
-                            <span style={{ fontSize: '14px', color: 'rgba(255,255,255,0.7)' }}> / mois</span>
+                            <span className="text-sm text-white/70"> / mois</span>
                         </div>
-                        <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                        <ul className="list-none p-0 m-0 flex flex-col gap-2.5">
                             {[
                                 'Accès illimité aux open spaces',
                                 'Badge QR Code instantané',
@@ -468,104 +238,47 @@ export default function Welcome({ canLogin, canRegister }) {
                                 'Accès salles de réunion inclus',
                                 'Wi-Fi dédié membres',
                             ].map((item, i) => (
-                                <li key={i} style={{
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                    gap: '8px',
-                                    fontSize: '14px',
-                                    color: 'rgba(255,255,255,0.9)',
-                                }}>
+                                <li key={i} className="flex items-center gap-2 text-sm text-white/90">
                                     <CheckCircle size={14} color="#FFFFFF" />
                                     {item}
                                 </li>
                             ))}
                         </ul>
-                        <Link href="/register" style={{
-                            marginTop: 'auto',
-                            padding: '12px',
-                            backgroundColor: '#FFFFFF',
-                            color: '#2D6A5A',
-                            border: 'none',
-                            borderRadius: '10px',
-                            fontSize: '14px',
-                            fontFamily: 'Montserrat, sans-serif',
-                            fontWeight: '700',
-                            cursor: 'pointer',
-                            textDecoration: 'none',
-                            textAlign: 'center',
-                        }}>
+                        <Link href="/register" className="mt-auto p-3 bg-white text-[#2D6A5A] border-none rounded-[10px] text-sm font-['Montserrat',sans-serif] font-bold cursor-pointer no-underline text-center">
                             S'abonner
                         </Link>
                     </div>
 
                     {/* CARTE 3 — Bureaux privés */}
-                    <div style={{
-                        backgroundColor: '#FFFFFF',
-                        borderRadius: '16px',
-                        padding: '36px 28px',
-                        display: 'flex',
-                        flexDirection: 'column',
-                        gap: '16px',
-                        boxShadow: '0 2px 12px rgba(0,0,0,0.06)',
-                    }}>
+                    <div className="bg-white rounded-2xl py-9 px-7 flex flex-col gap-4 shadow-[0_2px_12px_rgba(0,0,0,0.06)]">
                         <Building2 size={28} color="#2D6A5A" />
                         <div>
-                            <h3 style={{
-                                fontFamily: 'Montserrat, sans-serif',
-                                fontWeight: '800',
-                                fontSize: '20px',
-                                color: '#1a1a1a',
-                                marginBottom: '4px',
-                            }}>
+                            <h3 className="font-['Montserrat',sans-serif] font-extrabold text-xl text-[#1a1a1a] mb-1">
                                 Bureaux privés
                             </h3>
-                            <p style={{ fontSize: '13px', color: '#888', fontWeight: '300' }}>
+                            <p className="text-[13px] text-[#888] font-light">
                                 Pour les équipes résidentes
                             </p>
                         </div>
                         <div>
-                            <span style={{
-                                fontFamily: 'Montserrat, sans-serif',
-                                fontWeight: '800',
-                                fontSize: '32px',
-                                color: '#2D6A5A',
-                            }}>
+                            <span className="font-['Montserrat',sans-serif] font-extrabold text-[32px] text-[#2D6A5A]">
                                 Sur devis
                             </span>
                         </div>
-                        <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                        <ul className="list-none p-0 m-0 flex flex-col gap-2.5">
                             {[
                                 'Bureau fermé et sécurisé',
                                 'Tout équipé (mobilier, écrans)',
                                 'Accès 24h/24 et 7j/7',
                                 'Gestion multi-utilisateurs',
                             ].map((item, i) => (
-                                <li key={i} style={{
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                    gap: '8px',
-                                    fontSize: '14px',
-                                    color: '#444',
-                                }}>
+                                <li key={i} className="flex items-center gap-2 text-sm text-[#444]">
                                     <CheckCircle size={14} color="#2D6A5A" />
                                     {item}
                                 </li>
                             ))}
                         </ul>
-                        <Link href="/register" style={{
-                            marginTop: 'auto',
-                            padding: '12px',
-                            backgroundColor: '#F5F0EA',
-                            color: '#2D6A5A',
-                            border: 'none',
-                            borderRadius: '10px',
-                            fontSize: '14px',
-                            fontFamily: 'Montserrat, sans-serif',
-                            fontWeight: '700',
-                            cursor: 'pointer',
-                            textDecoration: 'none',
-                            textAlign: 'center',
-                        }}>
+                        <Link href="/register" className="mt-auto p-3 bg-[#F5F0EA] text-[#2D6A5A] border-none rounded-[10px] text-sm font-['Montserrat',sans-serif] font-bold cursor-pointer no-underline text-center">
                             Nous contacter
                         </Link>
                     </div>
@@ -575,67 +288,38 @@ export default function Welcome({ canLogin, canRegister }) {
             {/* ─────────────────────────────────────────
                 POURQUOI COWORK'IN
             ───────────────────────────────────────── */}
-            <section style={{
-                padding: '80px 10%',
-                backgroundColor: '#FFFFFF',
-            }}>
-                <h2 style={{
-                    fontFamily: 'Montserrat, sans-serif',
-                    fontWeight: '800',
-                    fontSize: '34px',
-                    color: '#1a1a1a',
-                    marginBottom: '40px',
-                    textAlign: 'center',
-                }}>
+            <section className="py-20 px-[10%] bg-white">
+                <h2 className="font-['Montserrat',sans-serif] font-extrabold text-[34px] text-[#1a1a1a] mb-10 text-center">
                     Pourquoi Cowork'In ?
                 </h2>
 
-                <div style={{
-                    display: 'grid',
-                    gridTemplateColumns: 'repeat(3, 1fr)',
-                    gap: '24px',
-                }}>
+                <div className="grid grid-cols-3 gap-6">
                     {[
                         {
                             icon: <CalendarDays size={24} color="#2D6A5A" />,
                             title: 'Réservation simple',
                             desc: 'Réservez un poste ou une salle en quelques clics, par heure ou demi-journée.',
-                            color: '#E0F2FE',
+                            color: 'bg-[#E0F2FE]',
                         },
                         {
                             icon: <QrCode size={24} color="#2D6A5A" />,
                             title: 'Accès QR Code',
                             desc: 'Votre badge d\'accès numérique généré instantanément après confirmation.',
-                            color: '#FCE7F3',
+                            color: 'bg-[#FCE7F3]',
                         },
                         {
                             icon: <Euro size={24} color="#2D6A5A" />,
                             title: 'Facturation automatique',
                             desc: 'Recevez votre facture PDF par e-mail dès que votre réservation est confirmée.',
-                            color: '#E0F2FE',
+                            color: 'bg-[#E0F2FE]',
                         },
                     ].map((card, index) => (
-                        <div key={index} style={{
-                            backgroundColor: card.color,
-                            borderRadius: '16px',
-                            padding: '32px 24px',
-                        }}>
-                            <div style={{ marginBottom: '16px' }}>{card.icon}</div>
-                            <h3 style={{
-                                fontFamily: 'Montserrat, sans-serif',
-                                fontWeight: '700',
-                                fontSize: '18px',
-                                color: '#2D6A5A',
-                                marginBottom: '10px',
-                            }}>
+                        <div key={index} className={`${card.color} rounded-2xl py-8 px-6`}>
+                            <div className="mb-4">{card.icon}</div>
+                            <h3 className="font-['Montserrat',sans-serif] font-bold text-lg text-[#2D6A5A] mb-2.5">
                                 {card.title}
                             </h3>
-                            <p style={{
-                                fontWeight: '300',
-                                fontSize: '15px',
-                                color: '#444444',
-                                lineHeight: '1.6',
-                            }}>
+                            <p className="font-light text-[15px] text-[#444444] leading-[1.6]">
                                 {card.desc}
                             </p>
                         </div>
@@ -646,54 +330,18 @@ export default function Welcome({ canLogin, canRegister }) {
             {/* ─────────────────────────────────────────
                 CTA FINAL
             ───────────────────────────────────────── */}
-            <section style={{
-                backgroundColor: '#2D6A5A',
-                padding: '80px 10%',
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'center',
-                textAlign: 'center',
-            }}>
-                <h2 style={{
-                    fontFamily: 'Montserrat, sans-serif',
-                    fontWeight: '800',
-                    fontSize: '36px',
-                    color: '#FFFFFF',
-                    marginBottom: '16px',
-                    maxWidth: '600px',
-                    lineHeight: '1.2',
-                }}>
+            <section className="bg-[#2D6A5A] py-20 px-[10%] flex flex-col items-center text-center">
+                <h2 className="font-['Montserrat',sans-serif] font-extrabold text-[36px] text-white mb-4 max-w-[600px] leading-[1.2]">
                     Prêt à rejoindre Cowork'In ?
                 </h2>
-                <p style={{
-                    fontWeight: '300',
-                    fontSize: '17px',
-                    color: 'rgba(255,255,255,0.8)',
-                    marginBottom: '36px',
-                    maxWidth: '460px',
-                    lineHeight: '1.7',
-                }}>
+                <p className="font-light text-[17px] text-white/80 mb-9 max-w-[460px] leading-[1.7]">
                     Créez votre compte gratuitement et réservez votre premier espace dès aujourd'hui.
                 </p>
                 <Link
                     href="/register"
                     onMouseEnter={() => setHoverFinal(true)}
                     onMouseLeave={() => setHoverFinal(false)}
-                    style={{
-                        backgroundColor: hoverFinal ? '#F0EBE3' : '#FFFFFF',
-                        color: '#2D6A5A',
-                        fontFamily: 'Montserrat, sans-serif',
-                        fontWeight: '700',
-                        fontSize: '16px',
-                        padding: '16px 40px',
-                        borderRadius: '10px',
-                        textDecoration: 'none',
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: '8px',
-                        transition: 'all 0.2s ease',
-                        boxShadow: hoverFinal ? '0 6px 20px rgba(0,0,0,0.2)' : 'none',
-                    }}
+                    className={`font-['Montserrat',sans-serif] font-bold text-[16px] px-10 py-4 rounded-[10px] no-underline flex items-center gap-2 transition-all duration-200 ${hoverFinal ? 'bg-[#F0EBE3] text-[#2D6A5A] shadow-[0_6px_20px_rgba(0,0,0,0.2)]' : 'bg-white text-[#2D6A5A] shadow-none'}`}
                 >
                     Créer mon compte
                     <ArrowRight size={16} />
@@ -703,25 +351,13 @@ export default function Welcome({ canLogin, canRegister }) {
             {/* ─────────────────────────────────────────
                 FOOTER
             ───────────────────────────────────────── */}
-            <footer style={{
-                backgroundColor: '#FFFFFF',
-                padding: '24px 10%',
-                display: 'flex',
-                justifyContent: 'space-between',
-                alignItems: 'center',
-                borderTop: '1px solid #E5E5E5',
-            }}>
+            <footer className="bg-white py-6 px-[10%] flex justify-between items-center border-t border-[#E5E5E5]">
                 <img
                     src="/logo.png"
                     alt="Cowork'In"
-                    style={{ height: '36px', width: 'auto' }}
+                    className="h-9 w-auto"
                 />
-                <p style={{
-                    fontWeight: '300',
-                    fontSize: '13px',
-                    color: '#888888',
-                    margin: 0,
-                }}>
+                <p className="font-light text-[13px] text-[#888888] m-0">
                     © 2026 Groupe 6 — Projet Annuel ESGI Lyon — Tous droits réservés
                 </p>
             </footer>

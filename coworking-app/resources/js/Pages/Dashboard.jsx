@@ -15,45 +15,23 @@ export default function Dashboard({ auth }) {
     };
 
     return (
-        <div style={{
-            minHeight: '100vh',
-            backgroundColor: '#F5F0EA',
-            fontFamily: 'Roboto, sans-serif',
-        }}>
+        <div className="min-h-screen bg-[#F5F0EA] font-['Roboto',sans-serif]">
             <Head title="Dashboard — Cowork'In" />
 
             {/* ─────────────────────────────────────────
                 NAVBAR
             ───────────────────────────────────────── */}
-            <nav style={{
-                backgroundColor: '#FFFFFF',
-                padding: '14px 48px',
-                display: 'flex',
-                justifyContent: 'space-between',
-                alignItems: 'center',
-                boxShadow: '0 2px 8px rgba(0,0,0,0.06)',
-            }}>
-                <img src="/logo.png" alt="Cowork'In" style={{ height: '42px', width: 'auto' }} />
+            <nav className="bg-white px-12 py-3.5 flex justify-between items-center shadow-[0_2px_8px_rgba(0,0,0,0.06)]">
+                <img src="/logo.png" alt="Cowork'In" className="h-[42px] w-auto" />
 
-                <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-                    <span style={{ fontSize: '14px', color: '#555555' }}>
+                <div className="flex items-center gap-4">
+                    <span className="text-sm text-[#555555]">
                         {user.name}
                     </span>
 
                     {/* Badge membre — affiché uniquement si role === member */}
                     {role === 'member' && (
-                        <span style={{
-                            backgroundColor: '#2D6A5A',
-                            color: '#FFFFFF',
-                            fontSize: '11px',
-                            fontWeight: '700',
-                            fontFamily: 'Montserrat, sans-serif',
-                            padding: '4px 12px',
-                            borderRadius: '999px',
-                            display: 'flex',
-                            alignItems: 'center',
-                            gap: '4px',
-                        }}>
+                        <span className="bg-[#2D6A5A] text-white text-[11px] font-bold font-['Montserrat',sans-serif] px-3 py-1 rounded-full flex items-center gap-1">
                             <Star size={10} />
                             Abonné Cowork'In
                         </span>
@@ -61,33 +39,14 @@ export default function Dashboard({ auth }) {
 
                     {/* Badge rôle standard */}
                     {role !== 'member' && (
-                        <span style={{
-                            backgroundColor: '#E0F2FE',
-                            color: '#2D6A5A',
-                            fontWeight: '500',
-                            fontSize: '12px',
-                            padding: '4px 10px',
-                            borderRadius: '999px',
-                        }}>
+                        <span className="bg-[#E0F2FE] text-[#2D6A5A] font-medium text-xs px-2.5 py-1 rounded-full">
                             {role.charAt(0).toUpperCase() + role.slice(1)}
                         </span>
                     )}
 
                     <button
                         onClick={handleLogout}
-                        style={{
-                            backgroundColor: 'transparent',
-                            border: '1.5px solid #2D6A5A',
-                            color: '#2D6A5A',
-                            fontWeight: '500',
-                            fontSize: '13px',
-                            padding: '6px 16px',
-                            borderRadius: '8px',
-                            cursor: 'pointer',
-                            display: 'flex',
-                            alignItems: 'center',
-                            gap: '6px',
-                        }}
+                        className="bg-transparent border-2 border-[#2D6A5A] text-[#2D6A5A] font-medium text-[13px] px-4 py-1.5 rounded-lg cursor-pointer flex items-center gap-1.5"
                     >
                         <LogOut size={14} />
                         Déconnexion
@@ -98,24 +57,13 @@ export default function Dashboard({ auth }) {
             {/* ─────────────────────────────────────────
                 CONTENU PRINCIPAL
             ───────────────────────────────────────── */}
-            <main style={{ padding: '48px 10%' }}>
+            <main className="py-12 px-[10%]">
 
                 {/* Message d'accueil personnalisé */}
-                <h1 style={{
-                    fontFamily: 'Montserrat, sans-serif',
-                    fontWeight: '800',
-                    fontSize: '28px',
-                    color: '#2D6A5A',
-                    marginBottom: '8px',
-                }}>
+                <h1 className="font-['Montserrat',sans-serif] font-extrabold text-[28px] text-[#2D6A5A] mb-2">
                     Bonjour, {user.name}
                 </h1>
-                <p style={{
-                    fontWeight: '300',
-                    fontSize: '15px',
-                    color: '#888888',
-                    marginBottom: '40px',
-                }}>
+                <p className="font-light text-[15px] text-[#888888] mb-10">
                     {role === 'admin' && 'Tableau de bord administrateur'}
                     {role === 'manager' && 'Tableau de bord gestionnaire'}
                     {role === 'member' && 'Votre abonnement est actif. Vos réservations en open-space sont incluses.'}
@@ -128,77 +76,47 @@ export default function Dashboard({ auth }) {
                 {role === 'admin' && (
                     <div>
                         {/* STATISTIQUES */}
-                        <div style={{
-                            display: 'grid',
-                            gridTemplateColumns: 'repeat(3, 1fr)',
-                            gap: '20px',
-                            marginBottom: '40px',
-                        }}>
+                        <div className="grid grid-cols-3 gap-5 mb-10">
                             {[
                                 {
                                     label: "Réservations aujourd'hui",
                                     value: '14',
                                     icon: <CalendarDays size={28} color="#2D6A5A" />,
                                     // Vert très clair — doux et lisible
-                                    color: '#DCFCE7',
+                                    color: 'bg-[#DCFCE7]',
                                 },
                                 {
                                     label: 'Espaces disponibles',
                                     value: '8',
                                     icon: <Building2 size={28} color="#2D6A5A" />,
                                     // Ambre doux — chaud et élégant
-                                    color: '#FEF3C7',
+                                    color: 'bg-[#FEF3C7]',
                                 },
                                 {
                                     label: 'Revenus du mois',
                                     value: '2 450€',
                                     icon: <Euro size={28} color="#2D6A5A" />,
                                     // Beige crème — sobre et raffiné
-                                    color: '#F5F0EA',
+                                    color: 'bg-[#F5F0EA]',
                                 },
                             ].map((stat, i) => (
-                                <div key={i} style={{
-                                    backgroundColor: stat.color,
-                                    borderRadius: '16px',
-                                    padding: '28px 24px',
-                                    border: '1px solid rgba(0,0,0,0.04)',
-                                }}>
-                                    <div style={{ marginBottom: '12px' }}>{stat.icon}</div>
-                                    <div style={{
-                                        fontFamily: 'Montserrat, sans-serif',
-                                        fontWeight: '800',
-                                        fontSize: '28px',
-                                        color: '#2D6A5A',
-                                        marginBottom: '6px',
-                                    }}>
+                                <div key={i} className={`${stat.color} rounded-2xl p-7 border border-[rgba(0,0,0,0.04)]`}>
+                                    <div className="mb-3">{stat.icon}</div>
+                                    <div className="font-['Montserrat',sans-serif] font-extrabold text-[28px] text-[#2D6A5A] mb-1.5">
                                         {stat.value}
                                     </div>
-                                    <div style={{
-                                        fontWeight: '300',
-                                        fontSize: '14px',
-                                        color: '#555555',
-                                    }}>
+                                    <div className="font-light text-sm text-[#555555]">
                                         {stat.label}
                                     </div>
                                 </div>
                             ))}
                         </div>
 
-                        <h2 style={{
-                            fontFamily: 'Montserrat, sans-serif',
-                            fontWeight: '700',
-                            fontSize: '20px',
-                            color: '#2D6A5A',
-                            marginBottom: '20px',
-                        }}>
+                        <h2 className="font-['Montserrat',sans-serif] font-bold text-xl text-[#2D6A5A] mb-5">
                             Actions rapides
                         </h2>
 
-                        <div style={{
-                            display: 'grid',
-                            gridTemplateColumns: 'repeat(3, 1fr)',
-                            gap: '16px',
-                        }}>
+                        <div className="grid grid-cols-3 gap-4">
                             {[
                                 { label: 'Gérer les espaces', href: '/spaces', icon: <Building2 size={24} color="#2D6A5A" /> },
                                 { label: 'Toutes les réservations', href: '/reservations', icon: <ClipboardList size={24} color="#2D6A5A" /> },
@@ -209,30 +127,10 @@ export default function Dashboard({ auth }) {
                                     href={action.href}
                                     onMouseEnter={() => setHoveredAction(`admin-${i}`)}
                                     onMouseLeave={() => setHoveredAction(null)}
-                                    style={{
-                                        backgroundColor: '#FFFFFF',
-                                        borderRadius: '12px',
-                                        padding: '24px',
-                                        display: 'flex',
-                                        alignItems: 'center',
-                                        gap: '16px',
-                                        textDecoration: 'none',
-                                        // Transition sur border et shadow
-                                        border: hoveredAction === `admin-${i}`
-                                            ? '1.5px solid #2D6A5A'
-                                            : '1.5px solid transparent',
-                                        boxShadow: hoveredAction === `admin-${i}`
-                                            ? '0 4px 16px rgba(45,106,90,0.12)'
-                                            : '0 2px 8px rgba(0,0,0,0.05)',
-                                        transition: 'all 0.2s ease',
-                                    }}
+                                    className={`bg-white rounded-xl p-6 flex items-center gap-4 no-underline border-2 transition-all duration-200 ${hoveredAction === `admin-${i}` ? 'border-[#2D6A5A] shadow-[0_4px_16px_rgba(45,106,90,0.12)]' : 'border-transparent shadow-[0_2px_8px_rgba(0,0,0,0.05)]'}`}
                                 >
                                     {action.icon}
-                                    <span style={{
-                                        fontWeight: '500',
-                                        fontSize: '15px',
-                                        color: '#2D6A5A',
-                                    }}>
+                                    <span className="font-medium text-[15px] text-[#2D6A5A]">
                                         {action.label}
                                     </span>
                                 </Link>
@@ -246,68 +144,38 @@ export default function Dashboard({ auth }) {
                 ───────────────────────────────────────── */}
                 {role === 'manager' && (
                     <div>
-                        <div style={{
-                            display: 'grid',
-                            gridTemplateColumns: 'repeat(2, 1fr)',
-                            gap: '20px',
-                            marginBottom: '40px',
-                        }}>
+                        <div className="grid grid-cols-2 gap-5 mb-10">
                             {[
                                 {
                                     label: "Réservations aujourd'hui",
                                     value: '14',
                                     icon: <CalendarDays size={28} color="#2D6A5A" />,
-                                    color: '#DCFCE7',
+                                    color: 'bg-[#DCFCE7]',
                                 },
                                 {
                                     label: 'Espaces disponibles',
                                     value: '8',
                                     icon: <Building2 size={28} color="#2D6A5A" />,
-                                    color: '#FEF3C7',
+                                    color: 'bg-[#FEF3C7]',
                                 },
                             ].map((stat, i) => (
-                                <div key={i} style={{
-                                    backgroundColor: stat.color,
-                                    borderRadius: '16px',
-                                    padding: '28px 24px',
-                                    border: '1px solid rgba(0,0,0,0.04)',
-                                }}>
-                                    <div style={{ marginBottom: '12px' }}>{stat.icon}</div>
-                                    <div style={{
-                                        fontFamily: 'Montserrat, sans-serif',
-                                        fontWeight: '800',
-                                        fontSize: '28px',
-                                        color: '#2D6A5A',
-                                        marginBottom: '6px',
-                                    }}>
+                                <div key={i} className={`${stat.color} rounded-2xl p-7 border border-[rgba(0,0,0,0.04)]`}>
+                                    <div className="mb-3">{stat.icon}</div>
+                                    <div className="font-['Montserrat',sans-serif] font-extrabold text-[28px] text-[#2D6A5A] mb-1.5">
                                         {stat.value}
                                     </div>
-                                    <div style={{
-                                        fontWeight: '300',
-                                        fontSize: '14px',
-                                        color: '#555555',
-                                    }}>
+                                    <div className="font-light text-sm text-[#555555]">
                                         {stat.label}
                                     </div>
                                 </div>
                             ))}
                         </div>
 
-                        <h2 style={{
-                            fontFamily: 'Montserrat, sans-serif',
-                            fontWeight: '700',
-                            fontSize: '20px',
-                            color: '#2D6A5A',
-                            marginBottom: '20px',
-                        }}>
+                        <h2 className="font-['Montserrat',sans-serif] font-bold text-xl text-[#2D6A5A] mb-5">
                             Actions rapides
                         </h2>
 
-                        <div style={{
-                            display: 'grid',
-                            gridTemplateColumns: 'repeat(2, 1fr)',
-                            gap: '16px',
-                        }}>
+                        <div className="grid grid-cols-2 gap-4">
                             {[
                                 { label: 'Gérer les espaces', href: '/spaces', icon: <Building2 size={24} color="#2D6A5A" /> },
                                 { label: 'Voir les réservations', href: '/reservations', icon: <ClipboardList size={24} color="#2D6A5A" /> },
@@ -317,29 +185,10 @@ export default function Dashboard({ auth }) {
                                     href={action.href}
                                     onMouseEnter={() => setHoveredAction(`manager-${i}`)}
                                     onMouseLeave={() => setHoveredAction(null)}
-                                    style={{
-                                        backgroundColor: '#FFFFFF',
-                                        borderRadius: '12px',
-                                        padding: '24px',
-                                        display: 'flex',
-                                        alignItems: 'center',
-                                        gap: '16px',
-                                        textDecoration: 'none',
-                                        border: hoveredAction === `manager-${i}`
-                                            ? '1.5px solid #2D6A5A'
-                                            : '1.5px solid transparent',
-                                        boxShadow: hoveredAction === `manager-${i}`
-                                            ? '0 4px 16px rgba(45,106,90,0.12)'
-                                            : '0 2px 8px rgba(0,0,0,0.05)',
-                                        transition: 'all 0.2s ease',
-                                    }}
+                                    className={`bg-white rounded-xl p-6 flex items-center gap-4 no-underline border-2 transition-all duration-200 ${hoveredAction === `manager-${i}` ? 'border-[#2D6A5A] shadow-[0_4px_16px_rgba(45,106,90,0.12)]' : 'border-transparent shadow-[0_2px_8px_rgba(0,0,0,0.05)]'}`}
                                 >
                                     {action.icon}
-                                    <span style={{
-                                        fontWeight: '500',
-                                        fontSize: '15px',
-                                        color: '#2D6A5A',
-                                    }}>
+                                    <span className="font-medium text-[15px] text-[#2D6A5A]">
                                         {action.label}
                                     </span>
                                 </Link>
@@ -354,85 +203,33 @@ export default function Dashboard({ auth }) {
                 {role === 'member' && (
                     <div>
                         {/* Bloc abonnement actif */}
-                        <div style={{
-                            backgroundColor: '#2D6A5A',
-                            borderRadius: '16px',
-                            padding: '32px 28px',
-                            marginBottom: '40px',
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'space-between',
-                            gap: '20px',
-                        }}>
-                            <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
-                                <div style={{
-                                    backgroundColor: 'rgba(255,255,255,0.15)',
-                                    borderRadius: '12px',
-                                    padding: '14px',
-                                }}>
+                        <div className="bg-[#2D6A5A] rounded-2xl py-8 px-7 mb-10 flex items-center justify-between gap-5">
+                            <div className="flex items-center gap-5">
+                                <div className="bg-white/15 rounded-xl p-3.5">
                                     <Star size={32} color="#FFFFFF" />
                                 </div>
                                 <div>
-                                    <div style={{
-                                        fontFamily: 'Montserrat, sans-serif',
-                                        fontWeight: '800',
-                                        fontSize: '18px',
-                                        color: '#FFFFFF',
-                                        marginBottom: '6px',
-                                        display: 'flex',
-                                        alignItems: 'center',
-                                        gap: '10px',
-                                    }}>
+                                    <div className="font-['Montserrat',sans-serif] font-extrabold text-lg text-white mb-1.5 flex items-center gap-2.5">
                                         Abonné Cowork'In
-                                        <span style={{
-                                            backgroundColor: 'rgba(255,255,255,0.2)',
-                                            fontSize: '11px',
-                                            fontWeight: '600',
-                                            padding: '3px 10px',
-                                            borderRadius: '999px',
-                                        }}>
+                                        <span className="bg-white/20 text-[11px] font-semibold px-2.5 py-1 rounded-full">
                                             Actif
                                         </span>
                                     </div>
-                                    <div style={{
-                                        fontWeight: '300',
-                                        fontSize: '14px',
-                                        color: 'rgba(255,255,255,0.8)',
-                                    }}>
+                                    <div className="font-light text-sm text-white/80">
                                         Vos réservations en open-space sont incluses — accès illimité.
                                     </div>
                                 </div>
                             </div>
-                            <Link href="/abonnements" style={{
-                                backgroundColor: 'rgba(255,255,255,0.15)',
-                                color: '#FFFFFF',
-                                fontWeight: '600',
-                                fontSize: '13px',
-                                padding: '10px 20px',
-                                borderRadius: '8px',
-                                textDecoration: 'none',
-                                whiteSpace: 'nowrap',
-                                border: '1px solid rgba(255,255,255,0.3)',
-                            }}>
+                            <Link href="/abonnements" className="bg-white/15 text-white font-semibold text-[13px] px-5 py-2.5 rounded-lg no-underline whitespace-nowrap border border-white/30">
                                 Mon abonnement
                             </Link>
                         </div>
 
-                        <h2 style={{
-                            fontFamily: 'Montserrat, sans-serif',
-                            fontWeight: '700',
-                            fontSize: '20px',
-                            color: '#2D6A5A',
-                            marginBottom: '20px',
-                        }}>
+                        <h2 className="font-['Montserrat',sans-serif] font-bold text-xl text-[#2D6A5A] mb-5">
                             Actions rapides
                         </h2>
 
-                        <div style={{
-                            display: 'grid',
-                            gridTemplateColumns: 'repeat(3, 1fr)',
-                            gap: '16px',
-                        }}>
+                        <div className="grid grid-cols-3 gap-4">
                             {[
                                 { label: 'Réserver un espace', href: '/spaces', icon: <CalendarDays size={24} color="#2D6A5A" /> },
                                 { label: 'Mes réservations', href: '/reservations', icon: <ClipboardList size={24} color="#2D6A5A" /> },
@@ -443,29 +240,10 @@ export default function Dashboard({ auth }) {
                                     href={action.href}
                                     onMouseEnter={() => setHoveredAction(`member-${i}`)}
                                     onMouseLeave={() => setHoveredAction(null)}
-                                    style={{
-                                        backgroundColor: '#FFFFFF',
-                                        borderRadius: '12px',
-                                        padding: '24px',
-                                        display: 'flex',
-                                        alignItems: 'center',
-                                        gap: '16px',
-                                        textDecoration: 'none',
-                                        border: hoveredAction === `member-${i}`
-                                            ? '1.5px solid #2D6A5A'
-                                            : '1.5px solid transparent',
-                                        boxShadow: hoveredAction === `member-${i}`
-                                            ? '0 4px 16px rgba(45,106,90,0.12)'
-                                            : '0 2px 8px rgba(0,0,0,0.05)',
-                                        transition: 'all 0.2s ease',
-                                    }}
+                                    className={`bg-white rounded-xl p-6 flex items-center gap-4 no-underline border-2 transition-all duration-200 ${hoveredAction === `member-${i}` ? 'border-[#2D6A5A] shadow-[0_4px_16px_rgba(45,106,90,0.12)]' : 'border-transparent shadow-[0_2px_8px_rgba(0,0,0,0.05)]'}`}
                                 >
                                     {action.icon}
-                                    <span style={{
-                                        fontWeight: '500',
-                                        fontSize: '15px',
-                                        color: '#2D6A5A',
-                                    }}>
+                                    <span className="font-medium text-[15px] text-[#2D6A5A]">
                                         {action.label}
                                     </span>
                                 </Link>
@@ -480,144 +258,51 @@ export default function Dashboard({ auth }) {
                 {role === 'client' && (
                     <div>
                         {/* DEUX CARTES CÔTE À CÔTE */}
-                        <div style={{
-                            display: 'grid',
-                            gridTemplateColumns: 'repeat(2, 1fr)',
-                            gap: '20px',
-                            marginBottom: '40px',
-                        }}>
+                        <div className="grid grid-cols-2 gap-5 mb-10">
                             {/* CARTE RÉSERVATION */}
-                            <div style={{
-                                backgroundColor: '#2D6A5A',
-                                borderRadius: '16px',
-                                padding: '36px 28px',
-                                display: 'flex',
-                                flexDirection: 'column',
-                                justifyContent: 'space-between',
-                                gap: '24px',
-                            }}>
+                            <div className="bg-[#2D6A5A] rounded-2xl py-9 px-7 flex flex-col justify-between gap-6">
                                 <div>
-                                    <div style={{
-                                        fontFamily: 'Montserrat, sans-serif',
-                                        fontWeight: '800',
-                                        fontSize: '22px',
-                                        color: '#FFFFFF',
-                                        marginBottom: '8px',
-                                    }}>
+                                    <div className="font-['Montserrat',sans-serif] font-extrabold text-[22px] text-white mb-2">
                                         Besoin d'un espace ?
                                     </div>
-                                    <div style={{
-                                        fontWeight: '300',
-                                        fontSize: '14px',
-                                        color: 'rgba(255,255,255,0.8)',
-                                        lineHeight: '1.6',
-                                    }}>
+                                    <div className="font-light text-sm text-white/80 leading-[1.6]">
                                         Réservez un poste, un bureau ou une salle en quelques clics.
                                     </div>
                                 </div>
-                                <Link href="/spaces" style={{
-                                    backgroundColor: '#FFFFFF',
-                                    color: '#2D6A5A',
-                                    fontFamily: 'Montserrat, sans-serif',
-                                    fontWeight: '700',
-                                    fontSize: '14px',
-                                    padding: '12px 24px',
-                                    borderRadius: '10px',
-                                    textDecoration: 'none',
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                    gap: '8px',
-                                    alignSelf: 'flex-start',
-                                }}>
+                                <Link href="/spaces" className="bg-white text-[#2D6A5A] font-['Montserrat',sans-serif] font-bold text-sm px-6 py-3 rounded-[10px] no-underline flex items-center gap-2 self-start">
                                     Voir les espaces
                                     <ArrowRight size={16} />
                                 </Link>
                             </div>
 
                             {/* CARTE ABONNEMENT — terracotta doux */}
-                            <div style={{
-                                backgroundColor: '#FDF6F0',
-                                borderRadius: '16px',
-                                padding: '36px 28px',
-                                display: 'flex',
-                                flexDirection: 'column',
-                                justifyContent: 'space-between',
-                                gap: '24px',
-                                border: '1.5px solid #F2D5C4',
-                            }}>
+                            <div className="bg-[#FDF6F0] rounded-2xl py-9 px-7 flex flex-col justify-between gap-6 border-2 border-[#F2D5C4]">
                                 <div>
-                                    <div style={{
-                                        display: 'flex',
-                                        alignItems: 'center',
-                                        gap: '8px',
-                                        marginBottom: '8px',
-                                    }}>
+                                    <div className="flex items-center gap-2 mb-2">
                                         <Star size={18} color="#C4714B" />
-                                        <span style={{
-                                            backgroundColor: '#C4714B',
-                                            color: '#FFFFFF',
-                                            fontSize: '10px',
-                                            fontWeight: '700',
-                                            fontFamily: 'Montserrat, sans-serif',
-                                            padding: '3px 10px',
-                                            borderRadius: '999px',
-                                        }}>
+                                        <span className="bg-[#C4714B] text-white text-[10px] font-bold font-['Montserrat',sans-serif] px-2.5 py-1 rounded-full">
                                             Offre membre
                                         </span>
                                     </div>
-                                    <div style={{
-                                        fontFamily: 'Montserrat, sans-serif',
-                                        fontWeight: '800',
-                                        fontSize: '22px',
-                                        color: '#7C2D12',
-                                        marginBottom: '8px',
-                                    }}>
+                                    <div className="font-['Montserrat',sans-serif] font-extrabold text-[22px] text-[#7C2D12] mb-2">
                                         Passez à la vitesse supérieure
                                     </div>
-                                    <div style={{
-                                        fontWeight: '400',
-                                        fontSize: '14px',
-                                        color: '#92400E',
-                                        lineHeight: '1.6',
-                                    }}>
+                                    <div className="font-normal text-sm text-[#92400E] leading-[1.6]">
                                         Économisez jusqu'à <strong>-30%</strong> sur vos réservations grâce à nos abonnements membres.
                                     </div>
                                 </div>
-                                <Link href="/abonnements" style={{
-                                    backgroundColor: '#C4714B',
-                                    color: '#FFFFFF',
-                                    fontFamily: 'Montserrat, sans-serif',
-                                    fontWeight: '700',
-                                    fontSize: '14px',
-                                    padding: '12px 24px',
-                                    borderRadius: '10px',
-                                    textDecoration: 'none',
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                    gap: '8px',
-                                    alignSelf: 'flex-start',
-                                }}>
+                                <Link href="/abonnements" className="bg-[#C4714B] text-white font-['Montserrat',sans-serif] font-bold text-sm px-6 py-3 rounded-[10px] no-underline flex items-center gap-2 self-start">
                                     Découvrir les offres
                                     <ArrowRight size={16} />
                                 </Link>
                             </div>
                         </div>
 
-                        <h2 style={{
-                            fontFamily: 'Montserrat, sans-serif',
-                            fontWeight: '700',
-                            fontSize: '20px',
-                            color: '#2D6A5A',
-                            marginBottom: '20px',
-                        }}>
+                        <h2 className="font-['Montserrat',sans-serif] font-bold text-xl text-[#2D6A5A] mb-5">
                             Actions rapides
                         </h2>
 
-                        <div style={{
-                            display: 'grid',
-                            gridTemplateColumns: 'repeat(2, 1fr)',
-                            gap: '16px',
-                        }}>
+                        <div className="grid grid-cols-2 gap-4">
                             {[
                                 { label: 'Mes réservations', href: '/reservations', icon: <ClipboardList size={24} color="#2D6A5A" /> },
                                 { label: 'Consulter les espaces', href: '/spaces', icon: <Building2 size={24} color="#2D6A5A" /> },
@@ -627,29 +312,10 @@ export default function Dashboard({ auth }) {
                                     href={action.href}
                                     onMouseEnter={() => setHoveredAction(`client-${i}`)}
                                     onMouseLeave={() => setHoveredAction(null)}
-                                    style={{
-                                        backgroundColor: '#FFFFFF',
-                                        borderRadius: '12px',
-                                        padding: '24px',
-                                        display: 'flex',
-                                        alignItems: 'center',
-                                        gap: '16px',
-                                        textDecoration: 'none',
-                                        border: hoveredAction === `client-${i}`
-                                            ? '1.5px solid #2D6A5A'
-                                            : '1.5px solid transparent',
-                                        boxShadow: hoveredAction === `client-${i}`
-                                            ? '0 4px 16px rgba(45,106,90,0.12)'
-                                            : '0 2px 8px rgba(0,0,0,0.05)',
-                                        transition: 'all 0.2s ease',
-                                    }}
+                                    className={`bg-white rounded-xl p-6 flex items-center gap-4 no-underline border-2 transition-all duration-200 ${hoveredAction === `client-${i}` ? 'border-[#2D6A5A] shadow-[0_4px_16px_rgba(45,106,90,0.12)]' : 'border-transparent shadow-[0_2px_8px_rgba(0,0,0,0.05)]'}`}
                                 >
                                     {action.icon}
-                                    <span style={{
-                                        fontWeight: '500',
-                                        fontSize: '15px',
-                                        color: '#2D6A5A',
-                                    }}>
+                                    <span className="font-medium text-[15px] text-[#2D6A5A]">
                                         {action.label}
                                     </span>
                                 </Link>

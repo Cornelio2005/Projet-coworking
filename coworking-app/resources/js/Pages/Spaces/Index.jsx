@@ -15,10 +15,10 @@ const typeLabels = {
 };
 
 const typeColors = {
-    'bureau_individuel': '#E0F2FE',
-    'bureau_partage': '#E0F2FE',
-    'salle_reunion': '#FCE7F3',
-    'espace_detente': '#F5F0EA',
+    'bureau_individuel': 'bg-[#E0F2FE]',
+    'bureau_partage': 'bg-[#E0F2FE]',
+    'salle_reunion': 'bg-[#FCE7F3]',
+    'espace_detente': 'bg-[#F5F0EA]',
 };
 
 export default function Index({ spaces, filters = {} }) {
@@ -52,82 +52,35 @@ export default function Index({ spaces, filters = {} }) {
     const hasActiveFilters = type || capaciteMin || date;
 
     return (
-        <div style={{
-            minHeight: '100vh',
-            backgroundColor: '#F5F0EA',
-            fontFamily: 'Roboto, sans-serif',
-        }}>
+        <div className="min-h-screen bg-[#F5F0EA] font-['Roboto',sans-serif]">
             <Head title="Espaces — Cowork'In" />
 
             {/* NAVBAR */}
-            <nav style={{
-                backgroundColor: '#FFFFFF',
-                padding: '14px 48px',
-                display: 'flex',
-                justifyContent: 'space-between',
-                alignItems: 'center',
-                boxShadow: '0 2px 8px rgba(0,0,0,0.06)',
-            }}>
+            <nav className="bg-white px-12 py-3.5 flex justify-between items-center shadow-[0_2px_8px_rgba(0,0,0,0.06)]">
                 <Link href="/dashboard">
-                    <img src="/logo.png" alt="Cowork'In" style={{ height: '42px', width: 'auto' }} />
+                    <img src="/logo.png" alt="Cowork'In" className="h-[42px] w-auto" />
                 </Link>
-                <Link href="/dashboard" style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '6px',
-                    fontFamily: 'Roboto, sans-serif',
-                    fontSize: '14px',
-                    color: '#2D6A5A',
-                    textDecoration: 'none',
-                }}>
+                <Link href="/dashboard" className="flex items-center gap-1.5 font-['Roboto',sans-serif] text-sm text-[#2D6A5A] no-underline">
                     <ArrowLeft size={16} />
                     Retour au dashboard
                 </Link>
             </nav>
 
-            <main style={{ padding: '48px 10%' }}>
+            <main className="px-[10%] py-12">
 
                 {/* HEADER */}
-                <div style={{
-                    display: 'flex',
-                    justifyContent: 'space-between',
-                    alignItems: 'center',
-                    marginBottom: '32px',
-                }}>
+                <div className="flex justify-between items-center mb-8">
                     <div>
-                        <h1 style={{
-                            fontFamily: 'Montserrat, sans-serif',
-                            fontWeight: '800',
-                            fontSize: '28px',
-                            color: '#2D6A5A',
-                            marginBottom: '4px',
-                        }}>
+                        <h1 className="font-['Montserrat',sans-serif] font-extrabold text-[28px] text-[#2D6A5A] mb-1">
                             Nos espaces
                         </h1>
-                        <p style={{
-                            fontFamily: 'Roboto, sans-serif',
-                            fontWeight: '300',
-                            fontSize: '14px',
-                            color: '#888888',
-                        }}>
+                        <p className="font-['Roboto',sans-serif] font-light text-sm text-[#888888]">
                             {spaces.length} espace{spaces.length > 1 ? 's' : ''} trouvé{spaces.length > 1 ? 's' : ''}
                         </p>
                     </div>
 
                     {canManage && (
-                        <Link href="/spaces/create" style={{
-                            backgroundColor: '#2D6A5A',
-                            color: '#FFFFFF',
-                            fontFamily: 'Roboto, sans-serif',
-                            fontWeight: '500',
-                            fontSize: '14px',
-                            padding: '10px 22px',
-                            borderRadius: '10px',
-                            textDecoration: 'none',
-                            display: 'flex',
-                            alignItems: 'center',
-                            gap: '8px',
-                        }}>
+                        <Link href="/spaces/create" className="bg-[#2D6A5A] text-white font-['Roboto',sans-serif] font-medium text-sm px-5 py-2.5 rounded-[10px] no-underline flex items-center gap-2">
                             <Plus size={16} />
                             Nouvel espace
                         </Link>
@@ -135,42 +88,16 @@ export default function Index({ spaces, filters = {} }) {
                 </div>
 
                 {/* BARRE DE FILTRES */}
-                <div style={{
-                    backgroundColor: '#FFFFFF',
-                    borderRadius: '14px',
-                    padding: '20px 24px',
-                    marginBottom: '32px',
-                    boxShadow: '0 2px 8px rgba(0,0,0,0.05)',
-                    display: 'flex',
-                    gap: '16px',
-                    alignItems: 'flex-end',
-                    flexWrap: 'wrap',
-                }}>
+                <div className="bg-white rounded-[14px] px-6 py-5 mb-8 shadow-[0_2px_8px_rgba(0,0,0,0.05)] flex gap-4 items-end flex-wrap">
                     {/* FILTRE TYPE */}
-                    <div style={{ flex: 1, minWidth: '180px' }}>
-                        <label style={{
-                            display: 'block',
-                            fontSize: '12px',
-                            fontWeight: '500',
-                            color: '#2D6A5A',
-                            marginBottom: '6px',
-                        }}>
+                    <div className="flex-1 min-w-[180px]">
+                        <label className="block text-xs font-medium text-[#2D6A5A] mb-1.5">
                             Type d'espace
                         </label>
                         <select
                             value={type}
                             onChange={e => setType(e.target.value)}
-                            style={{
-                                width: '100%',
-                                padding: '10px 14px',
-                                borderRadius: '8px',
-                                border: '1px solid #ddd',
-                                fontSize: '14px',
-                                fontFamily: 'Roboto, sans-serif',
-                                backgroundColor: '#FFFFFF',
-                                color: type ? '#1a1a1a' : '#aaa',
-                                boxSizing: 'border-box',
-                            }}
+                            className={`w-full px-3.5 py-2.5 rounded-lg border border-[#ddd] text-sm font-['Roboto',sans-serif] bg-white box-border ${type ? 'text-[#1a1a1a]' : 'text-[#aaa]'}`}
                         >
                             <option value="">Tous les types</option>
                             {Object.entries(typeLabels).map(([value, label]) => (
@@ -180,14 +107,8 @@ export default function Index({ spaces, filters = {} }) {
                     </div>
 
                     {/* FILTRE CAPACITÉ */}
-                    <div style={{ flex: 1, minWidth: '140px' }}>
-                        <label style={{
-                            display: 'block',
-                            fontSize: '12px',
-                            fontWeight: '500',
-                            color: '#2D6A5A',
-                            marginBottom: '6px',
-                        }}>
+                    <div className="flex-1 min-w-[140px]">
+                        <label className="block text-xs font-medium text-[#2D6A5A] mb-1.5">
                             Capacité minimum
                         </label>
                         <input
@@ -196,28 +117,13 @@ export default function Index({ spaces, filters = {} }) {
                             value={capaciteMin}
                             onChange={e => setCapaciteMin(e.target.value)}
                             placeholder="Ex : 4"
-                            style={{
-                                width: '100%',
-                                padding: '10px 14px',
-                                borderRadius: '8px',
-                                border: '1px solid #ddd',
-                                fontSize: '14px',
-                                fontFamily: 'Roboto, sans-serif',
-                                backgroundColor: '#FFFFFF',
-                                boxSizing: 'border-box',
-                            }}
+                            className="w-full px-3.5 py-2.5 rounded-lg border border-[#ddd] text-sm font-['Roboto',sans-serif] bg-white box-border"
                         />
                     </div>
 
                     {/* FILTRE DATE */}
-                    <div style={{ flex: 1, minWidth: '180px' }}>
-                        <label style={{
-                            display: 'block',
-                            fontSize: '12px',
-                            fontWeight: '500',
-                            color: '#2D6A5A',
-                            marginBottom: '6px',
-                        }}>
+                    <div className="flex-1 min-w-[180px]">
+                        <label className="block text-xs font-medium text-[#2D6A5A] mb-1.5">
                             Disponible le
                         </label>
                         <input
@@ -225,37 +131,15 @@ export default function Index({ spaces, filters = {} }) {
                             value={date}
                             min={new Date().toISOString().split('T')[0]}
                             onChange={e => setDate(e.target.value)}
-                            style={{
-                                width: '100%',
-                                padding: '10px 14px',
-                                borderRadius: '8px',
-                                border: '1px solid #ddd',
-                                fontSize: '14px',
-                                fontFamily: 'Roboto, sans-serif',
-                                backgroundColor: '#FFFFFF',
-                                boxSizing: 'border-box',
-                            }}
+                            className="w-full px-3.5 py-2.5 rounded-lg border border-[#ddd] text-sm font-['Roboto',sans-serif] bg-white box-border"
                         />
                     </div>
 
                     {/* BOUTONS */}
-                    <div style={{ display: 'flex', gap: '10px' }}>
+                    <div className="flex gap-2.5">
                         <button
                             onClick={handleFilter}
-                            style={{
-                                padding: '10px 20px',
-                                backgroundColor: '#2D6A5A',
-                                color: '#FFFFFF',
-                                border: 'none',
-                                borderRadius: '8px',
-                                fontSize: '14px',
-                                fontFamily: 'Roboto, sans-serif',
-                                fontWeight: '500',
-                                cursor: 'pointer',
-                                display: 'flex',
-                                alignItems: 'center',
-                                gap: '6px',
-                            }}
+                            className="px-5 py-2.5 bg-[#2D6A5A] text-white border-none rounded-lg text-sm font-['Roboto',sans-serif] font-medium cursor-pointer flex items-center gap-1.5"
                         >
                             <Search size={15} />
                             Rechercher
@@ -264,19 +148,7 @@ export default function Index({ spaces, filters = {} }) {
                         {hasActiveFilters && (
                             <button
                                 onClick={handleReset}
-                                style={{
-                                    padding: '10px 16px',
-                                    backgroundColor: '#FFFFFF',
-                                    color: '#888',
-                                    border: '1px solid #ddd',
-                                    borderRadius: '8px',
-                                    fontSize: '14px',
-                                    fontFamily: 'Roboto, sans-serif',
-                                    cursor: 'pointer',
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                    gap: '6px',
-                                }}
+                                className="px-4 py-2.5 bg-white text-[#888] border border-[#ddd] rounded-lg text-sm font-['Roboto',sans-serif] cursor-pointer flex items-center gap-1.5"
                             >
                                 <X size={15} />
                                 Réinitialiser
@@ -287,103 +159,42 @@ export default function Index({ spaces, filters = {} }) {
 
                 {/* GRILLE DES ESPACES */}
                 {spaces.length === 0 ? (
-                    <div style={{
-                        backgroundColor: '#FFFFFF',
-                        borderRadius: '16px',
-                        padding: '64px 48px',
-                        textAlign: 'center',
-                        color: '#888888',
-                    }}>
-                        <p style={{ fontSize: '15px', marginBottom: '12px' }}>
+                    <div className="bg-white rounded-2xl py-16 px-12 text-center text-[#888888]">
+                        <p className="text-[15px] mb-3">
                             Aucun espace ne correspond à vos critères.
                         </p>
                         <button
                             onClick={handleReset}
-                            style={{
-                                backgroundColor: '#2D6A5A',
-                                color: '#FFFFFF',
-                                border: 'none',
-                                borderRadius: '8px',
-                                padding: '10px 20px',
-                                fontSize: '14px',
-                                cursor: 'pointer',
-                                fontFamily: 'Roboto, sans-serif',
-                            }}
+                            className="bg-[#2D6A5A] text-white border-none rounded-lg px-5 py-2.5 text-sm cursor-pointer font-['Roboto',sans-serif]"
                         >
                             Voir tous les espaces
                         </button>
                     </div>
                 ) : (
-                    <div style={{
-                        display: 'grid',
-                        gridTemplateColumns: 'repeat(3, 1fr)',
-                        gap: '20px',
-                    }}>
+                    <div className="grid grid-cols-3 gap-5">
                         {spaces.map((space) => (
-                            <div key={space.id} style={{
-                                backgroundColor: '#FFFFFF',
-                                borderRadius: '16px',
-                                overflow: 'hidden',
-                                boxShadow: '0 2px 8px rgba(0,0,0,0.05)',
-                            }}>
+                            <div key={space.id} className="bg-white rounded-2xl overflow-hidden shadow-[0_2px_8px_rgba(0,0,0,0.05)]">
                                 {/* IMAGE */}
-                                <div style={{ position: 'relative' }}>
+                                <div className="relative">
                                     {space.image ? (
                                         <img
                                             src={`/storage/${space.image}`}
                                             alt={space.name}
-                                            style={{
-                                                width: '100%',
-                                                height: '180px',
-                                                objectFit: 'cover',
-                                                display: 'block',
-                                            }}
+                                            className="w-full h-[180px] object-cover block"
                                         />
                                     ) : (
-                                        <div style={{
-                                            width: '100%',
-                                            height: '180px',
-                                            backgroundColor: typeColors[space.type] || '#E0F2FE',
-                                            display: 'flex',
-                                            alignItems: 'center',
-                                            justifyContent: 'center',
-                                        }}>
+                                        <div className={`w-full h-[180px] flex items-center justify-center ${typeColors[space.type] || 'bg-[#E0F2FE]'}`}>
                                             <ImageIcon size={32} color="#2D6A5A" opacity={0.3} />
                                         </div>
                                     )}
 
                                     {/* BADGE TYPE sur l'image */}
-                                    <span style={{
-                                        position: 'absolute',
-                                        top: '12px',
-                                        left: '12px',
-                                        backgroundColor: 'rgba(255,255,255,0.9)',
-                                        color: '#2D6A5A',
-                                        fontFamily: 'Roboto, sans-serif',
-                                        fontWeight: '500',
-                                        fontSize: '11px',
-                                        padding: '4px 10px',
-                                        borderRadius: '999px',
-                                    }}>
+                                    <span className="absolute top-3 left-3 bg-white/90 text-[#2D6A5A] font-['Roboto',sans-serif] font-medium text-[11px] px-2.5 py-1 rounded-full">
                                         {typeLabels[space.type] || space.type}
                                     </span>
 
                                     {/* BADGE DISPONIBILITÉ sur l'image */}
-                                    <span style={{
-                                        position: 'absolute',
-                                        top: '12px',
-                                        right: '12px',
-                                        backgroundColor: space.is_available ? '#DCFCE7' : '#FEE2E2',
-                                        color: space.is_available ? '#166534' : '#991B1B',
-                                        fontFamily: 'Roboto, sans-serif',
-                                        fontWeight: '600',
-                                        fontSize: '11px',
-                                        padding: '4px 10px',
-                                        borderRadius: '999px',
-                                        display: 'flex',
-                                        alignItems: 'center',
-                                        gap: '4px',
-                                    }}>
+                                    <span className={`absolute top-3 right-3 font-['Roboto',sans-serif] font-semibold text-[11px] px-2.5 py-1 rounded-full flex items-center gap-1 ${space.is_available ? 'bg-[#DCFCE7] text-[#166534]' : 'bg-[#FEE2E2] text-[#991B1B]'}`}>
                                         {space.is_available
                                             ? <><CheckCircle size={11} /> Disponible</>
                                             : <><XCircle size={11} /> Indisponible</>
@@ -392,47 +203,27 @@ export default function Index({ spaces, filters = {} }) {
                                 </div>
 
                                 {/* INFOS */}
-                                <div style={{ padding: '20px' }}>
-                                    <h3 style={{
-                                        fontFamily: 'Montserrat, sans-serif',
-                                        fontWeight: '700',
-                                        fontSize: '17px',
-                                        color: '#2D6A5A',
-                                        marginBottom: '8px',
-                                    }}>
+                                <div className="p-5">
+                                    <h3 className="font-['Montserrat',sans-serif] font-bold text-[17px] text-[#2D6A5A] mb-2">
                                         {space.name}
                                     </h3>
-                                    <p style={{
-                                        fontFamily: 'Roboto, sans-serif',
-                                        fontWeight: '300',
-                                        fontSize: '13px',
-                                        color: '#666666',
-                                        lineHeight: '1.5',
-                                        marginBottom: '16px',
-                                        minHeight: '40px',
-                                    }}>
+                                    <p className="font-['Roboto',sans-serif] font-light text-[13px] text-[#666666] leading-relaxed mb-4 min-h-[40px]">
                                         {space.description}
                                     </p>
 
                                     {/* CAPACITÉ + PRIX */}
-                                    <div style={{
-                                        display: 'flex',
-                                        justifyContent: 'space-between',
-                                        marginBottom: '16px',
-                                        fontSize: '13px',
-                                        color: '#555555',
-                                    }}>
-                                        <span style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+                                    <div className="flex justify-between mb-4 text-[13px] text-[#555555]">
+                                        <span className="flex items-center gap-1">
                                             <Users size={14} color="#555555" />
                                             {space.capacity} personne{space.capacity > 1 ? 's' : ''}
                                         </span>
-                                        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '2px' }}>
-                                            <span style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+                                        <div className="flex flex-col items-end gap-0.5">
+                                            <span className="flex items-center gap-1">
                                                 <Clock size={14} color="#555555" />
                                                 {space.price_par_heure}€/h
                                             </span>
                                             {space.price_par_demi_journee && (
-                                                <span style={{ fontSize: '12px', color: '#888' }}>
+                                                <span className="text-xs text-[#888]">
                                                     {space.price_par_demi_journee}€ / demi-journée
                                                 </span>
                                             )}
@@ -440,22 +231,11 @@ export default function Index({ spaces, filters = {} }) {
                                     </div>
 
                                     {/* ACTIONS */}
-                                    <div style={{ display: 'flex', gap: '8px' }}>
+                                    <div className="flex gap-2">
                                         {!canManage && space.is_available && (
                                             <Link
                                                 href={`/reservations/create?space_id=${space.id}`}
-                                                style={{
-                                                    flex: 1,
-                                                    backgroundColor: '#2D6A5A',
-                                                    color: '#FFFFFF',
-                                                    fontFamily: 'Roboto, sans-serif',
-                                                    fontWeight: '500',
-                                                    fontSize: '13px',
-                                                    padding: '10px',
-                                                    borderRadius: '8px',
-                                                    textDecoration: 'none',
-                                                    textAlign: 'center',
-                                                }}
+                                                className="flex-1 bg-[#2D6A5A] text-white font-['Roboto',sans-serif] font-medium text-[13px] p-2.5 rounded-lg no-underline text-center"
                                             >
                                                 Réserver
                                             </Link>
@@ -464,18 +244,7 @@ export default function Index({ spaces, filters = {} }) {
                                         {canManage && (
                                             <Link
                                                 href={`/spaces/${space.id}`}
-                                                style={{
-                                                    flex: 1,
-                                                    backgroundColor: '#E0F2FE',
-                                                    color: '#2D6A5A',
-                                                    fontFamily: 'Roboto, sans-serif',
-                                                    fontWeight: '500',
-                                                    fontSize: '13px',
-                                                    padding: '10px',
-                                                    borderRadius: '8px',
-                                                    textDecoration: 'none',
-                                                    textAlign: 'center',
-                                                }}
+                                                className="flex-1 bg-[#E0F2FE] text-[#2D6A5A] font-['Roboto',sans-serif] font-medium text-[13px] p-2.5 rounded-lg no-underline text-center"
                                             >
                                                 Voir les réservations
                                             </Link>
@@ -484,16 +253,7 @@ export default function Index({ spaces, filters = {} }) {
                                         {canManage && (
                                             <Link
                                                 href={`/spaces/${space.id}/edit`}
-                                                style={{
-                                                    backgroundColor: '#F5F0EA',
-                                                    color: '#2D6A5A',
-                                                    padding: '10px 14px',
-                                                    borderRadius: '8px',
-                                                    textDecoration: 'none',
-                                                    display: 'flex',
-                                                    alignItems: 'center',
-                                                    justifyContent: 'center',
-                                                }}
+                                                className="bg-[#F5F0EA] text-[#2D6A5A] px-3.5 py-2.5 rounded-lg no-underline flex items-center justify-center"
                                             >
                                                 <Pencil size={14} />
                                             </Link>

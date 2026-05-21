@@ -41,136 +41,72 @@ export default function Edit({ space }) {
     return (
         <div>
             <Head title={`Modifier — ${space.name}`} />
-            <div style={{
-                minHeight: '100vh',
-                backgroundColor: '#F5F0EA',
-                fontFamily: 'Roboto, sans-serif',
-                padding: '40px 20px'
-            }}>
-                <div style={{ maxWidth: '700px', margin: '0 auto' }}>
-                    <h1 style={{
-                        fontFamily: 'Montserrat, sans-serif',
-                        fontWeight: '800',
-                        fontSize: '28px',
-                        color: '#2D6A5A',
-                        marginBottom: '8px',
-                    }}>
+            <div className="min-h-screen bg-[#F5F0EA] font-['Roboto',sans-serif] px-5 py-10">
+                <div className="max-w-[700px] mx-auto">
+                    <h1 className="font-['Montserrat',sans-serif] font-extrabold text-[28px] text-[#2D6A5A] mb-2">
                         Modifier l'espace
                     </h1>
-                    <p style={{
-                        color: '#666',
-                        fontSize: '14px',
-                        marginBottom: '32px'
-                    }}>
+                    <p className="text-[#666] text-sm mb-8">
                         Modifiez les informations de l'espace <strong>{space.name}</strong>.
                     </p>
 
                     {/* Image actuelle */}
                     {space.image && (
-                        <div style={{ marginBottom: '24px', borderRadius: '12px', overflow: 'hidden' }}>
+                        <div className="mb-6 rounded-xl overflow-hidden">
                             <img
                                 src={`/storage/${space.image}`}
                                 alt={space.name}
-                                style={{ width: '100%', height: '200px', objectFit: 'cover', display: 'block' }}
+                                className="w-full h-[200px] object-cover block"
                             />
-                            <p style={{ fontSize: '12px', color: '#888', marginTop: '6px' }}>
+                            <p className="text-xs text-[#888] mt-1.5">
                                 Image actuelle — uploadez une nouvelle image pour la remplacer.
                             </p>
                         </div>
                     )}
 
-                    <form onSubmit={handleSubmit} style={{
-                        backgroundColor: '#FFFFFF',
-                        borderRadius: '16px',
-                        padding: '32px',
-                        boxShadow: '0 2px 12px rgba(0,0,0,0.06)',
-                    }}>
+                    <form onSubmit={handleSubmit} className="bg-white rounded-2xl p-8 shadow-[0_2px_12px_rgba(0,0,0,0.06)]">
 
                         {/* Nom */}
-                        <div style={{ marginBottom: '24px' }}>
-                            <label style={{
-                                display: 'block',
-                                fontWeight: '500',
-                                color: '#2D6A5A',
-                                marginBottom: '8px',
-                                fontSize: '14px'
-                            }}>
+                        <div className="mb-6">
+                            <label className="block font-medium text-[#2D6A5A] mb-2 text-sm">
                                 Nom de l'espace
                             </label>
                             <input
                                 type="text"
                                 value={data.name}
                                 onChange={e => setData('name', e.target.value)}
-                                style={{
-                                    width: '100%',
-                                    padding: '10px 14px',
-                                    borderRadius: '8px',
-                                    border: '1px solid #ddd',
-                                    fontSize: '14px',
-                                    fontFamily: 'Roboto, sans-serif',
-                                    boxSizing: 'border-box'
-                                }}
+                                className="w-full px-3.5 py-2.5 rounded-lg border border-[#ddd] text-sm font-['Roboto',sans-serif] box-border"
                             />
                             {errors.name && (
-                                <p style={{ color: 'red', fontSize: '12px', marginTop: '4px' }}>{errors.name}</p>
+                                <p className="text-red-500 text-xs mt-1">{errors.name}</p>
                             )}
                         </div>
 
                         {/* Description */}
-                        <div style={{ marginBottom: '24px' }}>
-                            <label style={{
-                                display: 'block',
-                                fontWeight: '500',
-                                color: '#2D6A5A',
-                                marginBottom: '8px',
-                                fontSize: '14px'
-                            }}>
+                        <div className="mb-6">
+                            <label className="block font-medium text-[#2D6A5A] mb-2 text-sm">
                                 Description
                             </label>
                             <textarea
                                 value={data.description}
                                 onChange={e => setData('description', e.target.value)}
                                 rows={4}
-                                style={{
-                                    width: '100%',
-                                    padding: '10px 14px',
-                                    borderRadius: '8px',
-                                    border: '1px solid #ddd',
-                                    fontSize: '14px',
-                                    fontFamily: 'Roboto, sans-serif',
-                                    boxSizing: 'border-box',
-                                    resize: 'vertical'
-                                }}
+                                className="w-full px-3.5 py-2.5 rounded-lg border border-[#ddd] text-sm font-['Roboto',sans-serif] box-border resize-y"
                             />
                             {errors.description && (
-                                <p style={{ color: 'red', fontSize: '12px', marginTop: '4px' }}>{errors.description}</p>
+                                <p className="text-red-500 text-xs mt-1">{errors.description}</p>
                             )}
                         </div>
 
                         {/* Type */}
-                        <div style={{ marginBottom: '24px' }}>
-                            <label style={{
-                                display: 'block',
-                                fontWeight: '500',
-                                color: '#2D6A5A',
-                                marginBottom: '8px',
-                                fontSize: '14px'
-                            }}>
+                        <div className="mb-6">
+                            <label className="block font-medium text-[#2D6A5A] mb-2 text-sm">
                                 Type d'espace
                             </label>
                             <select
                                 value={data.type}
                                 onChange={e => setData('type', e.target.value)}
-                                style={{
-                                    width: '100%',
-                                    padding: '10px 14px',
-                                    borderRadius: '8px',
-                                    border: '1px solid #ddd',
-                                    fontSize: '14px',
-                                    fontFamily: 'Roboto, sans-serif',
-                                    boxSizing: 'border-box',
-                                    backgroundColor: '#FFFFFF'
-                                }}
+                                className="w-full px-3.5 py-2.5 rounded-lg border border-[#ddd] text-sm font-['Roboto',sans-serif] box-border bg-white"
                             >
                                 <option value="bureau_individuel">Bureau individuel</option>
                                 <option value="bureau_partage">Bureau partagé</option>
@@ -178,20 +114,14 @@ export default function Edit({ space }) {
                                 <option value="espace_detente">Espace détente</option>
                             </select>
                             {errors.type && (
-                                <p style={{ color: 'red', fontSize: '12px', marginTop: '4px' }}>{errors.type}</p>
+                                <p className="text-red-500 text-xs mt-1">{errors.type}</p>
                             )}
                         </div>
 
                         {/* Capacité + Prix heure */}
-                        <div style={{ display: 'flex', gap: '16px', marginBottom: '24px' }}>
-                            <div style={{ flex: 1 }}>
-                                <label style={{
-                                    display: 'block',
-                                    fontWeight: '500',
-                                    color: '#2D6A5A',
-                                    marginBottom: '8px',
-                                    fontSize: '14px'
-                                }}>
+                        <div className="flex gap-4 mb-6">
+                            <div className="flex-1">
+                                <label className="block font-medium text-[#2D6A5A] mb-2 text-sm">
                                     Capacité (personnes)
                                 </label>
                                 <input
@@ -199,29 +129,15 @@ export default function Edit({ space }) {
                                     value={data.capacity}
                                     onChange={e => setData('capacity', e.target.value)}
                                     min="1"
-                                    style={{
-                                        width: '100%',
-                                        padding: '10px 14px',
-                                        borderRadius: '8px',
-                                        border: '1px solid #ddd',
-                                        fontSize: '14px',
-                                        fontFamily: 'Roboto, sans-serif',
-                                        boxSizing: 'border-box'
-                                    }}
+                                    className="w-full px-3.5 py-2.5 rounded-lg border border-[#ddd] text-sm font-['Roboto',sans-serif] box-border"
                                 />
                                 {errors.capacity && (
-                                    <p style={{ color: 'red', fontSize: '12px', marginTop: '4px' }}>{errors.capacity}</p>
+                                    <p className="text-red-500 text-xs mt-1">{errors.capacity}</p>
                                 )}
                             </div>
 
-                            <div style={{ flex: 1 }}>
-                                <label style={{
-                                    display: 'block',
-                                    fontWeight: '500',
-                                    color: '#2D6A5A',
-                                    marginBottom: '8px',
-                                    fontSize: '14px'
-                                }}>
+                            <div className="flex-1">
+                                <label className="block font-medium text-[#2D6A5A] mb-2 text-sm">
                                     Prix par heure (€)
                                 </label>
                                 <input
@@ -230,31 +146,17 @@ export default function Edit({ space }) {
                                     onChange={e => setData('price_par_heure', e.target.value)}
                                     min="0"
                                     step="0.01"
-                                    style={{
-                                        width: '100%',
-                                        padding: '10px 14px',
-                                        borderRadius: '8px',
-                                        border: '1px solid #ddd',
-                                        fontSize: '14px',
-                                        fontFamily: 'Roboto, sans-serif',
-                                        boxSizing: 'border-box'
-                                    }}
+                                    className="w-full px-3.5 py-2.5 rounded-lg border border-[#ddd] text-sm font-['Roboto',sans-serif] box-border"
                                 />
                                 {errors.price_par_heure && (
-                                    <p style={{ color: 'red', fontSize: '12px', marginTop: '4px' }}>{errors.price_par_heure}</p>
+                                    <p className="text-red-500 text-xs mt-1">{errors.price_par_heure}</p>
                                 )}
                             </div>
                         </div>
 
                         {/* Prix demi-journée */}
-                        <div style={{ marginBottom: '24px' }}>
-                            <label style={{
-                                display: 'block',
-                                fontWeight: '500',
-                                color: '#2D6A5A',
-                                marginBottom: '8px',
-                                fontSize: '14px'
-                            }}>
+                        <div className="mb-6">
+                            <label className="block font-medium text-[#2D6A5A] mb-2 text-sm">
                                 Prix par demi-journée (€)
                             </label>
                             <input
@@ -263,107 +165,58 @@ export default function Edit({ space }) {
                                 onChange={e => setData('price_par_demi_journee', e.target.value)}
                                 min="0"
                                 step="0.01"
-                                style={{
-                                    width: '100%',
-                                    padding: '10px 14px',
-                                    borderRadius: '8px',
-                                    border: '1px solid #ddd',
-                                    fontSize: '14px',
-                                    fontFamily: 'Roboto, sans-serif',
-                                    boxSizing: 'border-box'
-                                }}
+                                className="w-full px-3.5 py-2.5 rounded-lg border border-[#ddd] text-sm font-['Roboto',sans-serif] box-border"
                             />
                             {errors.price_par_demi_journee && (
-                                <p style={{ color: 'red', fontSize: '12px', marginTop: '4px' }}>{errors.price_par_demi_journee}</p>
+                                <p className="text-red-500 text-xs mt-1">{errors.price_par_demi_journee}</p>
                             )}
                         </div>
 
                         {/* Disponibilité */}
-                        <div style={{ marginBottom: '24px', display: 'flex', alignItems: 'center', gap: '12px' }}>
+                        <div className="flex items-center gap-3 mb-6">
                             <input
                                 type="checkbox"
                                 id="is_available"
                                 checked={data.is_available}
                                 onChange={e => setData('is_available', e.target.checked)}
-                                style={{ width: '18px', height: '18px', accentColor: '#2D6A5A', cursor: 'pointer' }}
+                                className="w-[18px] h-[18px] accent-[#2D6A5A] cursor-pointer"
                             />
-                            <label htmlFor="is_available" style={{
-                                fontWeight: '500',
-                                color: '#2D6A5A',
-                                fontSize: '14px',
-                                cursor: 'pointer'
-                            }}>
+                            <label htmlFor="is_available" className="font-medium text-[#2D6A5A] text-sm cursor-pointer">
                                 Espace disponible à la réservation
                             </label>
                         </div>
 
                         {/* Image */}
-                        <div style={{ marginBottom: '24px' }}>
-                            <label style={{
-                                display: 'block',
-                                fontWeight: '500',
-                                color: '#2D6A5A',
-                                marginBottom: '8px',
-                                fontSize: '14px'
-                            }}>
+                        <div className="mb-6">
+                            <label className="block font-medium text-[#2D6A5A] mb-2 text-sm">
                                 Nouvelle photo (optionnel)
                             </label>
                             <input
                                 type="file"
                                 accept="image/jpeg,image/png,image/jpg,image/webp"
                                 onChange={e => setData('image', e.target.files[0])}
-                                style={{
-                                    width: '100%',
-                                    padding: '10px 14px',
-                                    borderRadius: '8px',
-                                    border: '1px solid #ddd',
-                                    fontSize: '14px',
-                                    fontFamily: 'Roboto, sans-serif',
-                                    boxSizing: 'border-box',
-                                    backgroundColor: '#FFFFFF',
-                                    cursor: 'pointer'
-                                }}
+                                className="w-full px-3.5 py-2.5 rounded-lg border border-[#ddd] text-sm font-['Roboto',sans-serif] box-border bg-white cursor-pointer"
                             />
                             {errors.image && (
-                                <p style={{ color: 'red', fontSize: '12px', marginTop: '4px' }}>{errors.image}</p>
+                                <p className="text-red-500 text-xs mt-1">{errors.image}</p>
                             )}
                         </div>
 
                         {/* Boutons */}
-                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '32px' }}>
+                        <div className="flex justify-between items-center mt-8">
 
                             <a href={route('spaces.index')}
-                                style={{
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                    gap: '8px',
-                                    color: '#2D6A5A',
-                                    fontSize: '14px',
-                                    textDecoration: 'none',
-                                    fontWeight: '500'
-                                }}>
+                                className="flex items-center gap-2 text-[#2D6A5A] text-sm font-medium no-underline"
+                            >
                                 <ArrowLeft size={16} />
                                 Retour aux espaces
                             </a>
 
-                            <div style={{ display: 'flex', gap: '12px' }}>
+                            <div className="flex gap-3">
                                 <button
                                     type="button"
                                     onClick={handleDelete}
-                                    style={{
-                                        display: 'flex',
-                                        alignItems: 'center',
-                                        gap: '8px',
-                                        backgroundColor: '#FEE2E2',
-                                        color: '#991B1B',
-                                        border: 'none',
-                                        borderRadius: '8px',
-                                        padding: '12px 20px',
-                                        fontSize: '14px',
-                                        fontFamily: 'Montserrat, sans-serif',
-                                        fontWeight: '600',
-                                        cursor: 'pointer'
-                                    }}
+                                    className="flex items-center gap-2 bg-[#FEE2E2] text-[#991B1B] border-none rounded-lg px-5 py-3 text-sm font-['Montserrat',sans-serif] font-semibold cursor-pointer"
                                 >
                                     <Trash2 size={16} />
                                     Supprimer
@@ -372,20 +225,7 @@ export default function Edit({ space }) {
                                 <button
                                     type="submit"
                                     disabled={processing}
-                                    style={{
-                                        display: 'flex',
-                                        alignItems: 'center',
-                                        gap: '8px',
-                                        backgroundColor: processing ? '#aaa' : '#2D6A5A',
-                                        color: '#FFFFFF',
-                                        border: 'none',
-                                        borderRadius: '8px',
-                                        padding: '12px 24px',
-                                        fontSize: '14px',
-                                        fontFamily: 'Montserrat, sans-serif',
-                                        fontWeight: '600',
-                                        cursor: processing ? 'not-allowed' : 'pointer'
-                                    }}
+                                    className={`flex items-center gap-2 text-white border-none rounded-lg px-6 py-3 text-sm font-['Montserrat',sans-serif] font-semibold transition-colors duration-200 ${processing ? 'bg-[#aaa] cursor-not-allowed' : 'bg-[#2D6A5A] cursor-pointer hover:bg-[#1a4237]'}`}
                                 >
                                     <Save size={16} />
                                     {processing ? 'Enregistrement...' : 'Sauvegarder'}
