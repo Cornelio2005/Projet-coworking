@@ -45,7 +45,7 @@ export default function Welcome({ canLogin, canRegister }) {
                                 href="/login"
                                 onMouseEnter={() => setHoverLogin(true)}
                                 onMouseLeave={() => setHoverLogin(false)}
-                                className={`px-5 py-2 border-2 border-[#0080FF] rounded-lg font-medium no-underline text-sm transition-all duration-200 ${hoverLogin ? 'bg-[#0080FF] text-white' : 'bg-transparent text-[#0080FF]'}`}
+                                className={`px-5 py-2 border-2 border-[#2D6A5A] rounded-lg font-medium no-underline text-sm transition-all duration-200 ${hoverLogin ? 'bg-[#2D6A5A] text-white' : 'bg-transparent text-[#2D6A5A]'}`}
                             >
                                 Se connecter
                             </Link>
@@ -70,10 +70,7 @@ export default function Welcome({ canLogin, canRegister }) {
             ───────────────────────────────────────── */}
             <section className="pt-24 px-[10%] pb-20 flex flex-col items-start">
                 {/* Badge */}
-                <div className="bg-[#E0F2FE] text-[#2D6A5A] text-[13px] font-semibold px-4 py-1.5 rounded-full mb-6 inline-flex items-center gap-1.5">
-                    <CheckCircle size={13} />
-                    Espaces disponibles dès maintenant
-                </div>
+
 
                 <h1 className="font-['Montserrat',sans-serif] font-extrabold text-[56px] text-[#1a1a1a] leading-[1.1] max-w-[680px] mb-6">
                     Votre espace de travail,{' '}
@@ -89,7 +86,7 @@ export default function Welcome({ canLogin, canRegister }) {
                         href="/register"
                         onMouseEnter={() => setHoverCta1(true)}
                         onMouseLeave={() => setHoverCta1(false)}
-                        className={`bg-[#ff9d73] text-white font-semibold text-[15px] px-8 py-3.5 rounded-[10px] no-underline flex items-center gap-2 transition-all duration-200 ${hoverCta1 ? 'shadow-[0_6px_20px_rgba(45,106,90,0.35)]' : 'shadow-none'}`}
+                        className={`bg-[#2D6A5A] text-white font-semibold text-[15px] px-8 py-3.5 rounded-[10px] no-underline flex items-center gap-2 transition-all duration-200 ${hoverCta1 ? 'shadow-[0_6px_20px_rgba(45,106,90,0.35)]' : 'shadow-none'}`}
                     >
                         Réserver un espace
                         <ArrowRight size={16} />

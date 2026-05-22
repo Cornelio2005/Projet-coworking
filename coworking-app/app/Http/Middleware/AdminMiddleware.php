@@ -16,14 +16,14 @@ class AdminMiddleware
     public function handle(Request $request, Closure $next): Response
     {
         // Si l'utilisateur n'est pas connecté → rediriger vers le login
-        if (!auth::check()) {
+        if (!auth()->check()) {
             return redirect()->route('login');
         }
 
         // Si l'utilisateur connecté n'est PAS admin → on lui refuse l'accès
-        if (!auth::user()->isAdmin()) {
+        if (!auth()->user()->isAdmin()) {
             // Optionnel : rediriger vers la page d'accueil ou afficher une erreur 403
-            return redirect()->route('home')->with('error', "Accès réservé à l'administration.");
+            return redirect()->route('dashboard')->with('error', "Accès réservé à l'administration.");
         }
 
         // Si on arrive ici, c'est bon on laisse passer la requête
