@@ -44,7 +44,8 @@ export default function Login({ status, canResetPassword }) {
                     <img
                         src="/logo.png"
                         alt="Cowork'In"
-                        style={{ height: '56px', filter: 'brightness(0) invert(1)' }}
+
+                        style={{ height: '56px', filter: 'invert(100%)' }}
                     />
                     <h2 style={{
                         fontFamily: 'Montserrat, sans-serif',
