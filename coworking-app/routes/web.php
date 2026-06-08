@@ -1,5 +1,5 @@
 <?php
-
+use App\Http\Controllers\InvoiceController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SpaceController;
 use App\Http\Controllers\ReservationController;
@@ -61,6 +61,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::patch('/reservations/{reservation}/cancel', [ReservationController::class, 'cancel'])
         ->name('reservations.cancel');
+    Route::get('/reservations/{reservation}/invoice', [InvoiceController::class, 'download'])
+        ->name('reservations.invoice');
     // PATCH car on modifie partiellement la
     // réservation (uniquement le statut).
 

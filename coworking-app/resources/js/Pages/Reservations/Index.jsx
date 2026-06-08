@@ -50,6 +50,7 @@ function QrModal({ reservation, onClose }) {
     return (
         <div
             onClick={onClose}
+            className='position-fixed inset-0 bg'
             style={{
                 position: 'fixed',
                 inset: 0,

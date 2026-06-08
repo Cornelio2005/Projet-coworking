@@ -69,9 +69,6 @@ export default function Welcome({ canLogin, canRegister }) {
                 HERO
             ───────────────────────────────────────── */}
             <section className="pt-24 px-[10%] pb-20 flex flex-col items-start">
-                {/* Badge */}
-
-
                 <h1 className="font-['Montserrat',sans-serif] font-extrabold text-[56px] text-[#1a1a1a] leading-[1.1] max-w-[680px] mb-6">
                     Votre espace de travail,{' '}
                     <span className="text-[#2D6A5A]">quand vous voulez.</span>

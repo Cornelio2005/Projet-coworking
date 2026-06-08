@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
-
+use App\Http\Controllers\InvoiceController;
 use App\Models\Reservation;
 use App\Models\Space;
 use Carbon\Carbon;
@@ -117,12 +117,13 @@ public function create(Request $request)
             ->with('success', 'Réservation annulée.');
     }
 
-    public function confirm(Reservation $reservation)
-    {
+   public function confirm(Reservation $reservation)
+{
+    $reservation->update(['status' => 'confirmed']);
 
-        $reservation->update(['status' => 'confirmed']);
+    InvoiceController::sendConfirmationEmail($reservation);
 
-        return redirect()->route('reservations.index')
+    return redirect()->route('reservations.index')
         ->with('success', 'Réservation confirmée.');
-    }
+}
 }
