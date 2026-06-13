@@ -1,11 +1,9 @@
 import { Head, router } from '@inertiajs/react';
 import { useEffect, useState } from 'react';
-import { ArrowLeft, QrCode, CheckCircle, Clock, XCircle, User, MapPin, Calendar } from 'lucide-react';
+import { ArrowLeft, QrCode, CheckCircle, Clock, XCircle, User, MapPin, Calendar, Download } from 'lucide-react';
 import { QRCodeSVG } from 'qrcode.react';
 
-// ─────────────────────────────────────────────
-// UTILITAIRES
-// ─────────────────────────────────────────────
+
 
 // Formate une date ISO en "lundi 12 mai 2025 · 09h00"
 function formatDate(dateString) {
@@ -325,6 +323,16 @@ function ReservationCard({ reservation, isAdminOrManager, onShowQr }) {
                                 <CheckCircle size={15} />
                                 Confirmer
                             </button>
+                        )}
+
+                        {!isAdminOrManager && reservation.status === 'confirmed' && (
+                            <a href={route('reservations.invoice', reservation.id)}
+                                className="display-flex align-items-center gap-6px padding-8px 16px background-color-2D6A5A color-FFFFFF border-none border-radius-8px font-size-13px font-family-Roboto, sans-serif font-weight-500 cursor-pointer">
+                                <Download size={15} />
+                                Télécharger la facture
+                            </a>
+
+
                         )}
 
                         {/* BOUTON ANNULER — tous, statut pending uniquement */}
