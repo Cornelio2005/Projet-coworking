@@ -1,4 +1,5 @@
 <?php
+use Carbon\Carbon;
 use App\Http\Controllers\InvoiceController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SpaceController;
@@ -27,6 +28,9 @@ Route::get('/', function () {
     ]);
 });
 
+Route::get('/access/{qr_token}', [App\Http\Controllers\AccessController::class, 'verify'])
+    ->name('access.verify');
+
 // -----------------------------------------------
 // ROUTES AUTHENTIFIÉES (tous les rôles)
 // -----------------------------------------------
@@ -34,10 +38,34 @@ Route::get('/', function () {
 Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::get('/dashboard', function () {
+        $user = auth()->user();
+        $stats = [];
+
+
+        if (in_array($user->role,['admin', 'manager'])) {
+            $today = Carbon::today();
+
+            $stats['reservations_today'] = \App\Models\Reservation::whereDate('start_time', $today)
+            ->count();
+
+            $stats['spaces_count'] = \App\Models\Space::count();
+
+            $stats['monthly_revenue'] = \App\Models\Reservation::where('status', 'confirmed')
+            ->whereMonth('start_time', $today->month)
+            ->whereYear('start_time', $today->year)
+            ->join('spaces', 'reservations.space_id', '=', 'spaces.id')
+            ->sum('spaces.price_par_demi_journee');
+        }
+
+        if ($user->role === 'member') {
+
+            $stats['abonnement_actif'] = $user->hasAbonnementActif(); 
+        }
         return Inertia::render('Dashboard', [
-            'auth' => ['user' => auth()->user()]
+            'auth' => ['user' => $user],
+            'stats' => $stats,
         ]);
-    })->name('dashboard');
+    })->middleware(['auth', 'verified'])->name('dashboard');
 
     // --- PROFIL (routes Breeze — on les garde) ---
     Route::get('/profile', [ProfileController::class, 'edit'])

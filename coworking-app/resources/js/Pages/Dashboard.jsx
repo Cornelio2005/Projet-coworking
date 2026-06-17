@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Head, Link, router } from '@inertiajs/react';
 import { CalendarDays, Building2, Euro, ClipboardList, Plus, Star, ArrowRight, LogOut, CheckCircle } from 'lucide-react';
 
-export default function Dashboard({ auth }) {
+export default function Dashboard({ auth, stats }) {
     const user = auth.user;
     const role = user.role;
 
@@ -80,23 +80,20 @@ export default function Dashboard({ auth }) {
                             {[
                                 {
                                     label: "Réservations aujourd'hui",
-                                    value: '14',
+                                    value: stats.reservations_today ?? '_',
                                     icon: <CalendarDays size={28} color="#2D6A5A" />,
-                                    // Vert très clair — doux et lisible
                                     color: 'bg-[#DCFCE7]',
                                 },
                                 {
                                     label: 'Espaces disponibles',
-                                    value: '8',
+                                    value: stats.spaces_count ?? '_',
                                     icon: <Building2 size={28} color="#2D6A5A" />,
-                                    // Ambre doux — chaud et élégant
                                     color: 'bg-[#FEF3C7]',
                                 },
                                 {
                                     label: 'Revenus du mois',
-                                    value: '2 450€',
+                                    value: stats.monthly_revenue !== undefined ? `${stats.monthly_revenue}€` : "_",
                                     icon: <Euro size={28} color="#2D6A5A" />,
-                                    // Beige crème — sobre et raffiné
                                     color: 'bg-[#F5F0EA]',
                                 },
                             ].map((stat, i) => (
@@ -148,13 +145,13 @@ export default function Dashboard({ auth }) {
                             {[
                                 {
                                     label: "Réservations aujourd'hui",
-                                    value: '14',
+                                    value: stats.reservations_today ?? '_',
                                     icon: <CalendarDays size={28} color="#2D6A5A" />,
                                     color: 'bg-[#DCFCE7]',
                                 },
                                 {
                                     label: 'Espaces disponibles',
-                                    value: '8',
+                                    value: stats.spaces_count ?? '_',
                                     icon: <Building2 size={28} color="#2D6A5A" />,
                                     color: 'bg-[#FEF3C7]',
                                 },
@@ -216,7 +213,9 @@ export default function Dashboard({ auth }) {
                                         </span>
                                     </div>
                                     <div className="font-light text-sm text-white/80">
-                                        Vos réservations en open-space sont incluses — accès illimité.
+                                        {stats.abonnement_actif
+                                            ? "Vous avez un abonnement actif. Vos réservations en open-space sont incluses — accès illimité."
+                                            : "Pas d'abonnement actif."}
                                     </div>
                                 </div>
                             </div>
