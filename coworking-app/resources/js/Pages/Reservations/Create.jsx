@@ -1,8 +1,10 @@
-import { useForm, Head } from '@inertiajs/react';
+import { useForm, Head, usePage, Link } from '@inertiajs/react';
 import { useEffect, useState } from 'react';
-import { ArrowLeft, Clock, Calendar, Tag } from 'lucide-react';
+import { ArrowLeft, Clock, Calendar, Tag, ShoppingCart } from 'lucide-react';
 
 export default function Create({ space, auth }) {
+
+    const { cartCount } = usePage().props;
 
     useEffect(() => {
         const link = document.createElement('link');
@@ -20,9 +22,9 @@ export default function Create({ space, auth }) {
         end_datetime: '',
         type: 'heure',
     });
-    const handleSubmit = (e) => {
+    const handleAddToCart = (e) => {
         e.preventDefault();
-        post(route('reservations.store'));
+        post(route('cart.add'));
     };
 
     return (
@@ -32,10 +34,23 @@ export default function Create({ space, auth }) {
                 {/* NAVBAR */}
                 <nav className="bg-white px-12 py-3.5 flex justify-between items-center shadow-[0_2px_8px_rgba(0,0,0,0.06)]">
                     <img src="/logo.png" alt="Cowork'In" className="h-[42px]" />
-                    <a href="/spaces" className="flex items-center gap-1.5 text-sm text-[#2D6A5A] no-underline">
-                        <ArrowLeft size={16} />
-                        Retour aux espaces
-                    </a>
+
+                    <div className="flex items-center gap-6">
+                        {/* Icône panier avec compteur */}
+                        <Link href="/cart" className="relative flex items-center gap-1.5 text-sm text-[#2D6A5A] no-underline">
+                            <ShoppingCart size={20} />
+                            {cartCount > 0 && (
+                                <span className="absolute -top-2 -right-2 bg-[#C4714B] text-white text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center">
+                                    {cartCount}
+                                </span>
+                            )}
+                        </Link>
+
+                        <a href="/spaces" className="flex items-center gap-1.5 text-sm text-[#2D6A5A] no-underline">
+                            <ArrowLeft size={16} />
+                            Retour aux espaces
+                        </a>
+                    </div>
                 </nav>
 
                 {/* LAYOUT SPLIT */}
@@ -227,11 +242,11 @@ export default function Create({ space, auth }) {
                             </div>
                             <button
                                 type="button"
-                                onClick={handleSubmit}
+                                onClick={handleAddToCart}
                                 disabled={processing}
                                 className={`w-full p-3.5 mt-4 text-white border-none rounded-[10px] text-base font-['Montserrat',sans-serif] font-bold transition-colors duration-200 ${processing ? 'bg-[#aaa] cursor-not-allowed' : 'bg-[#2D6A5A] cursor-pointer hover:bg-[#1a4237]'}`}
                             >
-                                {processing ? 'Envoi en cours...' : 'Confirmer la réservation'}
+                                {processing ? 'Ajout au panier en cours...' : 'Ajouter au panier'}
                             </button>
                         </div>
                     </div>
