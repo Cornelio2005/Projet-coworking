@@ -126,4 +126,98 @@ public function create(Request $request)
     return redirect()->route('reservations.index')
         ->with('success', 'Réservation confirmée.');
 }
+
+public function edit(Reservation $reservation)
+{
+    //Seul le propriétaire peut modifier sa reservation
+
+    if($reservation->user_id !== auth()->id()){
+        abort(403);
+    }
+
+    //Seul les reservations en attente peuvent etre modifiées
+    if($reservation->status !== 'pending'){
+        return redirect()->route('reservations.index')
+        ->with('error', 'Seules les réservations en attente peuvent être modifiées.');
+    }
+    
+    //On change l'espace lié à la réservation
+    $reservation->load('space');
+
+    //On recupere tous les espaces
+    $spaces = Space::all();
+
+    return Inertia::render('Reservations/Edit', [
+        'reservation' => $reservation,
+        'spaces' => $spaces,
+        'auth' => ['user' => auth()->user()->load('abonnementActif.plan')],
+    ]);
+
+    
+}
+
+public function update(Request $request, Reservation $reservation)
+{
+    // Seul le propriétaire peut modifier sa réservation
+    if ($reservation->user_id !== auth()->id()) {
+        abort(403);
+    }
+
+    // On ne peut modifier qu'une réservation en attente
+    if ($reservation->status !== 'pending') {
+        return redirect()->route('reservations.index')
+            ->with('error', 'Seules les réservations en attente peuvent être modifiées.');
+    }
+
+    $validated = $request->validate([
+        'space_id'       => 'required|exists:spaces,id',
+        'start_datetime' => 'required|date|after:now',
+        'end_datetime'   => 'required_if:type,heure|nullable|date|after:start_datetime',
+        'type'           => 'required|in:heure,demi-journee',
+    ]);
+
+    $start = Carbon::parse($validated['start_datetime']);
+
+    $end = $validated['type'] === 'heure'
+        ? Carbon::parse($validated['end_datetime'])
+        : $start->copy()->addHours(4);
+    // Même logique que store() :
+    // mode heure → on utilise end_datetime du client
+    // mode demi-journee → serveur calcule +4h
+
+    // On vérifie les conflits en EXCLUANT la réservation actuelle
+    // sans ce paramètre, la réservation confliquerait avec elle-même
+    if (Reservation::hasConflict($validated['space_id'], $start, $end, $reservation->id)) {
+        return back()->withErrors([
+            'start_datetime' => 'Ce créneau est déjà réservé pour cet espace.',
+        ]);
+    }
+
+    $space = Space::findOrFail($validated['space_id']);
+
+    // Recalcul du prix selon le nouveau créneau et le nouvel espace
+    $totalPrice = match($validated['type']) {
+        'heure'        => $space->price_par_heure * $start->diffInHours($end),
+        'demi-journee' => $space->price_par_demi_journee ?? ($space->price_par_heure * 4),
+    };
+
+    // On applique la réduction si l'utilisateur a un abonnement actif
+    $reduction = auth()->user()->getReductionTarif();
+    if ($reduction > 0) {
+        $totalPrice = $totalPrice * (1 - ($reduction / 100));
+    }
+
+    $reservation->update([
+        'space_id'    => $validated['space_id'],
+        'start_time'  => $start,
+        'end_time'    => $end,
+        'type'        => $validated['type'],
+        'total_price' => $totalPrice,
+        // Le status reste 'pending' — on ne le touche pas
+    ]);
+
+    return redirect()->route('reservations.index')
+        ->with('success', 'Réservation modifiée avec succès !');
+}
+
 }

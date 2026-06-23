@@ -1,6 +1,6 @@
 import { Head, router } from '@inertiajs/react';
 import { useEffect, useState } from 'react';
-import { ArrowLeft, QrCode, CheckCircle, Clock, XCircle, User, MapPin, Calendar, Download } from 'lucide-react';
+import { ArrowLeft, QrCode, CheckCircle, Clock, XCircle, User, MapPin, Calendar, Download, Pencil, ShoppingCart } from 'lucide-react';
 import { QRCodeSVG } from 'qrcode.react';
 
 
@@ -335,7 +335,32 @@ function ReservationCard({ reservation, isAdminOrManager, onShowQr }) {
 
                         )}
 
-                        {/* BOUTON ANNULER — tous, statut pending uniquement */}
+                        {/* BOUTON Modifier — Client/member, statut pending uniquement */}
+                        {!isAdminOrManager && reservation.status === 'pending' && (
+                            <button
+                                onClick={() => router.get(route('reservations.edit', reservation.id))}
+                                style={{
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    gap: '6px',
+                                    padding: '8px 16px',
+                                    backgroundColor: '#E0F2FE',
+                                    color: '#2D6A5A',
+                                    border: '1px solid #93C5FD',
+                                    borderRadius: '8px',
+                                    fontSize: '13px',
+                                    fontFamily: 'Roboto, sans-serif',
+                                    fontWeight: '500',
+                                    cursor: 'pointer',
+                                }}
+                            >
+                                <Pencil size={15} />
+                                Modifier
+                            </button>
+
+                        )}
+
+                        {/* BOUTON ANNULER — Client/member, statut pending uniquement */}
                         {reservation.status === 'pending' && (
                             <button
                                 onClick={handleCancel}
@@ -344,9 +369,9 @@ function ReservationCard({ reservation, isAdminOrManager, onShowQr }) {
                                     alignItems: 'center',
                                     gap: '6px',
                                     padding: '8px 16px',
-                                    backgroundColor: '#FFFFFF',
-                                    color: '#991B1B',
-                                    border: '1px solid #FCA5A5',
+                                    backgroundColor: '#FEF2F2',
+                                    color: '#B91C1C',
+                                    border: '1px solid #FECACA',
                                     borderRadius: '8px',
                                     fontSize: '13px',
                                     fontFamily: 'Roboto, sans-serif',
@@ -358,6 +383,10 @@ function ReservationCard({ reservation, isAdminOrManager, onShowQr }) {
                                 Annuler
                             </button>
                         )}
+
+
+
+
                     </div>
                 </div>
             </div>

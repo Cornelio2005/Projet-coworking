@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Head, Link, router } from '@inertiajs/react';
-import { CalendarDays, Building2, Euro, ClipboardList, Plus, Star, ArrowRight, LogOut, CheckCircle } from 'lucide-react';
+import { CalendarDays, Building2, Euro, ClipboardList, Plus, Star, ArrowRight, LogOut, CheckCircle, ShoppingCart } from 'lucide-react';
 
 export default function Dashboard({ auth, stats }) {
     const user = auth.user;
@@ -25,9 +25,16 @@ export default function Dashboard({ auth, stats }) {
                 <img src="/logo.png" alt="Cowork'In" className="h-[42px] w-auto" />
 
                 <div className="flex items-center gap-4">
-                    <span className="text-sm text-[#555555]">
-                        {user.name}
-                    </span>
+                    {/* Bouton Panier (ShoppingCart) */}
+                    <Link
+                        href="/cart" // Modifiez l'URL selon votre route backend
+                        className="p-2 text-[#2D6A5A] hover:bg-[#F5F0EA] rounded-full transition-colors duration-200 cursor-pointer flex items-center justify-center"
+                        title="Mon panier"
+                    >
+                        <ShoppingCart size={20} />
+                    </Link>
+
+
 
                     {/* Badge membre — affiché uniquement si role === member */}
                     {role === 'member' && (
@@ -51,6 +58,8 @@ export default function Dashboard({ auth, stats }) {
                         <LogOut size={14} />
                         Déconnexion
                     </button>
+
+
                 </div>
             </nav>
 

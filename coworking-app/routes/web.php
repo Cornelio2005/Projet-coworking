@@ -81,9 +81,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::middleware(['role:client,member'])->group(function () {
 
         // Réservations
-        Route::get('/reservations/create', [ReservationController::class, 'create'])->name('reservations.create');
-        Route::post('/reservations', [ReservationController::class, 'store'])->name('reservations.store');
-
+Route::get('/reservations/create', [ReservationController::class, 'create'])->name('reservations.create');
+Route::post('/reservations', [ReservationController::class, 'store'])->name('reservations.store');
+Route::get('/reservations/{reservation}/edit', [ReservationController::class, 'edit'])->name('reservations.edit');
+Route::put('/reservations/{reservation}', [ReservationController::class, 'update'])->name('reservations.update');
         // Panier
         Route::post('/cart/add', [CartController::class, 'add'])->name('cart.add');
         Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
