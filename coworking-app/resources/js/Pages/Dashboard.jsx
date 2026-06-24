@@ -1,333 +1,354 @@
-import { useState } from 'react';
 import { Head, Link, router } from '@inertiajs/react';
-import { CalendarDays, Building2, Euro, ClipboardList, Plus, Star, ArrowRight, LogOut, CheckCircle, ShoppingCart } from 'lucide-react';
+import {
+    CalendarDays,
+    Building2,
+    Euro,
+    ClipboardList,
+    Plus,
+    Star,
+    ArrowRight,
+    LogOut,
+    ShoppingCart,
+    Bell,
+    ChevronDown,
+} from 'lucide-react';
+import { useState, useRef, useEffect } from 'react';
+
+function formatName(name = '') {
+    return name
+        .toLowerCase()
+        .split(' ')
+        .filter(Boolean)
+        .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+        .join(' ');
+}
+
+const NAV_LINKS = [
+    { label: 'Espaces', href: '/spaces' },
+    { label: 'Réservations', href: '/reservations' },
+    { label: 'Abonnements', href: '/abonnements' },
+];
+
+const ROLE_LABELS = {
+    admin: 'Administrateur',
+    manager: 'Gestionnaire',
+    member: 'Membre',
+    client: 'Client',
+};
+
+function ProfileMenu({ user, role, onLogout }) {
+    const [open, setOpen] = useState(false);
+    const ref = useRef(null);
+
+    useEffect(() => {
+        function handleClickOutside(e) {
+            if (ref.current && !ref.current.contains(e.target)) setOpen(false);
+        }
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => document.removeEventListener('mousedown', handleClickOutside);
+    }, []);
+
+    const initials = formatName(user.name)
+        .split(' ')
+        .map((w) => w[0])
+        .join('')
+        .slice(0, 2);
+
+    return (
+        <div className="relative" ref={ref}>
+            <button
+                onClick={() => setOpen((v) => !v)}
+                className="flex items-center gap-2 rounded-lg px-2 py-1.5 hover:bg-gray-100 transition-colors duration-150 cursor-pointer"
+            >
+                <div className="w-8 h-8 rounded-full bg-[#2D6A5A] text-white text-xs font-semibold flex items-center justify-center">
+                    {initials}
+                </div>
+                <ChevronDown size={14} className={`text-gray-500 transition-transform duration-150 ${open ? 'rotate-180' : ''}`} />
+            </button>
+
+            {open && (
+                <div className="absolute right-0 mt-2 w-56 bg-white rounded-lg border border-gray-200 shadow-lg py-1 z-50">
+                    <div className="px-4 py-3 border-b border-gray-100">
+                        <p className="text-sm font-medium text-gray-900">{formatName(user.name)}</p>
+                        <p className="text-xs text-gray-500 mt-0.5">{ROLE_LABELS[role] ?? role}</p>
+                    </div>
+                    <Link
+                        href="/profile"
+                        className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors duration-150 no-underline"
+                    >
+                        Mon profil
+                    </Link>
+                    <Link
+                        href="/settings"
+                        className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors duration-150 no-underline"
+                    >
+                        Paramètres
+                    </Link>
+                    <button
+                        onClick={onLogout}
+                        className="w-full flex items-center gap-2 px-4 py-2 text-sm text-red-600 hover:bg-red-50 transition-colors duration-150 cursor-pointer text-left border-t border-gray-100 mt-1"
+                    >
+                        <LogOut size={14} />
+                        Déconnexion
+                    </button>
+                </div>
+            )}
+        </div>
+    );
+}
+
+function StatCard({ label, value, icon }) {
+    return (
+        <div className="bg-white rounded-2xl p-6 border border-gray-200 hover:shadow-sm transition-shadow duration-200">
+            <div className="w-10 h-10 rounded-lg bg-gray-100 flex items-center justify-center mb-4">
+                {icon}
+            </div>
+            <div className="font-semibold text-2xl text-gray-900 mb-1 tabular-nums">
+                {value}
+            </div>
+            <div className="text-sm text-gray-500">{label}</div>
+        </div>
+    );
+}
+
+function ActionCard({ label, href, icon }) {
+    return (
+        <Link
+            href={href}
+            className="group bg-white rounded-2xl p-5 flex items-center gap-4 no-underline border border-gray-200 hover:border-[#2D6A5A] hover:shadow-md hover:-translate-y-0.5 transition-all duration-200"
+        >
+            <div className="w-10 h-10 rounded-lg bg-gray-100 group-hover:bg-[#EAF3F0] flex items-center justify-center transition-colors duration-200 shrink-0">
+                {icon}
+            </div>
+            <span className="font-medium text-sm text-gray-800">{label}</span>
+            <ArrowRight
+                size={16}
+                className="text-gray-300 group-hover:text-[#2D6A5A] ml-auto opacity-0 group-hover:opacity-100 transition-all duration-200"
+            />
+        </Link>
+    );
+}
+
+function SectionTitle({ children }) {
+    return (
+        <h2 className="font-semibold text-lg text-gray-900 mb-4">{children}</h2>
+    );
+}
 
 export default function Dashboard({ auth, stats }) {
     const user = auth.user;
     const role = user.role;
 
-    // Hover state pour les cartes d'actions rapides
-    // On stocke l'index de la carte survolée
-    const [hoveredAction, setHoveredAction] = useState(null);
-
     const handleLogout = () => {
         router.post('/logout');
     };
 
+    const today = new Date().toLocaleDateString('fr-FR', {
+        weekday: 'long',
+        day: 'numeric',
+        month: 'long',
+    });
+
+    const subtitle = {
+        admin: 'Tableau de bord administrateur',
+        manager: 'Tableau de bord gestionnaire',
+        member: "Votre abonnement est actif. Vos réservations en open-space sont incluses.",
+        client: 'Bienvenue sur votre espace personnel.',
+    }[role];
+
     return (
-        <div className="min-h-screen bg-[#F5F0EA] font-['Roboto',sans-serif]">
+        <div className="min-h-screen bg-[#FAFAF7] font-sans">
             <Head title="Dashboard — Cowork'In" />
 
-            {/* ─────────────────────────────────────────
-                NAVBAR
-            ───────────────────────────────────────── */}
-            <nav className="bg-white px-12 py-3.5 flex justify-between items-center shadow-[0_2px_8px_rgba(0,0,0,0.06)]">
-                <img src="/logo.png" alt="Cowork'In" className="h-[42px] w-auto" />
+            {/* NAVBAR */}
+            <nav className="bg-white border-b border-gray-100 sticky top-0 z-40">
+                <div className="max-w-7xl mx-auto px-6 lg:px-10 h-16 flex items-center justify-between">
+                    <div className="flex items-center gap-10">
+                        <img src="/logo.png" alt="Cowork'In" className="h-8 w-auto" />
+                        <div className="hidden md:flex items-center gap-1">
+                            {NAV_LINKS.map((link) => (
+                                <Link
+                                    key={link.href}
+                                    href={link.href}
+                                    className="px-3 py-2 rounded-md text-sm font-medium text-gray-600 hover:text-[#2D6A5A] hover:bg-gray-50 no-underline transition-colors duration-150"
+                                >
+                                    {link.label}
+                                </Link>
+                            ))}
+                        </div>
+                    </div>
 
-                <div className="flex items-center gap-4">
-                    {/* Bouton Panier (ShoppingCart) */}
-                    <Link
-                        href="/cart" // Modifiez l'URL selon votre route backend
-                        className="p-2 text-[#2D6A5A] hover:bg-[#F5F0EA] rounded-full transition-colors duration-200 cursor-pointer flex items-center justify-center"
-                        title="Mon panier"
-                    >
-                        <ShoppingCart size={20} />
-                    </Link>
-
-
-
-                    {/* Badge membre — affiché uniquement si role === member */}
-                    {role === 'member' && (
-                        <span className="bg-[#2D6A5A] text-white text-[11px] font-bold font-['Montserrat',sans-serif] px-3 py-1 rounded-full flex items-center gap-1">
-                            <Star size={10} />
-                            Abonné Cowork'In
-                        </span>
-                    )}
-
-                    {/* Badge rôle standard */}
-                    {role !== 'member' && (
-                        <span className="bg-[#E0F2FE] text-[#2D6A5A] font-medium text-xs px-2.5 py-1 rounded-full">
-                            {role.charAt(0).toUpperCase() + role.slice(1)}
-                        </span>
-                    )}
-
-                    <button
-                        onClick={handleLogout}
-                        className="bg-transparent border-2 border-[#2D6A5A] text-[#2D6A5A] font-medium text-[13px] px-4 py-1.5 rounded-lg cursor-pointer flex items-center gap-1.5"
-                    >
-                        <LogOut size={14} />
-                        Déconnexion
-                    </button>
-
-
+                    <div className="flex items-center gap-1">
+                        <button
+                            className="p-2 text-gray-500 hover:text-[#2D6A5A] hover:bg-gray-100 rounded-full transition-colors duration-150 cursor-pointer relative"
+                            title="Notifications"
+                        >
+                            <Bell size={18} />
+                        </button>
+                        <Link
+                            href="/cart"
+                            className="p-2 text-gray-500 hover:text-[#2D6A5A] hover:bg-gray-100 rounded-full transition-colors duration-150 cursor-pointer relative"
+                            title="Mon panier"
+                        >
+                            <ShoppingCart size={18} />
+                        </Link>
+                        <div className="w-px h-6 bg-gray-200 mx-2" />
+                        <ProfileMenu user={user} role={role} onLogout={handleLogout} />
+                    </div>
                 </div>
             </nav>
 
-            {/* ─────────────────────────────────────────
-                CONTENU PRINCIPAL
-            ───────────────────────────────────────── */}
-            <main className="py-12 px-[10%]">
+            {/* CONTENU PRINCIPAL */}
+            <main className="max-w-7xl mx-auto px-6 lg:px-10 py-10">
+                <div className="flex items-end justify-between mb-8">
+                    <div>
+                        <h1 className="font-semibold text-2xl text-gray-900 mb-1">
+                            Bonjour, {formatName(user.name).split(' ')[0]}
+                        </h1>
+                        <p className="text-sm text-gray-500">{subtitle}</p>
+                    </div>
+                    <p className="hidden sm:block text-sm text-gray-400 capitalize">{today}</p>
+                </div>
 
-                {/* Message d'accueil personnalisé */}
-                <h1 className="font-['Montserrat',sans-serif] font-extrabold text-[28px] text-[#2D6A5A] mb-2">
-                    Bonjour, {user.name}
-                </h1>
-                <p className="font-light text-[15px] text-[#888888] mb-10">
-                    {role === 'admin' && 'Tableau de bord administrateur'}
-                    {role === 'manager' && 'Tableau de bord gestionnaire'}
-                    {role === 'member' && 'Votre abonnement est actif. Vos réservations en open-space sont incluses.'}
-                    {role === 'client' && 'Bienvenue sur votre espace personnel.'}
-                </p>
-
-                {/* ─────────────────────────────────────────
-                    VUE ADMIN
-                ───────────────────────────────────────── */}
+                {/* VUE ADMIN */}
                 {role === 'admin' && (
                     <div>
-                        {/* STATISTIQUES */}
-                        <div className="grid grid-cols-3 gap-5 mb-10">
-                            {[
-                                {
-                                    label: "Réservations aujourd'hui",
-                                    value: stats.reservations_today ?? '_',
-                                    icon: <CalendarDays size={28} color="#2D6A5A" />,
-                                    color: 'bg-[#DCFCE7]',
-                                },
-                                {
-                                    label: 'Espaces disponibles',
-                                    value: stats.spaces_count ?? '_',
-                                    icon: <Building2 size={28} color="#2D6A5A" />,
-                                    color: 'bg-[#FEF3C7]',
-                                },
-                                {
-                                    label: 'Revenus du mois',
-                                    value: stats.monthly_revenue !== undefined ? `${stats.monthly_revenue}€` : "_",
-                                    icon: <Euro size={28} color="#2D6A5A" />,
-                                    color: 'bg-[#F5F0EA]',
-                                },
-                            ].map((stat, i) => (
-                                <div key={i} className={`${stat.color} rounded-2xl p-7 border border-[rgba(0,0,0,0.04)]`}>
-                                    <div className="mb-3">{stat.icon}</div>
-                                    <div className="font-['Montserrat',sans-serif] font-extrabold text-[28px] text-[#2D6A5A] mb-1.5">
-                                        {stat.value}
-                                    </div>
-                                    <div className="font-light text-sm text-[#555555]">
-                                        {stat.label}
-                                    </div>
-                                </div>
-                            ))}
+                        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-10">
+                            <StatCard
+                                label="Réservations aujourd'hui"
+                                value={stats.reservations_today ?? '—'}
+                                icon={<CalendarDays size={20} className="text-[#2D6A5A]" />}
+                            />
+                            <StatCard
+                                label="Espaces disponibles"
+                                value={stats.spaces_count ?? '—'}
+                                icon={<Building2 size={20} className="text-[#2D6A5A]" />}
+                            />
+                            <StatCard
+                                label="Revenus du mois"
+                                value={stats.monthly_revenue !== undefined ? `${stats.monthly_revenue} €` : '—'}
+                                icon={<Euro size={20} className="text-[#2D6A5A]" />}
+                            />
                         </div>
-
-                        <h2 className="font-['Montserrat',sans-serif] font-bold text-xl text-[#2D6A5A] mb-5">
-                            Actions rapides
-                        </h2>
-
-                        <div className="grid grid-cols-3 gap-4">
-                            {[
-                                { label: 'Gérer les espaces', href: '/spaces', icon: <Building2 size={24} color="#2D6A5A" /> },
-                                { label: 'Toutes les réservations', href: '/reservations', icon: <ClipboardList size={24} color="#2D6A5A" /> },
-                                { label: 'Créer un espace', href: '/spaces/create', icon: <Plus size={24} color="#2D6A5A" /> },
-                            ].map((action, i) => (
-                                <Link
-                                    key={i}
-                                    href={action.href}
-                                    onMouseEnter={() => setHoveredAction(`admin-${i}`)}
-                                    onMouseLeave={() => setHoveredAction(null)}
-                                    className={`bg-white rounded-xl p-6 flex items-center gap-4 no-underline border-2 transition-all duration-200 ${hoveredAction === `admin-${i}` ? 'border-[#2D6A5A] shadow-[0_4px_16px_rgba(45,106,90,0.12)]' : 'border-transparent shadow-[0_2px_8px_rgba(0,0,0,0.05)]'}`}
-                                >
-                                    {action.icon}
-                                    <span className="font-medium text-[15px] text-[#2D6A5A]">
-                                        {action.label}
-                                    </span>
-                                </Link>
-                            ))}
+                        <SectionTitle>Actions rapides</SectionTitle>
+                        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                            <ActionCard label="Gérer les espaces" href="/spaces" icon={<Building2 size={18} className="text-[#2D6A5A]" />} />
+                            <ActionCard label="Toutes les réservations" href="/reservations" icon={<ClipboardList size={18} className="text-[#2D6A5A]" />} />
+                            <ActionCard label="Créer un espace" href="/spaces/create" icon={<Plus size={18} className="text-[#2D6A5A]" />} />
                         </div>
                     </div>
                 )}
 
-                {/* ─────────────────────────────────────────
-                    VUE MANAGER
-                ───────────────────────────────────────── */}
+                {/* VUE MANAGER */}
                 {role === 'manager' && (
                     <div>
-                        <div className="grid grid-cols-2 gap-5 mb-10">
-                            {[
-                                {
-                                    label: "Réservations aujourd'hui",
-                                    value: stats.reservations_today ?? '_',
-                                    icon: <CalendarDays size={28} color="#2D6A5A" />,
-                                    color: 'bg-[#DCFCE7]',
-                                },
-                                {
-                                    label: 'Espaces disponibles',
-                                    value: stats.spaces_count ?? '_',
-                                    icon: <Building2 size={28} color="#2D6A5A" />,
-                                    color: 'bg-[#FEF3C7]',
-                                },
-                            ].map((stat, i) => (
-                                <div key={i} className={`${stat.color} rounded-2xl p-7 border border-[rgba(0,0,0,0.04)]`}>
-                                    <div className="mb-3">{stat.icon}</div>
-                                    <div className="font-['Montserrat',sans-serif] font-extrabold text-[28px] text-[#2D6A5A] mb-1.5">
-                                        {stat.value}
-                                    </div>
-                                    <div className="font-light text-sm text-[#555555]">
-                                        {stat.label}
-                                    </div>
-                                </div>
-                            ))}
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-10">
+                            <StatCard
+                                label="Réservations aujourd'hui"
+                                value={stats.reservations_today ?? '—'}
+                                icon={<CalendarDays size={20} className="text-[#2D6A5A]" />}
+                            />
+                            <StatCard
+                                label="Espaces disponibles"
+                                value={stats.spaces_count ?? '—'}
+                                icon={<Building2 size={20} className="text-[#2D6A5A]" />}
+                            />
                         </div>
-
-                        <h2 className="font-['Montserrat',sans-serif] font-bold text-xl text-[#2D6A5A] mb-5">
-                            Actions rapides
-                        </h2>
-
-                        <div className="grid grid-cols-2 gap-4">
-                            {[
-                                { label: 'Gérer les espaces', href: '/spaces', icon: <Building2 size={24} color="#2D6A5A" /> },
-                                { label: 'Voir les réservations', href: '/reservations', icon: <ClipboardList size={24} color="#2D6A5A" /> },
-                            ].map((action, i) => (
-                                <Link
-                                    key={i}
-                                    href={action.href}
-                                    onMouseEnter={() => setHoveredAction(`manager-${i}`)}
-                                    onMouseLeave={() => setHoveredAction(null)}
-                                    className={`bg-white rounded-xl p-6 flex items-center gap-4 no-underline border-2 transition-all duration-200 ${hoveredAction === `manager-${i}` ? 'border-[#2D6A5A] shadow-[0_4px_16px_rgba(45,106,90,0.12)]' : 'border-transparent shadow-[0_2px_8px_rgba(0,0,0,0.05)]'}`}
-                                >
-                                    {action.icon}
-                                    <span className="font-medium text-[15px] text-[#2D6A5A]">
-                                        {action.label}
-                                    </span>
-                                </Link>
-                            ))}
+                        <SectionTitle>Actions rapides</SectionTitle>
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                            <ActionCard label="Gérer les espaces" href="/spaces" icon={<Building2 size={18} className="text-[#2D6A5A]" />} />
+                            <ActionCard label="Voir les réservations" href="/reservations" icon={<ClipboardList size={18} className="text-[#2D6A5A]" />} />
                         </div>
                     </div>
                 )}
 
-                {/* ─────────────────────────────────────────
-                    VUE MEMBER
-                ───────────────────────────────────────── */}
+                {/* VUE MEMBER */}
                 {role === 'member' && (
                     <div>
-                        {/* Bloc abonnement actif */}
-                        <div className="bg-[#2D6A5A] rounded-2xl py-8 px-7 mb-10 flex items-center justify-between gap-5">
-                            <div className="flex items-center gap-5">
-                                <div className="bg-white/15 rounded-xl p-3.5">
-                                    <Star size={32} color="#FFFFFF" />
+                        <div className="bg-[#2D6A5A] rounded-2xl py-7 px-7 mb-10 flex flex-wrap items-center justify-between gap-5">
+                            <div className="flex items-center gap-4">
+                                <div className="bg-white/10 rounded-xl p-3">
+                                    <Star size={24} className="text-white" />
                                 </div>
                                 <div>
-                                    <div className="font-['Montserrat',sans-serif] font-extrabold text-lg text-white mb-1.5 flex items-center gap-2.5">
+                                    <div className="font-semibold text-base text-white mb-1 flex items-center gap-2">
                                         Abonné Cowork'In
-                                        <span className="bg-white/20 text-[11px] font-semibold px-2.5 py-1 rounded-full">
+                                        <span className="bg-white/15 text-[11px] font-medium px-2 py-0.5 rounded-full">
                                             Actif
                                         </span>
                                     </div>
-                                    <div className="font-light text-sm text-white/80">
+                                    <div className="text-sm text-white/70 max-w-md">
                                         {stats.abonnement_actif
-                                            ? "Vous avez un abonnement actif. Vos réservations en open-space sont incluses — accès illimité."
+                                            ? 'Vos réservations en open-space sont incluses — accès illimité.'
                                             : "Pas d'abonnement actif."}
                                     </div>
                                 </div>
                             </div>
-                            <Link href="/abonnements" className="bg-white/15 text-white font-semibold text-[13px] px-5 py-2.5 rounded-lg no-underline whitespace-nowrap border border-white/30">
+                            <Link
+                                href="/abonnements"
+                                className="bg-white text-[#2D6A5A] font-medium text-sm px-4 py-2 rounded-lg no-underline whitespace-nowrap hover:bg-white/90 transition-colors duration-150"
+                            >
                                 Mon abonnement
                             </Link>
                         </div>
-
-                        <h2 className="font-['Montserrat',sans-serif] font-bold text-xl text-[#2D6A5A] mb-5">
-                            Actions rapides
-                        </h2>
-
-                        <div className="grid grid-cols-3 gap-4">
-                            {[
-                                { label: 'Réserver un espace', href: '/spaces', icon: <CalendarDays size={24} color="#2D6A5A" /> },
-                                { label: 'Mes réservations', href: '/reservations', icon: <ClipboardList size={24} color="#2D6A5A" /> },
-                                { label: 'Mon abonnement', href: '/abonnements', icon: <Star size={24} color="#2D6A5A" /> },
-                            ].map((action, i) => (
-                                <Link
-                                    key={i}
-                                    href={action.href}
-                                    onMouseEnter={() => setHoveredAction(`member-${i}`)}
-                                    onMouseLeave={() => setHoveredAction(null)}
-                                    className={`bg-white rounded-xl p-6 flex items-center gap-4 no-underline border-2 transition-all duration-200 ${hoveredAction === `member-${i}` ? 'border-[#2D6A5A] shadow-[0_4px_16px_rgba(45,106,90,0.12)]' : 'border-transparent shadow-[0_2px_8px_rgba(0,0,0,0.05)]'}`}
-                                >
-                                    {action.icon}
-                                    <span className="font-medium text-[15px] text-[#2D6A5A]">
-                                        {action.label}
-                                    </span>
-                                </Link>
-                            ))}
+                        <SectionTitle>Actions rapides</SectionTitle>
+                        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                            <ActionCard label="Réserver un espace" href="/spaces" icon={<CalendarDays size={18} className="text-[#2D6A5A]" />} />
+                            <ActionCard label="Mes réservations" href="/reservations" icon={<ClipboardList size={18} className="text-[#2D6A5A]" />} />
+                            <ActionCard label="Mon abonnement" href="/abonnements" icon={<Star size={18} className="text-[#2D6A5A]" />} />
                         </div>
                     </div>
                 )}
 
-                {/* ─────────────────────────────────────────
-                    VUE CLIENT
-                ───────────────────────────────────────── */}
+                {/* VUE CLIENT */}
                 {role === 'client' && (
                     <div>
-                        {/* DEUX CARTES CÔTE À CÔTE */}
-                        <div className="grid grid-cols-2 gap-5 mb-10">
-                            {/* CARTE RÉSERVATION */}
-                            <div className="bg-[#2D6A5A] rounded-2xl py-9 px-7 flex flex-col justify-between gap-6">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-10">
+                            <div className="bg-[#2D6A5A] rounded-2xl py-8 px-7 flex flex-col justify-between gap-6">
                                 <div>
-                                    <div className="font-['Montserrat',sans-serif] font-extrabold text-[22px] text-white mb-2">
+                                    <div className="font-semibold text-lg text-white mb-2">
                                         Besoin d'un espace ?
                                     </div>
-                                    <div className="font-light text-sm text-white/80 leading-[1.6]">
+                                    <div className="text-sm text-white/70 leading-relaxed">
                                         Réservez un poste, un bureau ou une salle en quelques clics.
                                     </div>
                                 </div>
-                                <Link href="/spaces" className="bg-white text-[#2D6A5A] font-['Montserrat',sans-serif] font-bold text-sm px-6 py-3 rounded-[10px] no-underline flex items-center gap-2 self-start">
+                                <Link
+                                    href="/spaces"
+                                    className="bg-white text-[#2D6A5A] font-medium text-sm px-5 py-2.5 rounded-lg no-underline flex items-center gap-2 self-start hover:bg-white/90 transition-colors duration-150"
+                                >
                                     Voir les espaces
                                     <ArrowRight size={16} />
                                 </Link>
                             </div>
 
-                            {/* CARTE ABONNEMENT — terracotta doux */}
-                            <div className="bg-[#FDF6F0] rounded-2xl py-9 px-7 flex flex-col justify-between gap-6 border-2 border-[#F2D5C4]">
+                            <div className="bg-white rounded-2xl py-8 px-7 flex flex-col justify-between gap-6 border border-gray-200">
                                 <div>
                                     <div className="flex items-center gap-2 mb-2">
-                                        <Star size={18} color="#C4714B" />
-                                        <span className="bg-[#C4714B] text-white text-[10px] font-bold font-['Montserrat',sans-serif] px-2.5 py-1 rounded-full">
+                                        <span className="bg-[#C4714B]/10 text-[#C4714B] text-[11px] font-semibold px-2.5 py-1 rounded-full">
                                             Offre membre
                                         </span>
                                     </div>
-                                    <div className="font-['Montserrat',sans-serif] font-extrabold text-[22px] text-[#7C2D12] mb-2">
+                                    <div className="font-semibold text-lg text-gray-900 mb-2">
                                         Passez à la vitesse supérieure
                                     </div>
-                                    <div className="font-normal text-sm text-[#92400E] leading-[1.6]">
-                                        Économisez jusqu'à <strong>-30%</strong> sur vos réservations grâce à nos abonnements membres.
+                                    <div className="text-sm text-gray-500 leading-relaxed">
+                                        Économisez jusqu'à <strong className="text-gray-700">-30%</strong> sur vos réservations grâce à nos abonnements membres.
                                     </div>
                                 </div>
-                                <Link href="/abonnements" className="bg-[#C4714B] text-white font-['Montserrat',sans-serif] font-bold text-sm px-6 py-3 rounded-[10px] no-underline flex items-center gap-2 self-start">
+                                <Link
+                                    href="/abonnements"
+                                    className="bg-[#C4714B] text-white font-medium text-sm px-5 py-2.5 rounded-lg no-underline flex items-center gap-2 self-start hover:bg-[#B25E3A] transition-colors duration-150"
+                                >
                                     Découvrir les offres
                                     <ArrowRight size={16} />
                                 </Link>
                             </div>
                         </div>
-
-                        <h2 className="font-['Montserrat',sans-serif] font-bold text-xl text-[#2D6A5A] mb-5">
-                            Actions rapides
-                        </h2>
-
-                        <div className="grid grid-cols-2 gap-4">
-                            {[
-                                { label: 'Mes réservations', href: '/reservations', icon: <ClipboardList size={24} color="#2D6A5A" /> },
-                                { label: 'Consulter les espaces', href: '/spaces', icon: <Building2 size={24} color="#2D6A5A" /> },
-                            ].map((action, i) => (
-                                <Link
-                                    key={i}
-                                    href={action.href}
-                                    onMouseEnter={() => setHoveredAction(`client-${i}`)}
-                                    onMouseLeave={() => setHoveredAction(null)}
-                                    className={`bg-white rounded-xl p-6 flex items-center gap-4 no-underline border-2 transition-all duration-200 ${hoveredAction === `client-${i}` ? 'border-[#2D6A5A] shadow-[0_4px_16px_rgba(45,106,90,0.12)]' : 'border-transparent shadow-[0_2px_8px_rgba(0,0,0,0.05)]'}`}
-                                >
-                                    {action.icon}
-                                    <span className="font-medium text-[15px] text-[#2D6A5A]">
-                                        {action.label}
-                                    </span>
-                                </Link>
-                            ))}
+                        <SectionTitle>Actions rapides</SectionTitle>
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                            <ActionCard label="Mes réservations" href="/reservations" icon={<ClipboardList size={18} className="text-[#2D6A5A]" />} />
+                            <ActionCard label="Consulter les espaces" href="/spaces" icon={<Building2 size={18} className="text-[#2D6A5A]" />} />
                         </div>
                     </div>
                 )}
