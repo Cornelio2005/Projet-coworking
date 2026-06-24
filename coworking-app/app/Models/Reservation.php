@@ -19,8 +19,6 @@ class Reservation extends Model
         'status',
         'total_price',
         'qr_token',
-        // On ajoute qr_token en fillable pour
-        // qu'il puisse être enregistré en base.
     ];
 
     protected $casts = [
@@ -34,9 +32,6 @@ class Reservation extends Model
         parent::boot();
 
         static::creating(function ($reservation) {
-            // creating() se déclenche automatiquement
-            // juste avant chaque INSERT en base.
-            // On génère un UUID unique comme token QR.
             $reservation->qr_token = Str::uuid();
         });
     }
@@ -49,6 +44,15 @@ class Reservation extends Model
     public function space()
     {
         return $this->belongsTo(Space::class);
+    }
+
+    // Une réservation peut avoir plusieurs équipements
+    // via la table pivot equipment_reservation
+    public function equipments()
+    {
+        return $this->belongsToMany(Equipment::class)
+                    ->withPivot('quantity')
+                    ->withTimestamps();
     }
 
     public static function hasConflict($spaceId, $startTime, $endTime, $excludeId = null): bool

@@ -11,9 +11,18 @@ import {
     ShoppingCart,
     Bell,
     ChevronDown,
+    Clock,
+    MapPin,
+    Check,
+    X,
+    User,
 } from 'lucide-react';
 import { useState, useRef, useEffect } from 'react';
 
+/**
+ * Capitalise proprement "cornelio BENISSAN" -> "Cornelio Benissan"
+ * On corrige ça ici en attendant une normalisation côté backend.
+ */
 function formatName(name = '') {
     return name
         .toLowerCase()
@@ -35,6 +44,10 @@ const ROLE_LABELS = {
     member: 'Membre',
     client: 'Client',
 };
+
+/* ─────────────────────────────────────────
+    SOUS-COMPOSANTS
+───────────────────────────────────────── */
 
 function ProfileMenu({ user, role, onLogout }) {
     const [open, setOpen] = useState(false);
@@ -129,13 +142,206 @@ function ActionCard({ label, href, icon }) {
     );
 }
 
-function SectionTitle({ children }) {
+function SectionTitle({ children, action }) {
     return (
-        <h2 className="font-semibold text-lg text-gray-900 mb-4">{children}</h2>
+        <div className="flex items-center justify-between mb-4">
+            <h2 className="font-semibold text-lg text-gray-900">{children}</h2>
+            {action}
+        </div>
     );
 }
 
-export default function Dashboard({ auth, stats }) {
+function ReservationRow({ reservation }) {
+    return (
+        <div className="flex items-center gap-4 px-5 py-4">
+            <div className="w-10 h-10 rounded-lg bg-gray-100 flex items-center justify-center shrink-0">
+                <CalendarDays size={18} className="text-[#2D6A5A]" />
+            </div>
+
+            <div className="flex-1 min-w-0">
+                <p className="text-sm font-medium text-gray-900 truncate">
+                    {reservation.space_name}
+                </p>
+                <div className="flex items-center gap-3 text-xs text-gray-500 mt-0.5">
+                    <span className="flex items-center gap-1">
+                        <Clock size={12} />
+                        {reservation.time_start} – {reservation.time_end}
+                    </span>
+                    {reservation.location && (
+                        <span className="flex items-center gap-1">
+                            <MapPin size={12} />
+                            {reservation.location}
+                        </span>
+                    )}
+                </div>
+            </div>
+
+            <span className="text-xs font-medium text-gray-500 whitespace-nowrap">
+                {reservation.date}
+            </span>
+        </div>
+    );
+}
+
+/**
+ * Liste des prochaines réservations.
+ * Remplace l'ancienne section "Actions rapides" qui dupliquait la navbar :
+ * ici on affiche une information utile (ce qui arrive bientôt) plutôt
+ * que des liens déjà présents dans la navigation.
+ */
+function UpcomingReservations({ reservations = [] }) {
+    return (
+        <div>
+            <SectionTitle
+                action={
+                    <Link
+                        href="/reservations"
+                        className="text-sm font-medium text-[#2D6A5A] no-underline hover:underline"
+                    >
+                        Voir tout
+                    </Link>
+                }
+            >
+                Prochaines réservations
+            </SectionTitle>
+
+            {reservations.length > 0 ? (
+                <div className="bg-white rounded-2xl border border-gray-200 divide-y divide-gray-100">
+                    {reservations.slice(0, 3).map((r) => (
+                        <ReservationRow key={r.id} reservation={r} />
+                    ))}
+                </div>
+            ) : (
+                <div className="bg-white rounded-2xl border border-dashed border-gray-300 px-6 py-10 flex flex-col items-center text-center">
+                    <div className="w-10 h-10 rounded-lg bg-gray-100 flex items-center justify-center mb-3">
+                        <CalendarDays size={18} className="text-gray-400" />
+                    </div>
+                    <p className="text-sm font-medium text-gray-700 mb-1">
+                        Aucune réservation à venir
+                    </p>
+                    <p className="text-sm text-gray-500 mb-4">
+                        Réservez un espace pour le voir apparaître ici.
+                    </p>
+                    <Link
+                        href="/spaces"
+                        className="bg-[#2D6A5A] text-white font-medium text-sm px-4 py-2 rounded-lg no-underline hover:bg-[#255A4C] transition-colors duration-150"
+                    >
+                        Réserver un espace
+                    </Link>
+                </div>
+            )}
+        </div>
+    );
+}
+
+function PendingReservationRow({ reservation, onValidate, onReject }) {
+    return (
+        <div className="flex items-center gap-4 px-5 py-4">
+            <div className="w-10 h-10 rounded-lg bg-gray-100 flex items-center justify-center shrink-0">
+                <User size={18} className="text-[#2D6A5A]" />
+            </div>
+
+            <div className="flex-1 min-w-0">
+                <p className="text-sm font-medium text-gray-900 truncate">
+                    {reservation.user_name}
+                    <span className="text-gray-400 font-normal"> · {reservation.space_name}</span>
+                </p>
+                <div className="flex items-center gap-3 text-xs text-gray-500 mt-0.5">
+                    <span>{reservation.date}</span>
+                    <span className="flex items-center gap-1">
+                        <Clock size={12} />
+                        {reservation.time_start} – {reservation.time_end}
+                    </span>
+                </div>
+            </div>
+
+            <div className="flex items-center gap-2 shrink-0">
+                <button
+                    onClick={() => onReject(reservation.id)}
+                    className="w-8 h-8 rounded-lg border border-gray-200 text-gray-400 hover:text-red-600 hover:border-red-200 hover:bg-red-50 flex items-center justify-center transition-colors duration-150 cursor-pointer"
+                    title="Refuser"
+                >
+                    <X size={14} />
+                </button>
+                <button
+                    onClick={() => onValidate(reservation.id)}
+                    className="w-8 h-8 rounded-lg bg-[#2D6A5A] text-white hover:bg-[#255A4C] flex items-center justify-center transition-colors duration-150 cursor-pointer"
+                    title="Valider"
+                >
+                    <Check size={14} />
+                </button>
+            </div>
+        </div>
+    );
+}
+
+/**
+ * Réservations en attente de validation — remplace l'ancienne section
+ * "Actions rapides" de l'admin, qui dupliquait deux liens déjà présents
+ * dans la navbar (Espaces, Réservations).
+ */
+function PendingReservations({ reservations = [] }) {
+    const handleValidate = (id) => {
+        router.patch(`/reservations/${id}/validate`);
+    };
+
+    const handleReject = (id) => {
+        router.patch(`/reservations/${id}/reject`);
+    };
+
+    return (
+        <div>
+            <SectionTitle
+                action={
+                    <Link
+                        href="/reservations?status=pending"
+                        className="text-sm font-medium text-[#2D6A5A] no-underline hover:underline"
+                    >
+                        Voir tout
+                    </Link>
+                }
+            >
+                Réservations en attente
+                {reservations.length > 0 && (
+                    <span className="ml-2 bg-[#C4714B]/10 text-[#C4714B] text-xs font-semibold px-2 py-0.5 rounded-full">
+                        {reservations.length}
+                    </span>
+                )}
+            </SectionTitle>
+
+            {reservations.length > 0 ? (
+                <div className="bg-white rounded-2xl border border-gray-200 divide-y divide-gray-100">
+                    {reservations.slice(0, 4).map((r) => (
+                        <PendingReservationRow
+                            key={r.id}
+                            reservation={r}
+                            onValidate={handleValidate}
+                            onReject={handleReject}
+                        />
+                    ))}
+                </div>
+            ) : (
+                <div className="bg-white rounded-2xl border border-dashed border-gray-300 px-6 py-8 flex flex-col items-center text-center">
+                    <div className="w-10 h-10 rounded-lg bg-gray-100 flex items-center justify-center mb-3">
+                        <Check size={18} className="text-gray-400" />
+                    </div>
+                    <p className="text-sm font-medium text-gray-700">
+                        Aucune réservation en attente
+                    </p>
+                    <p className="text-sm text-gray-500">
+                        Tout est traité, bon travail.
+                    </p>
+                </div>
+            )}
+        </div>
+    );
+}
+
+/* ─────────────────────────────────────────
+    PAGE PRINCIPALE
+───────────────────────────────────────── */
+
+export default function Dashboard({ auth, stats, upcomingReservations = [], pendingReservations = [] }) {
     const user = auth.user;
     const role = user.role;
 
@@ -160,11 +366,14 @@ export default function Dashboard({ auth, stats }) {
         <div className="min-h-screen bg-[#FAFAF7] font-sans">
             <Head title="Dashboard — Cowork'In" />
 
-            {/* NAVBAR */}
+            {/* ─────────────────────────────────────────
+                NAVBAR
+            ───────────────────────────────────────── */}
             <nav className="bg-white border-b border-gray-100 sticky top-0 z-40">
                 <div className="max-w-7xl mx-auto px-6 lg:px-10 h-16 flex items-center justify-between">
                     <div className="flex items-center gap-10">
                         <img src="/logo.png" alt="Cowork'In" className="h-8 w-auto" />
+
                         <div className="hidden md:flex items-center gap-1">
                             {NAV_LINKS.map((link) => (
                                 <Link
@@ -179,12 +388,8 @@ export default function Dashboard({ auth, stats }) {
                     </div>
 
                     <div className="flex items-center gap-1">
-                        <button
-                            className="p-2 text-gray-500 hover:text-[#2D6A5A] hover:bg-gray-100 rounded-full transition-colors duration-150 cursor-pointer relative"
-                            title="Notifications"
-                        >
-                            <Bell size={18} />
-                        </button>
+
+
                         <Link
                             href="/cart"
                             className="p-2 text-gray-500 hover:text-[#2D6A5A] hover:bg-gray-100 rounded-full transition-colors duration-150 cursor-pointer relative"
@@ -192,14 +397,19 @@ export default function Dashboard({ auth, stats }) {
                         >
                             <ShoppingCart size={18} />
                         </Link>
+
                         <div className="w-px h-6 bg-gray-200 mx-2" />
+
                         <ProfileMenu user={user} role={role} onLogout={handleLogout} />
                     </div>
                 </div>
             </nav>
 
-            {/* CONTENU PRINCIPAL */}
+            {/* ─────────────────────────────────────────
+                CONTENU PRINCIPAL
+            ───────────────────────────────────────── */}
             <main className="max-w-7xl mx-auto px-6 lg:px-10 py-10">
+
                 <div className="flex items-end justify-between mb-8">
                     <div>
                         <h1 className="font-semibold text-2xl text-gray-900 mb-1">
@@ -210,7 +420,9 @@ export default function Dashboard({ auth, stats }) {
                     <p className="hidden sm:block text-sm text-gray-400 capitalize">{today}</p>
                 </div>
 
-                {/* VUE ADMIN */}
+                {/* ─────────────────────────────────────────
+                    VUE ADMIN
+                ───────────────────────────────────────── */}
                 {role === 'admin' && (
                     <div>
                         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-10">
@@ -230,16 +442,24 @@ export default function Dashboard({ auth, stats }) {
                                 icon={<Euro size={20} className="text-[#2D6A5A]" />}
                             />
                         </div>
-                        <SectionTitle>Actions rapides</SectionTitle>
-                        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                            <ActionCard label="Gérer les espaces" href="/spaces" icon={<Building2 size={18} className="text-[#2D6A5A]" />} />
-                            <ActionCard label="Toutes les réservations" href="/reservations" icon={<ClipboardList size={18} className="text-[#2D6A5A]" />} />
-                            <ActionCard label="Créer un espace" href="/spaces/create" icon={<Plus size={18} className="text-[#2D6A5A]" />} />
+
+                        <PendingReservations reservations={pendingReservations} />
+
+                        <div className="mt-6">
+                            <Link
+                                href="/spaces/create"
+                                className="inline-flex items-center gap-2 bg-white border border-gray-200 text-[#2D6A5A] font-medium text-sm px-4 py-2.5 rounded-lg no-underline hover:border-[#2D6A5A] hover:shadow-sm transition-all duration-150"
+                            >
+                                <Plus size={16} />
+                                Créer un espace
+                            </Link>
                         </div>
                     </div>
                 )}
 
-                {/* VUE MANAGER */}
+                {/* ─────────────────────────────────────────
+                    VUE MANAGER
+                ───────────────────────────────────────── */}
                 {role === 'manager' && (
                     <div>
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-10">
@@ -254,6 +474,7 @@ export default function Dashboard({ auth, stats }) {
                                 icon={<Building2 size={20} className="text-[#2D6A5A]" />}
                             />
                         </div>
+
                         <SectionTitle>Actions rapides</SectionTitle>
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                             <ActionCard label="Gérer les espaces" href="/spaces" icon={<Building2 size={18} className="text-[#2D6A5A]" />} />
@@ -262,7 +483,9 @@ export default function Dashboard({ auth, stats }) {
                     </div>
                 )}
 
-                {/* VUE MEMBER */}
+                {/* ─────────────────────────────────────────
+                    VUE MEMBER
+                ───────────────────────────────────────── */}
                 {role === 'member' && (
                     <div>
                         <div className="bg-[#2D6A5A] rounded-2xl py-7 px-7 mb-10 flex flex-wrap items-center justify-between gap-5">
@@ -291,16 +514,14 @@ export default function Dashboard({ auth, stats }) {
                                 Mon abonnement
                             </Link>
                         </div>
-                        <SectionTitle>Actions rapides</SectionTitle>
-                        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                            <ActionCard label="Réserver un espace" href="/spaces" icon={<CalendarDays size={18} className="text-[#2D6A5A]" />} />
-                            <ActionCard label="Mes réservations" href="/reservations" icon={<ClipboardList size={18} className="text-[#2D6A5A]" />} />
-                            <ActionCard label="Mon abonnement" href="/abonnements" icon={<Star size={18} className="text-[#2D6A5A]" />} />
-                        </div>
+
+                        <UpcomingReservations reservations={upcomingReservations} />
                     </div>
                 )}
 
-                {/* VUE CLIENT */}
+                {/* ─────────────────────────────────────────
+                    VUE CLIENT
+                ───────────────────────────────────────── */}
                 {role === 'client' && (
                     <div>
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-10">
@@ -345,11 +566,8 @@ export default function Dashboard({ auth, stats }) {
                                 </Link>
                             </div>
                         </div>
-                        <SectionTitle>Actions rapides</SectionTitle>
-                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                            <ActionCard label="Mes réservations" href="/reservations" icon={<ClipboardList size={18} className="text-[#2D6A5A]" />} />
-                            <ActionCard label="Consulter les espaces" href="/spaces" icon={<Building2 size={18} className="text-[#2D6A5A]" />} />
-                        </div>
+
+                        <UpcomingReservations reservations={upcomingReservations} />
                     </div>
                 )}
             </main>
