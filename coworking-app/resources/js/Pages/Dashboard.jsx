@@ -32,7 +32,12 @@ function formatName(name = '') {
         .join(' ');
 }
 
-const NAV_LINKS = [
+const NAV_LINKS_ADMIN = [
+    { label: 'Espaces', href: '/spaces' },
+    { label: 'Réservations', href: '/reservations' },
+];
+
+const NAV_LINKS_CLIENT = [
     { label: 'Espaces', href: '/spaces' },
     { label: 'Réservations', href: '/reservations' },
     { label: 'Abonnements', href: '/abonnements' },
@@ -85,18 +90,6 @@ function ProfileMenu({ user, role, onLogout }) {
                         <p className="text-sm font-medium text-gray-900">{formatName(user.name)}</p>
                         <p className="text-xs text-gray-500 mt-0.5">{ROLE_LABELS[role] ?? role}</p>
                     </div>
-                    <Link
-                        href="/profile"
-                        className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors duration-150 no-underline"
-                    >
-                        Mon profil
-                    </Link>
-                    <Link
-                        href="/settings"
-                        className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors duration-150 no-underline"
-                    >
-                        Paramètres
-                    </Link>
                     <button
                         onClick={onLogout}
                         className="w-full flex items-center gap-2 px-4 py-2 text-sm text-red-600 hover:bg-red-50 transition-colors duration-150 cursor-pointer text-left border-t border-gray-100 mt-1"
@@ -344,6 +337,7 @@ function PendingReservations({ reservations = [] }) {
 export default function Dashboard({ auth, stats, upcomingReservations = [], pendingReservations = [] }) {
     const user = auth.user;
     const role = user.role;
+    const navLinks = ['admin', 'manager'].includes(role) ? NAV_LINKS_ADMIN : NAV_LINKS_CLIENT;
 
     const handleLogout = () => {
         router.post('/logout');
@@ -375,7 +369,7 @@ export default function Dashboard({ auth, stats, upcomingReservations = [], pend
                         <img src="/logo.png" alt="Cowork'In" className="h-8 w-auto" />
 
                         <div className="hidden md:flex items-center gap-1">
-                            {NAV_LINKS.map((link) => (
+                            {navLinks.map((link) => (
                                 <Link
                                     key={link.href}
                                     href={link.href}
@@ -390,13 +384,15 @@ export default function Dashboard({ auth, stats, upcomingReservations = [], pend
                     <div className="flex items-center gap-1">
 
 
-                        <Link
-                            href="/cart"
-                            className="p-2 text-gray-500 hover:text-[#2D6A5A] hover:bg-gray-100 rounded-full transition-colors duration-150 cursor-pointer relative"
-                            title="Mon panier"
-                        >
-                            <ShoppingCart size={18} />
-                        </Link>
+                        {!['admin', 'manager'].includes(role) && (
+                            <Link
+                                href="/cart"
+                                className="p-2 text-gray-500 hover:text-[#2D6A5A] hover:bg-gray-100 rounded-full transition-colors duration-150 cursor-pointer relative"
+                                title="Mon panier"
+                            >
+                                <ShoppingCart size={18} />
+                            </Link>
+                        )}
 
                         <div className="w-px h-6 bg-gray-200 mx-2" />
 

@@ -11,7 +11,7 @@ export default function Edit({ space }) {
         document.head.appendChild(link);
     }, []);
 
-    const { data, setData, post, processing, errors } = useForm({
+    const { data, setData, post, delete: destroy, processing, errors } = useForm({
         _method: 'PUT',
         name: space.name || '',
         description: space.description || '',
@@ -32,9 +32,7 @@ export default function Edit({ space }) {
 
     const handleDelete = () => {
         if (window.confirm('Supprimer cet espace ? Cette action est irréversible.')) {
-            post(route('spaces.destroy', space.id), {
-                data: { _method: 'DELETE' },
-            });
+            destroy(route('spaces.destroy', space.id));
         }
     };
 

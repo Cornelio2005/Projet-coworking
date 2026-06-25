@@ -35,34 +35,69 @@ Route::get('/access/{qr_token}', [AccessController::class, 'verify'])
 Route::middleware(['auth', 'verified'])->group(function () {
 
     // --- DASHBOARD ---
-    Route::get('/dashboard', function () {
-        $user = auth()->user();
-        $stats = [];
+ Route::get('/dashboard', function () {
+    $user = auth()->user();
+    $stats = [];
+    $pendingReservations = [];
+    $upcomingReservations = [];
 
-        if (in_array($user->role, ['admin', 'manager'])) {
-            $today = Carbon::today();
+    if (in_array($user->role, ['admin', 'manager'])) {
+        $today = Carbon::today();
 
-            $stats['reservations_today'] = \App\Models\Reservation::whereDate('start_time', $today)
-                ->count();
+        $stats['reservations_today'] = \App\Models\Reservation::whereDate('start_time', $today)
+            ->count();
 
-            $stats['spaces_count'] = \App\Models\Space::count();
+        $stats['spaces_count'] = \App\Models\Space::count();
 
-            $stats['monthly_revenue'] = \App\Models\Reservation::where('status', 'confirmed')
-                ->whereMonth('start_time', $today->month)
-                ->whereYear('start_time', $today->year)
-                ->join('spaces', 'reservations.space_id', '=', 'spaces.id')
-                ->sum('spaces.price_par_demi_journee');
-        }
+        $stats['monthly_revenue'] = \App\Models\Reservation::where('status', 'confirmed')
+            ->whereMonth('start_time', $today->month)
+            ->whereYear('start_time', $today->year)
+            ->join('spaces', 'reservations.space_id', '=', 'spaces.id')
+            ->sum('spaces.price_par_demi_journee');
 
-        if ($user->role === 'member') {
-            $stats['abonnement_actif'] = $user->hasAbonnementActif();
-        }
+        // Réservations en attente pour admin/manager
+        $pendingReservations = \App\Models\Reservation::with(['user', 'space'])
+            ->where('status', 'pending')
+            ->orderBy('start_time')
+            ->get()
+            ->map(fn($r) => [
+                'id'         => $r->id,
+                'user_name'  => $r->user->name,
+                'space_name' => $r->space->name,
+                'date'       => Carbon::parse($r->start_time)->locale('fr')->isoFormat('D MMM YYYY'),
+                'time_start' => Carbon::parse($r->start_time)->format('H\hi'),
+                'time_end'   => Carbon::parse($r->end_time)->format('H\hi'),
+            ]);
+    }
 
-        return Inertia::render('Dashboard', [
-            'auth'  => ['user' => $user],
-            'stats' => $stats,
-        ]);
-    })->name('dashboard');
+    if ($user->role === 'member') {
+        $stats['abonnement_actif'] = $user->hasAbonnementActif();
+    }
+
+    // Prochaines réservations pour client/member
+    if (in_array($user->role, ['client', 'member'])) {
+        $upcomingReservations = \App\Models\Reservation::with('space')
+            ->where('user_id', $user->id)
+            ->where('status', '!=', 'cancelled')
+            ->where('start_time', '>=', Carbon::now())
+            ->orderBy('start_time')
+            ->get()
+            ->map(fn($r) => [
+                'id'         => $r->id,
+                'space_name' => $r->space->name,
+                'date'       => Carbon::parse($r->start_time)->locale('fr')->isoFormat('D MMM YYYY'),
+                'time_start' => Carbon::parse($r->start_time)->format('H\hi'),
+                'time_end'   => Carbon::parse($r->end_time)->format('H\hi'),
+            ]);
+    }
+
+    return Inertia::render('Dashboard', [
+        'auth'                 => ['user' => $user],
+        'stats'                => $stats,
+        'pendingReservations'  => $pendingReservations,
+        'upcomingReservations' => $upcomingReservations,
+    ]);
+})->name('dashboard');
 
     // --- PROFIL (Breeze) ---
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
