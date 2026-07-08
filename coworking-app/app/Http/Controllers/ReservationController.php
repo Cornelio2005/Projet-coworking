@@ -10,22 +10,47 @@ use Inertia\Inertia;
 
 class ReservationController extends Controller
 {
-    public function index()
+    public function index(Request $request)
 {
-    $reservations = (auth()->user()->isAdmin() || auth()->user()->isManager())
-        // Admin ET manager voient toutes les réservations
-        ? Reservation::with(['user', 'space'])->latest()->get()
-        // Client et member ne voient que les leurs
-        : Reservation::with('space')
-            ->where('user_id', auth()->id())
+    $user = auth()->user();
+    $isAdminOrManager = $user->isAdmin() || $user->isManager();
+
+    if ($isAdminOrManager) {
+        $query = Reservation::with(['user', 'space'])->latest();
+
+        if ($request->filled('status')) {
+            $query->where('status', $request->status);
+        }
+
+        if ($request->filled('date_from')) {
+            $query->whereDate('start_time', '>=', $request->date_from);
+        }
+
+        if ($request->filled('date_to')) {
+            $query->whereDate('start_time', '<=', $request->date_to);
+        }
+
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->whereHas('user', function ($q) use ($search) {
+                $q->where('name', 'like', "%{$search}%")
+                  ->orWhere('email', 'like', "%{$search}%");
+            });
+        }
+
+        $reservations = $query->get();
+
+    } else {
+        $reservations = Reservation::with('space')
+            ->where('user_id', $user->id)
             ->latest()
             ->get();
+    }
 
     return Inertia::render('Reservations/Index', [
         'reservations' => $reservations,
-        'auth'         => ['user' => auth()->user()],
-        // On passe auth pour adapter l'affichage
-        // selon le rôle dans le composant React.
+        'auth'         => ['user' => $user],
+        'filters'      => $request->only(['status', 'date_from', 'date_to', 'search']),
     ]);
 }
 
