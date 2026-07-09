@@ -20,6 +20,7 @@ export default function Edit({ space }) {
         price_par_heure: space.price_par_heure || '',
         price_par_demi_journee: space.price_par_demi_journee || '',
         is_available: space.is_available ?? true,
+        is_open_space: space.is_open_space ?? false,
         image: null,
     });
 
@@ -48,7 +49,6 @@ export default function Edit({ space }) {
                         Modifiez les informations de l'espace <strong>{space.name}</strong>.
                     </p>
 
-                    {/* Image actuelle */}
                     {space.image && (
                         <div className="mb-6 rounded-xl overflow-hidden">
                             <img
@@ -64,7 +64,6 @@ export default function Edit({ space }) {
 
                     <form onSubmit={handleSubmit} className="bg-white rounded-2xl p-8 shadow-[0_2px_12px_rgba(0,0,0,0.06)]">
 
-                        {/* Nom */}
                         <div className="mb-6">
                             <label className="block font-medium text-[#2D6A5A] mb-2 text-sm">
                                 Nom de l'espace
@@ -80,7 +79,6 @@ export default function Edit({ space }) {
                             )}
                         </div>
 
-                        {/* Description */}
                         <div className="mb-6">
                             <label className="block font-medium text-[#2D6A5A] mb-2 text-sm">
                                 Description
@@ -96,7 +94,6 @@ export default function Edit({ space }) {
                             )}
                         </div>
 
-                        {/* Type */}
                         <div className="mb-6">
                             <label className="block font-medium text-[#2D6A5A] mb-2 text-sm">
                                 Type d'espace
@@ -116,7 +113,20 @@ export default function Edit({ space }) {
                             )}
                         </div>
 
-                        {/* Capacité + Prix heure */}
+                        {/* OPEN SPACE */}
+                        <div className="flex items-center gap-3 mb-6 bg-[#E0F2FE] px-4 py-3.5 rounded-lg">
+                            <input
+                                type="checkbox"
+                                id="is_open_space"
+                                checked={data.is_open_space}
+                                onChange={e => setData('is_open_space', e.target.checked)}
+                                className="w-[18px] h-[18px] accent-[#2D6A5A] cursor-pointer"
+                            />
+                            <label htmlFor="is_open_space" className="font-medium text-[#2D6A5A] text-sm cursor-pointer">
+                                Open space — les utilisateurs choisissent une place précise (basée sur la capacité)
+                            </label>
+                        </div>
+
                         <div className="flex gap-4 mb-6">
                             <div className="flex-1">
                                 <label className="block font-medium text-[#2D6A5A] mb-2 text-sm">
@@ -152,7 +162,6 @@ export default function Edit({ space }) {
                             </div>
                         </div>
 
-                        {/* Prix demi-journée */}
                         <div className="mb-6">
                             <label className="block font-medium text-[#2D6A5A] mb-2 text-sm">
                                 Prix par demi-journée (€)
@@ -170,7 +179,6 @@ export default function Edit({ space }) {
                             )}
                         </div>
 
-                        {/* Disponibilité */}
                         <div className="flex items-center gap-3 mb-6">
                             <input
                                 type="checkbox"
@@ -184,7 +192,6 @@ export default function Edit({ space }) {
                             </label>
                         </div>
 
-                        {/* Image */}
                         <div className="mb-6">
                             <label className="block font-medium text-[#2D6A5A] mb-2 text-sm">
                                 Nouvelle photo (optionnel)
@@ -200,7 +207,6 @@ export default function Edit({ space }) {
                             )}
                         </div>
 
-                        {/* Boutons */}
                         <div className="flex justify-between items-center mt-8">
 
                             <a href={route('spaces.index')}

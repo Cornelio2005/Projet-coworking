@@ -18,12 +18,12 @@ export default function Create() {
         price_par_heure: '',
         price_par_demi_journee: '',
         is_available: true,
+        is_open_space: false,
         image: null,
     });
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        console.log("Submitting data:", data);
         post(route('spaces.store'), {
             forceFormData: true,
         });
@@ -90,6 +90,21 @@ export default function Create() {
                                 <p className="text-red-500 text-xs mt-1">{errors.type}</p>
                             )}
                         </div>
+
+                        {/* OPEN SPACE — active la sélection de place en grille */}
+                        <div className="flex items-center gap-3 mb-6 bg-[#E0F2FE] px-4 py-3.5 rounded-lg">
+                            <input
+                                type="checkbox"
+                                id="is_open_space"
+                                checked={data.is_open_space}
+                                onChange={e => setData('is_open_space', e.target.checked)}
+                                className="w-[18px] h-[18px] accent-[#2D6A5A] cursor-pointer"
+                            />
+                            <label htmlFor="is_open_space" className="font-medium text-[#2D6A5A] text-sm cursor-pointer">
+                                Open space — les utilisateurs choisissent une place précise (basée sur la capacité)
+                            </label>
+                        </div>
+
                         <div className="flex gap-4 mb-6">
                             <div className="flex-1">
                                 <label className="block font-medium text-[#2D6A5A] mb-2 text-sm">
@@ -172,8 +187,8 @@ export default function Create() {
                         </div>
 
                         <div className="flex justify-between items-center mt-8">
-                            <a
-                                href={route('spaces.index')}
+
+                            <a href={route('spaces.index')}
                                 className="flex items-center gap-2 text-[#2D6A5A] text-sm font-medium no-underline"
                             >
                                 <ArrowLeft size={16} />

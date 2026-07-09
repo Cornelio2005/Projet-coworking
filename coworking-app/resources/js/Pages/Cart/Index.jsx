@@ -1,5 +1,5 @@
 import { Head, Link, router } from '@inertiajs/react';
-import { ShoppingCart, Trash2, CalendarDays, MapPin, Euro, ArrowLeft, CheckCircle } from 'lucide-react';
+import { ShoppingCart, Trash2, CalendarDays, MapPin, Armchair, ArrowLeft, CheckCircle } from 'lucide-react';
 
 export default function CartIndex({ cart, total, auth }) {
 
@@ -15,7 +15,6 @@ export default function CartIndex({ cart, total, auth }) {
         <div className="min-h-screen bg-[#F5F0EA] font-['Roboto',sans-serif]">
             <Head title="Mon panier — Cowork'In" />
 
-            {/* NAVBAR */}
             <nav className="bg-white px-12 py-3.5 flex justify-between items-center shadow-[0_2px_8px_rgba(0,0,0,0.06)]">
                 <img src="/logo.png" alt="Cowork'In" className="h-[42px]" />
                 <Link href="/spaces" className="flex items-center gap-1.5 text-sm text-[#2D6A5A] no-underline">
@@ -26,19 +25,16 @@ export default function CartIndex({ cart, total, auth }) {
 
             <main className="py-12 px-[10%]">
 
-                {/* TITRE */}
                 <div className="flex items-center gap-3 mb-8">
                     <ShoppingCart size={28} color="#2D6A5A" />
                     <h1 className="font-['Montserrat',sans-serif] font-extrabold text-[26px] text-[#2D6A5A]">
                         Mon panier
                     </h1>
-                    {/* Badge avec le nombre d'items */}
                     <span className="bg-[#2D6A5A] text-white text-xs font-bold px-2.5 py-1 rounded-full">
                         {cart.length} espace{cart.length > 1 ? 's' : ''}
                     </span>
                 </div>
 
-                {/* PANIER VIDE */}
                 {cart.length === 0 && (
                     <div className="bg-white rounded-2xl p-12 text-center shadow-[0_2px_8px_rgba(0,0,0,0.05)]">
                         <ShoppingCart size={48} color="#ccc" className="mx-auto mb-4" />
@@ -54,14 +50,12 @@ export default function CartIndex({ cart, total, auth }) {
                     </div>
                 )}
 
-                {/* LISTE DES ITEMS */}
                 {cart.length > 0 && (
                     <div className="grid grid-cols-1 gap-4 mb-8">
                         {cart.map((item) => (
                             <div key={item.id} className="bg-white rounded-2xl p-6 shadow-[0_2px_8px_rgba(0,0,0,0.05)] flex items-center justify-between gap-6">
 
                                 <div className="flex flex-col gap-2 flex-1">
-                                    {/* Nom de l'espace */}
                                     <div className="flex items-center gap-2">
                                         <MapPin size={16} color="#2D6A5A" />
                                         <span className="font-['Montserrat',sans-serif] font-bold text-[15px] text-[#2D6A5A]">
@@ -69,7 +63,6 @@ export default function CartIndex({ cart, total, auth }) {
                                         </span>
                                     </div>
 
-                                    {/* Créneau */}
                                     <div className="flex items-center gap-2">
                                         <CalendarDays size={16} color="#888" />
                                         <span className="text-sm text-[#555]">
@@ -77,19 +70,26 @@ export default function CartIndex({ cart, total, auth }) {
                                         </span>
                                     </div>
 
-                                    {/* Type */}
-                                    <span className="bg-[#E0F2FE] text-[#2D6A5A] text-xs font-medium px-2.5 py-1 rounded-full w-fit">
-                                        {item.type === 'heure' ? 'À l\'heure' : 'Demi-journée'}
-                                    </span>
+                                    <div className="flex items-center gap-2 flex-wrap">
+                                        <span className="bg-[#E0F2FE] text-[#2D6A5A] text-xs font-medium px-2.5 py-1 rounded-full w-fit">
+                                            {item.type === 'heure' ? 'À l\'heure' : 'Demi-journée'}
+                                        </span>
+
+                                        {/* Badge place — uniquement si l'item vient d'un open space */}
+                                        {item.seat_number && (
+                                            <span className="flex items-center gap-1 bg-[#FCE7F3] text-[#C4714B] text-xs font-medium px-2.5 py-1 rounded-full w-fit">
+                                                <Armchair size={12} />
+                                                Place n°{item.seat_number}
+                                            </span>
+                                        )}
+                                    </div>
                                 </div>
 
                                 <div className="flex items-center gap-6">
-                                    {/* Prix */}
                                     <span className="font-['Montserrat',sans-serif] font-extrabold text-xl text-[#2D6A5A]">
                                         {item.total_price}€
                                     </span>
 
-                                    {/* Bouton supprimer */}
                                     <button
                                         onClick={() => handleRemove(item.id)}
                                         className="bg-[#FEE2E2] border-none p-2.5 rounded-lg cursor-pointer"
@@ -102,7 +102,6 @@ export default function CartIndex({ cart, total, auth }) {
                     </div>
                 )}
 
-                {/* RÉCAPITULATIF TOTAL + BOUTON VALIDER */}
                 {cart.length > 0 && (
                     <div className="bg-white rounded-2xl p-8 shadow-[0_2px_8px_rgba(0,0,0,0.05)] max-w-md ml-auto">
                         <div className="flex justify-between items-center mb-6">

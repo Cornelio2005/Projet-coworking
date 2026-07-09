@@ -1,8 +1,7 @@
 import { useForm, Head, usePage, Link } from '@inertiajs/react';
 import { useState } from 'react';
-import { ArrowLeft, ShoppingCart, Monitor, Tv, Video } from 'lucide-react';
+import { ArrowLeft, ShoppingCart, Monitor, Tv, Video, Armchair } from 'lucide-react';
 
-// Icône par équipement
 function getEquipmentIcon(name) {
     if (name.toLowerCase().includes('projecteur')) return <Monitor size={18} color="#2D6A5A" />;
     if (name.toLowerCase().includes('écran')) return <Tv size={18} color="#2D6A5A" />;
@@ -10,7 +9,7 @@ function getEquipmentIcon(name) {
     return <Monitor size={18} color="#2D6A5A" />;
 }
 
-export default function Create({ space, equipments, auth }) {
+export default function Create({ space, equipments, auth, occupiedSeats = [] }) {
 
     const { cartCount } = usePage().props;
     const [type, setType] = useState('heure');
@@ -20,16 +19,19 @@ export default function Create({ space, equipments, auth }) {
         start_datetime: '',
         end_datetime: '',
         type: 'heure',
-        // equipments est un tableau d'IDs cochés par l'utilisateur
         equipments: [],
+        seat_number: null,
     });
 
     const handleAddToCart = (e) => {
         e.preventDefault();
+        // Si l'espace est un open space, on empêche l'envoi sans place sélectionnée
+        if (space.is_open_space && !data.seat_number) {
+            return;
+        }
         post(route('cart.add'));
     };
 
-    // Ajoute ou retire un équipement du tableau
     const toggleEquipment = (id) => {
         const current = data.equipments;
         if (current.includes(id)) {
@@ -39,7 +41,6 @@ export default function Create({ space, equipments, auth }) {
         }
     };
 
-    // Calcule le prix total des équipements sélectionnés
     const equipmentTotal = equipments
         .filter(e => data.equipments.includes(e.id))
         .reduce((sum, e) => sum + parseFloat(e.price), 0);
@@ -49,7 +50,6 @@ export default function Create({ space, equipments, auth }) {
             <Head title={`Réserver — ${space.name}`} />
             <div className="min-h-screen bg-[#F5F0EA] font-['Roboto',sans-serif]">
 
-                {/* NAVBAR */}
                 <nav className="bg-white px-12 py-3.5 flex justify-between items-center shadow-[0_2px_8px_rgba(0,0,0,0.06)]">
                     <img src="/logo.png" alt="Cowork'In" className="h-[42px]" />
                     <div className="flex items-center gap-6">
@@ -68,10 +68,8 @@ export default function Create({ space, equipments, auth }) {
                     </div>
                 </nav>
 
-                {/* LAYOUT SPLIT */}
                 <div className="flex min-h-[calc(100vh-70px)]">
 
-                    {/* GAUCHE — Formulaire */}
                     <div className="flex-1 p-12 overflow-y-auto">
                         <h1 className="font-['Montserrat',sans-serif] font-extrabold text-[26px] text-[#2D6A5A] mb-2">
                             Réserver un espace
@@ -80,7 +78,6 @@ export default function Create({ space, equipments, auth }) {
                             Choisissez votre créneau pour <strong>{space.name}</strong>.
                         </p>
 
-                        {/* TOGGLE TYPE */}
                         <div className="mb-8">
                             <label className="block font-medium text-[#2D6A5A] mb-3 text-sm">
                                 Type de réservation
@@ -103,7 +100,6 @@ export default function Create({ space, equipments, auth }) {
                             </div>
                         </div>
 
-                        {/* DATE */}
                         <div className="mb-6">
                             <label className="block font-medium text-[#2D6A5A] mb-2 text-sm">
                                 Date de réservation
@@ -120,7 +116,6 @@ export default function Create({ space, equipments, auth }) {
                             )}
                         </div>
 
-                        {/* HEURES — mode heure */}
                         {type === 'heure' && (
                             <>
                                 <div className="mb-6">
@@ -155,7 +150,6 @@ export default function Create({ space, equipments, auth }) {
                             </>
                         )}
 
-                        {/* CRÉNEAU — mode demi-journée */}
                         {type === 'demi-journee' && (
                             <div className="mb-6">
                                 <label className="block font-medium text-[#2D6A5A] mb-2 text-sm">
@@ -182,7 +176,57 @@ export default function Create({ space, equipments, auth }) {
                             </div>
                         )}
 
-                        {/* ÉQUIPEMENTS OPTIONNELS */}
+                        {/* SÉLECTION DE PLACE — uniquement pour les open space */}
+                        {space.is_open_space && (
+                            <div className="mb-8">
+                                <label className="block font-medium text-[#2D6A5A] mb-3 text-sm">
+                                    Choisissez votre place
+                                </label>
+                                <div className="bg-white rounded-[10px] p-5 shadow-[0_2px_8px_rgba(0,0,0,0.06)]">
+                                    <div className="grid grid-cols-6 gap-3 mb-4">
+                                        {Array.from({ length: space.capacity }, (_, i) => i + 1).map(seat => {
+                                            const isOccupied = occupiedSeats.includes(seat);
+                                            const isSelected = data.seat_number === seat;
+                                            return (
+                                                <button
+                                                    key={seat}
+                                                    type="button"
+                                                    disabled={isOccupied}
+                                                    onClick={() => setData('seat_number', seat)}
+                                                    className={`aspect-square rounded-lg border-2 flex flex-col items-center justify-center gap-1 text-xs font-['Montserrat',sans-serif] font-bold transition-all duration-200 ${isOccupied
+                                                            ? 'bg-[#F3F4F6] border-[#ddd] text-[#bbb] cursor-not-allowed'
+                                                            : isSelected
+                                                                ? 'bg-[#2D6A5A] border-[#2D6A5A] text-white cursor-pointer'
+                                                                : 'bg-white border-[#ddd] text-[#2D6A5A] cursor-pointer hover:border-[#2D6A5A]'
+                                                        }`}
+                                                >
+                                                    <Armchair size={16} color={isOccupied ? '#bbb' : isSelected ? '#FFFFFF' : '#2D6A5A'} />
+                                                    {seat}
+                                                </button>
+                                            );
+                                        })}
+                                    </div>
+                                    <div className="flex items-center gap-4 text-xs text-[#888]">
+                                        <span className="flex items-center gap-1.5">
+                                            <span className="w-3 h-3 rounded border-2 border-[#ddd] bg-white inline-block" />
+                                            Disponible
+                                        </span>
+                                        <span className="flex items-center gap-1.5">
+                                            <span className="w-3 h-3 rounded bg-[#2D6A5A] inline-block" />
+                                            Sélectionnée
+                                        </span>
+                                        <span className="flex items-center gap-1.5">
+                                            <span className="w-3 h-3 rounded bg-[#F3F4F6] border border-[#ddd] inline-block" />
+                                            Occupée
+                                        </span>
+                                    </div>
+                                </div>
+                                {errors.seat_number && (
+                                    <p className="text-red-500 text-xs mt-1">{errors.seat_number}</p>
+                                )}
+                            </div>
+                        )}
+
                         {equipments.length > 0 && (
                             <div className="mb-8">
                                 <label className="block font-medium text-[#2D6A5A] mb-3 text-sm">
@@ -223,7 +267,6 @@ export default function Create({ space, equipments, auth }) {
                             </div>
                         )}
 
-                        {/* RÉCAPITULATIF PRIX */}
                         <div className="bg-[#E0F2FE] rounded-xl px-6 py-5 mb-6">
                             <div className="flex justify-between items-center mb-2">
                                 <span className="text-sm text-[#555]">Tarif normal</span>
@@ -243,7 +286,6 @@ export default function Create({ space, equipments, auth }) {
                                 </div>
                             )}
 
-                            {/* Ligne équipements si au moins un sélectionné */}
                             {equipmentTotal > 0 && (
                                 <div className="flex justify-between items-center mb-2">
                                     <span className="text-sm text-[#555]">Équipements</span>
@@ -278,18 +320,23 @@ export default function Create({ space, equipments, auth }) {
                                 </span>
                             </div>
 
+                            {space.is_open_space && !data.seat_number && (
+                                <p className="text-xs text-[#C4714B] font-medium mt-3">
+                                    Veuillez sélectionner une place ci-dessus avant de continuer.
+                                </p>
+                            )}
+
                             <button
                                 type="button"
                                 onClick={handleAddToCart}
-                                disabled={processing}
-                                className={`w-full p-3.5 mt-4 text-white border-none rounded-[10px] text-base font-['Montserrat',sans-serif] font-bold transition-colors duration-200 ${processing ? 'bg-[#aaa] cursor-not-allowed' : 'bg-[#2D6A5A] cursor-pointer hover:bg-[#1a4237]'}`}
+                                disabled={processing || (space.is_open_space && !data.seat_number)}
+                                className={`w-full p-3.5 mt-4 text-white border-none rounded-[10px] text-base font-['Montserrat',sans-serif] font-bold transition-colors duration-200 ${processing || (space.is_open_space && !data.seat_number) ? 'bg-[#aaa] cursor-not-allowed' : 'bg-[#2D6A5A] cursor-pointer hover:bg-[#1a4237]'}`}
                             >
                                 {processing ? 'Ajout au panier en cours...' : 'Ajouter au panier'}
                             </button>
                         </div>
                     </div>
 
-                    {/* DROITE — Image espace */}
                     <div className="w-[420px] shrink-0 sticky top-0 h-screen">
                         {space.image ? (
                             <img
