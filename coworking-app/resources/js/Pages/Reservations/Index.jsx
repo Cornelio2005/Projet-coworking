@@ -1,8 +1,7 @@
 import { Head, router } from '@inertiajs/react';
 import { useState } from 'react';
 import { ArrowLeft, QrCode, CheckCircle, Clock, XCircle, User, MapPin, Calendar, Download, Pencil, Search, Filter } from 'lucide-react';
-import { QRCodeSVG } from 'qrcode.react';
-
+import { QRCodeSVG, QRCodeCanvas } from 'qrcode.react';
 function formatDate(dateString) {
     const date = new Date(dateString);
     return date.toLocaleDateString('fr-FR', {
@@ -373,8 +372,16 @@ function QrModal({ reservation, onClose }) {
                     <QRCodeSVG value={qrValue} size={200} fgColor="#2D6A5A" bgColor="#FFFFFF" level="M" />
                 </div>
 
-                {/* Canvas caché pour le téléchargement PNG */}
-                <canvas id="qr-canvas" style={{ display: 'none' }} />
+                {/* Canvas caché — sert uniquement à générer le PNG téléchargeable */}
+                <QRCodeCanvas
+                    id="qr-canvas"
+                    value={qrValue}
+                    size={200}
+                    fgColor="#2D6A5A"
+                    bgColor="#FFFFFF"
+                    level="M"
+                    style={{ display: 'none' }}
+                />
 
                 <p style={{ fontFamily: 'Montserrat, sans-serif', fontWeight: '700', fontSize: '15px', color: '#1a1a1a', marginBottom: '4px' }}>
                     {reservation.space.name}
@@ -392,7 +399,6 @@ function QrModal({ reservation, onClose }) {
                     Fermer
                 </button>
 
-                {/* Bouton téléchargement PNG ajouté pour Housnah */}
                 <button onClick={downloadQR} style={{
                     width: '100%', padding: '12px', backgroundColor: '#E0F2FE',
                     color: '#2D6A5A', border: '1px solid #93C5FD', borderRadius: '10px',
