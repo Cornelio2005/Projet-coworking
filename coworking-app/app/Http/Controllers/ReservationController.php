@@ -61,55 +61,78 @@ public function create(Request $request)
     }
 
     $space = Space::findOrFail($request->query('space_id'));
-
-    // On récupère les équipements actifs pour les afficher dans le formulaire
     $equipments = \App\Models\Equipment::where('is_active', true)->get();
 
+    // Si l'espace est un open space, on calcule les places occupées
+    // pour le créneau demandé afin de les griser dans le formulaire
+    $occupiedSeats = [];
+    if ($space->is_open_space && $request->query('start') && $request->query('end')) {
+        $occupiedSeats = $space->getOccupiedSeats(
+            Carbon::parse($request->query('start')),
+            Carbon::parse($request->query('end'))
+        );
+    }
+
     return Inertia::render('Reservations/Create', [
-        'space'      => $space,
-        'equipments' => $equipments,
-        'auth'       => ['user' => auth()->user()->load('abonnementActif.plan')],
+        'space'         => $space,
+        'equipments'    => $equipments,
+        'occupiedSeats' => $occupiedSeats,
+        // occupiedSeats → tableau des numéros de places déjà prises
+        // utilisé par React pour afficher la grille de places
+        'auth'          => ['user' => auth()->user()->load('abonnementActif.plan')],
     ]);
 }
 
-   public function store(Request $request)
+public function store(Request $request)
 {
     $validated = $request->validate([
         'space_id'       => 'required|exists:spaces,id',
         'start_datetime' => 'required|date|after:now',
         'end_datetime'   => 'required_if:type,heure|nullable|date|after:start_datetime',
-        // required_if:type,heure → obligatoire seulement en mode heure
-        // after:start_datetime → l'heure de fin doit être après le début
         'type'           => 'required|in:heure,demi-journee',
+        // seat_number obligatoire uniquement si l'espace est un open space
+        'seat_number'    => 'nullable|integer|min:1',
     ]);
 
     $start = Carbon::parse($validated['start_datetime']);
-    // Carbon::parse() convertit la string de date
-    // en objet Carbon manipulable.
-
-    // En mode heure : on utilise end_datetime envoyé par le client
-    // En mode demi-journee : le serveur calcule (matin 8h→12h, après-midi 14h→18h)
     $end = $validated['type'] === 'heure'
         ? Carbon::parse($validated['end_datetime'])
         : $start->copy()->addHours(4);
-    // copy() évite de modifier l'objet $start original.
 
-    if (Reservation::hasConflict($validated['space_id'], $start, $end)) {
+    $space = Space::findOrFail($validated['space_id']);
+
+    // Validation open space — place obligatoire
+    if ($space->is_open_space && empty($validated['seat_number'])) {
         return back()->withErrors([
-            'start_datetime' => 'Ce créneau est déjà réservé pour cet espace.',
-            // back() redirige vers le formulaire.
-            // withErrors() renvoie l'erreur au composant
-            // React qui peut l'afficher sous le champ.
+            'seat_number' => 'Veuillez choisir une place pour cet open space.',
         ]);
     }
 
-    $space = Space::findOrFail($validated['space_id']);
-    // findOrFail() récupère l'espace ou retourne
-    // une erreur 404 automatiquement s'il n'existe pas.
+    // Validation open space — place dans la capacité
+    if ($space->is_open_space && $validated['seat_number'] > $space->capacity) {
+        return back()->withErrors([
+            'seat_number' => 'Cette place n\'existe pas dans cet espace.',
+        ]);
+    }
+
+    $seatNumber = $space->is_open_space ? $validated['seat_number'] : null;
+
+    if (Reservation::hasConflict(
+        $validated['space_id'],
+        $start,
+        $end,
+        null,
+        $seatNumber
+    )) {
+        return back()->withErrors([
+            'start_datetime' => $space->is_open_space
+                ? 'Cette place est déjà réservée sur ce créneau.'
+                : 'Ce créneau est déjà réservé pour cet espace.',
+        ]);
+    }
 
     $totalPrice = match($validated['type']) {
         'heure'        => $space->price_par_heure * $start->diffInHours($end),
-        // On multiplie le tarif horaire par la durée réelle
         'demi-journee' => $space->price_par_demi_journee ?? ($space->price_par_heure * 4),
     };
 
@@ -126,11 +149,13 @@ public function create(Request $request)
         'type'        => $validated['type'],
         'status'      => 'pending',
         'total_price' => $totalPrice,
+        'seat_number' => $seatNumber,
     ]);
 
     return redirect()->route('reservations.index')
         ->with('success', 'Réservation effectuée avec succès !');
 }
+
 
     public function cancel(Reservation $reservation)
     {

@@ -19,6 +19,8 @@ class Reservation extends Model
         'status',
         'total_price',
         'qr_token',
+        'seat_number',
+
     ];
 
     protected $casts = [
@@ -55,19 +57,35 @@ class Reservation extends Model
                     ->withTimestamps();
     }
 
-    public static function hasConflict($spaceId, $startTime, $endTime, $excludeId = null): bool
-    {
-        return self::where('space_id', $spaceId)
-            ->where('status', '!=', 'cancelled')
-            ->when($excludeId, fn($q) => $q->where('id', '!=', $excludeId))
-            ->where(function ($query) use ($startTime, $endTime) {
-                $query->whereBetween('start_time', [$startTime, $endTime])
-                    ->orWhereBetween('end_time', [$startTime, $endTime])
-                    ->orWhere(function ($q) use ($startTime, $endTime) {
-                        $q->where('start_time', '<=', $startTime)
-                          ->where('end_time', '>=', $endTime);
-                    });
-            })
-            ->exists();
+   public static function hasConflict(
+    $spaceId,
+    $startTime,
+    $endTime,
+    $excludeId = null,
+    $seatNumber = null
+): bool {
+    $query = self::where('space_id', $spaceId)
+        ->where('status', '!=', 'cancelled')
+        ->when($excludeId, fn($q) => $q->where('id', '!=', $excludeId))
+        ->where(function ($query) use ($startTime, $endTime) {
+            $query->whereBetween('start_time', [$startTime, $endTime])
+                ->orWhereBetween('end_time', [$startTime, $endTime])
+                ->orWhere(function ($q) use ($startTime, $endTime) {
+                    $q->where('start_time', '<=', $startTime)
+                      ->where('end_time', '>=', $endTime);
+                });
+        });
+
+    if ($seatNumber !== null) {
+        // Open space → conflit uniquement sur la même place
+        $query->where('seat_number', $seatNumber);
+    } else {
+        // Espace normal → conflit sur tout l'espace
+        // On exclut les réservations open space (seat_number non null)
+        // pour ne pas bloquer tout l'espace
+        $query->whereNull('seat_number');
     }
+
+    return $query->exists();
+}
 }

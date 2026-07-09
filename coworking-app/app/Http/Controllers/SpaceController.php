@@ -47,7 +47,7 @@ class SpaceController extends Controller
         return \Inertia\Inertia::render('Spaces/Create');
     }
 
-    public function store(Request $request)
+public function store(Request $request)
 {
     $validated = $request->validate([
         'name'                   => 'required|string|max:255',
@@ -57,12 +57,18 @@ class SpaceController extends Controller
         'price_par_heure'        => 'required|numeric|min:0',
         'price_par_demi_journee' => 'required|numeric|min:0',
         'is_available'           => 'boolean',
+        'is_open_space'          => 'boolean',
+        // is_open_space → true si l'espace est un open space
         'image'                  => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
     ]);
 
     if ($request->hasFile('image')) {
         $validated['image'] = $request->file('image')->store('spaces', 'public');
     }
+
+    // Les checkboxes non cochées ne sont pas envoyées par le navigateur
+    // On force false si le champ est absent
+    $validated['is_open_space'] = $request->boolean('is_open_space');
 
     Space::create($validated);
 
@@ -77,32 +83,41 @@ class SpaceController extends Controller
         ]);
     }
 
-    public function update(Request $request, \App\Models\Space $space)
-    {
-        $validated = $request->validate([
-            'name'                   => 'required|string|max:255',
-            'description'            => 'required|string',
-            'type'                   => 'required|in:bureau_individuel,bureau_partage,salle_reunion,espace_detente',
-            'capacity'               => 'required|integer|min:1',
-            'price_par_heure'        => 'required|numeric|min:0',
-            'price_par_demi_journee' => 'required|numeric|min:0',
-            'is_available'           => 'boolean',
-            'image'                  => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
-        ]);
+public function update(Request $request, \App\Models\Space $space)
+{
+    $validated = $request->validate([
+        'name'                   => 'required|string|max:255',
+        'description'            => 'required|string',
+        'type'                   => 'required|in:bureau_individuel,bureau_partage,salle_reunion,espace_detente',
+        'capacity'               => 'required|integer|min:1',
+        'price_par_heure'        => 'required|numeric|min:0',
+        'price_par_demi_journee' => 'required|numeric|min:0',
+        'is_available'           => 'boolean',
+        'is_open_space'          => 'boolean',
+        'image'                  => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
+    ]);
 
-        if ($request->hasFile('image')) {
-            if ($space->image) {
-                Storage::disk('public')->delete($space->image);
-            }
-            $validated['image'] = $request->file('image')->store('spaces', 'public');
-        } else {
-            unset($validated['image']);
+    if ($request->hasFile('image')) {
+        if ($space->image) {
+            Storage::disk('public')->delete($space->image);
         }
-
-        $space->update($validated);
-
-        return redirect()->route('spaces.index')->with('success', 'Espace mis à jour avec succès.');
+        $validated['image'] = $request->file('image')->store('spaces', 'public');
+    } else {
+        unset($validated['image']);
     }
+
+    // Même logique que store — forcer false si absent
+    $validated['is_open_space'] = $request->boolean('is_open_space');
+
+    $space->update($validated);
+
+    return redirect()->route('spaces.index')
+        ->with('success', 'Espace mis à jour avec succès.');
+}
+
+
+
+
 
     public function destroy(\App\Models\Space $space)
     {
