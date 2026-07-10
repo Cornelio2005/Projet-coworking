@@ -63,22 +63,27 @@ public function create(Request $request)
     $space = Space::findOrFail($request->query('space_id'));
     $equipments = \App\Models\Equipment::where('is_active', true)->get();
 
-    // Si l'espace est un open space, on calcule les places occupées
-    // pour le créneau demandé afin de les griser dans le formulaire
+    // Si l'espace est un open space, on calcule les places occupées.
+    // Si un créneau précis est fourni en query string, on l'utilise (cas futur d'un filtre live).
+    // Sinon, on prend une fenêtre large (aujourd'hui → +30 jours) pour donner
+    // un aperçu visuel des places déjà prises, même sans créneau encore choisi.
     $occupiedSeats = [];
-    if ($space->is_open_space && $request->query('start') && $request->query('end')) {
-        $occupiedSeats = $space->getOccupiedSeats(
-            Carbon::parse($request->query('start')),
-            Carbon::parse($request->query('end'))
-        );
+    if ($space->is_open_space) {
+        $start = $request->query('start')
+            ? Carbon::parse($request->query('start'))
+            : Carbon::now();
+
+        $end = $request->query('end')
+            ? Carbon::parse($request->query('end'))
+            : Carbon::now()->addDays(30);
+
+        $occupiedSeats = $space->getOccupiedSeats($start, $end);
     }
 
     return Inertia::render('Reservations/Create', [
         'space'         => $space,
         'equipments'    => $equipments,
         'occupiedSeats' => $occupiedSeats,
-        // occupiedSeats → tableau des numéros de places déjà prises
-        // utilisé par React pour afficher la grille de places
         'auth'          => ['user' => auth()->user()->load('abonnementActif.plan')],
     ]);
 }

@@ -12,7 +12,9 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('spaces', function (Blueprint $table) {
-            $table->string('image')->nullable()->after('is_available');
+            if (!Schema::hasColumn('spaces', 'image')) {
+                $table->string('image')->nullable()->after('is_available');
+            }
         });
     }
 
@@ -22,7 +24,9 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('spaces', function (Blueprint $table) {
-            $table->dropColumn('image');
+            if (Schema::hasColumn('spaces', 'image')) {
+                $table->dropColumn('image');
+            }
         });
     }
 };
